@@ -1,0 +1,382 @@
+# My Assignment 3 Design
+
+Status: rough design for my review. My repository destination and routine commit/push workflow are now authorized; no application, sandbox, GitHub Actions workflow, or cloud deployment has been created.
+
+Last updated: November 16, 2026.
+
+My design follows [REQUIREMENTS.md](REQUIREMENTS.md) and the boundaries in [AGENTS.md](AGENTS.md). My [detailed architecture](ARCHITECTURE.md) expands the topology into component/technology rationale, routing and approval policies, state recovery, deployment, evidence, and a map of all 94 requirement IDs. Source keys D, G, S, R, V, and Z refer to the assignment-source register in REQUIREMENTS.md. Choices labeled proposed are not final selections.
+
+## 1. My immediate priorities
+
+I want a useful personal assistant with a simple interface, reliable deployment, and evidence for the full rubric. The deadline I confirmed is **November 17, 2026, at 11:59 PM**. For planning, I am using **America/Los_Angeles**, my current timezone; the course timezone and number of remaining grace days still need confirmation.
+
+My 48-hour operational window has not started. Grace days extend the time available to submit; they do not shorten the required run. If one remaining grace day is confirmed under the course policy, the tentative extended deadline would be November 18 at 11:59 PM; two would give November 19 at 11:59 PM. These are conditional planning dates, not a confirmed extension. My latest feasible stable-run start is the applicable deadline minus 48 hours **and** time for evidence export, final checks, recording, and upload. A run starting at the last possible minute leaves no delivery buffer. [D pp. 14, 20]
+
+To reduce last-minute deployment work, my plan brings an initial cloud deployment forward, after a small version passes its checks. I will build the remaining functionality in verified increments, then freeze a release for the real observation window. CI/CD can automate repeatable work; it cannot guarantee a grade, remove cloud startup time, or manufacture uptime evidence.
+
+## 2. The two interfaces my assignment needs
+
+My assistant needs **both a messaging integration and a browser interface**. A completely custom dashboard is optional; accessible browser chat for grading and the prescribed routing demo is not. [FUNC-01, HERMES-01, OPENCLAW-01, VIDEO-03]
+
+| Surface | Role in my project | Design implication |
+| --- | --- | --- |
+| Telegram or Discord | Required conversation channel and a natural destination for briefings, alerts, recaps, and supported human approvals. | At least one must work through my deployed agent. A website alone does not satisfy this requirement. |
+| Hermes browser chat | If I choose Hermes, graders use the supplied web UI/reverse-proxy pattern with a privately supplied API key. | I can apply the requested visual styling to this small interface while preserving its backend contract. |
+| OpenClaw dashboard | If I choose OpenClaw, graders enter its dashboard through the specified Tailscale identity/access flow. | My initial scope would use the existing dashboard. A separate custom frontend or upstream theme modification would be an additional decision. |
+| WhatsApp | A possible extra messaging channel, subject to supported integration and account setup. | WhatsApp alone does not replace the required Telegram/Discord channel. I have not selected or verified it. |
+
+These distinctions come from D pp. 2, 8 and G pp. 3-20, 23-28. My browser UI does not count toward the option requiring three messaging platforms.
+
+### Proposed starting point
+
+My proposed combination is **Hermes + Telegram + a small styled browser chat**. It fits the supplied Hermes UI and leaves one main messaging channel to verify. This is a scope recommendation based on the assignment materials, not a claim that the selected release, authentication, or laptop setup has already been tested.
+
+If I prefer OpenClaw, the same architecture and test strategy still apply, but the grader-access branch and UI implementation change. I will approve the platform before implementation.
+
+## 3. How I would use the assistant
+
+My fictional profile will describe a student managing a small project and a synthetic schedule. Real personal details, inboxes, calendars, and private files stay outside the assistant.
+
+1. **Morning:** My briefing arrives in Telegram with today's synthetic meetings, open time slots, weather, and concise email summaries.
+2. **During the day:** I ask questions through Telegram or browser chat. The router chooses local or cloud inference from task properties and the documented outage policy.
+3. **Before a meeting:** A scheduled/event-triggered alert arrives without my asking for it.
+4. **Email review:** The assistant prepares a draft. A supported messaging approval flow lets me review the exact recipient and content before a send; browser chat offers a draft or directs me to messaging.
+5. **Evening:** My recap reflects actual completed work, unresolved decisions, and tomorrow's schedule.
+
+My proposed four advanced features are morning briefing, end-of-day recap, email integration, and proactive alerts. My skill floor still includes calendar, email, web search, and a fourth meaningful skill. Weather remains part of the briefing regardless of how the selected framework packages it. [FUNC-02/03/05/08; FEAT-01 through FEAT-04]
+
+My proposed fourth skill is now **LinkedIn Content Brief**, reflecting my interest in a daily outreach draft. It would research a topic, suggest an angle, and deliver an original, source-backed post draft for my review. Calendar, email, and web search remain the other three required skills; this skill adds topic selection, synthesis, drafting, and history rather than merely renaming web search. Weather remains a separate briefing capability.
+
+### My LinkedIn Content Brief skill
+
+My goal is a useful daily draft, not automatic engagement or a promise of increased reach. For the assignment, the profile, interests, examples, and draft history remain synthetic. I will not connect my personal LinkedIn account, scrape its session, or create a fake LinkedIn identity for testing.
+
+| Stage | Proposed behavior |
+| --- | --- |
+| Inputs | My configured synthetic audience, topics, tone, desired length, excluded subjects, and draft history; no personal inbox/profile data. |
+| Research | Permitted public web/RSS sources, preferably original announcements or technical sources, plus material I am authorized to supply. My web-search skill remains a separate dependency. |
+| Selection | A short list of relevant topics with dates, source links, and reasons, excluding recent duplicates. Relevance is assessed against the synthetic profile, not inferred from scraped people. |
+| Draft | One primary post with an opening, supported takeaway, and optional discussion question/hashtags. A separate research note maps factual claims to sources and marks uncertainty. No invented personal achievements, results, or engagement metrics. |
+| Review | A draft card in browser chat and a notification through the selected messaging channel. Proposed actions are Copy draft, Revise, and Dismiss; there is no LinkedIn Publish action. |
+| Schedule | One draft-generation job per configured local day, with timezone, bounded retries, and a deduplication key. A manual request can regenerate a draft without being mislabeled as scheduled delivery. |
+| Memory | Draft IDs, source references/dates, topic fingerprints, and review status in controlled persistent state. Content history follows the same session/isolation/snapshot rules as other memory. |
+| Failure | If usable sources are absent or a claim is unsupported, my assistant explains the gap rather than inventing a trend or a finished post. |
+
+Direct LinkedIn search is **not included in the initial implementation**. LinkedIn's official policy prohibits unauthorized scraping/website automation and fake accounts. I will not work around that through browser cookies or a third-party scraping service. [LinkedIn automation policy](https://www.linkedin.com/help/linkedin/answer/a1341387/prohibited-software-and-extensions)
+
+The documented Posts API supports posting/retrieval with specific permissions; member-reading access is restricted, and the documented author retrieval is not evidence of unrestricted keyword search across LinkedIn. My inference is that native LinkedIn search should not be a deadline-critical dependency without a verified authorized endpoint and approved app access. Any later API integration needs a supported use case, current permissions, and separate approval. [LinkedIn Posts API](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api), [LinkedIn API access](https://learn.microsoft.com/en-us/linkedin/marketing/increasing-access)
+
+This means my initial skill produces **drafts for LinkedIn from permitted research**, rather than claiming to scan LinkedIn itself. If I later want actual outreach on my personal profile, I can separately review/export suitable content outside the synthetic assignment environment. Automated posting, likes, comments, connection requests, and messages remain outside scope.
+
+### Acceptance evidence for the fourth skill
+
+My proposed tests cover relevant sources and dated claims; one complete draft with provenance; repeated-topic detection; missing/stale/conflicting source handling; timezones and idempotent scheduled delivery; malicious source instructions; safe URL fetching and UI rendering; and proof that no publishing request or personal-profile access occurs. Unit/mock checks use synthetic fixtures; authorized live web research, if added, is identified separately.
+
+This daily draft does not replace the assignment's morning briefing, proactive alert, recap, or four-feature floor. If I select the skill-publication advanced integration, I can package my original implementation for an allowed registry/tap, provide its public pinned version, and verify installation/execution on a fresh environment. That option and publication still need approval; having a fourth skill alone does not earn the advanced-integration points. [FUNC-02/03/05; ADV-01 through ADV-03]
+
+## 4. My proposed architecture
+
+```mermaid
+flowchart TB
+    Me[My test identity]
+    Browser[Browser chat or platform dashboard]
+    Messaging[Telegram or Discord]
+    Me --> Browser
+    Me --> Messaging
+    subgraph Cloud[Google Cloud Run Instance]
+        Gateway[Authenticated platform gateway]
+        Scheduler[Scheduler and event handlers]
+        Policy[Tool permissions and human approval]
+        Router[Task-aware model routing]
+        Tools[Calendar, email, search and additional skill]
+        Memory[Controlled memory writer and snapshots]
+        Gateway --> Router
+        Gateway --> Policy
+        Scheduler --> Policy
+        Policy --> Tools
+        Gateway --> Memory
+        Scheduler --> Memory
+    end
+    Browser --> Gateway
+    Messaging <--> Gateway
+    Scheduler --> Gateway
+    Router --> Provider[Approved cloud model and authentication]
+    Router --> Tunnel[Tailscale userspace path]
+    Tunnel --> Ollama[My hardware: Ollama and Gemma 4]
+    Tools --> Accounts[Dedicated test accounts and approved APIs]
+    Memory --> Bucket[Private Cloud Storage bucket]
+    Gateway --> Logs[Sanitized execution and routing evidence]
+    Router --> Logs
+```
+
+The diagram describes responsibilities, not separate microservices or a replacement agent framework. My implementation will use the chosen platform's supported hooks, tools, scheduling, and memory interfaces. The laptop supplies inference; the cloud Instance remains the assistant host. [CORE-01 through CORE-06; OPS-01 through OPS-04]
+
+### Behavior at important boundaries
+
+| Boundary | Proposed behavior in my implementation | Verification |
+| --- | --- | --- |
+| Browser/messaging to gateway | Identity checks, validated inputs, and session ownership before tool/model work. | Authorized requests succeed; invalid credentials and unrelated identities fail. |
+| Router to models | Simple eligible tasks go local; reasoning-heavy tasks go cloud. Context, health, privacy, and rate-limit rules have explicit precedence. | White-box rule tests plus black-box results and actual model logs. |
+| Local outage | Cloud-eligible tasks continue. My proposed private-task policy is **hold**, with an honest explanation and no model call. Cloud fallback for private tasks remains an allowed alternative if I choose it. | The four prescribed demo requests and local-down tests match README policy. |
+| Tools to external services | Synthetic accounts, restricted recipients, and code-enforced human approval for every email send. Approval is tied to the exact recipient/content and cannot authorize a changed or replayed request. | Denial, valid approval, rejection, expiry, replay, and changed-content tests. |
+| Unattended work | Scheduled jobs prepare drafts and notifications, without waiting for a human or sending email unattended. | Job completion/delivery and no-send tests. |
+| Memory | A controlled writer serializes shared updates. Active database/lock-dependent state uses safe local container storage with consistent bucket snapshots and restore. | Concurrent writes, durable snapshot, restart, and fresh-session recall. |
+| Evidence | Routing records contain request identifiers, timestamps, route/reason, actual model, outcome, and duration where measured. No message text, credentials, or secret URLs. | Log-shape, content-leakage, and request/result correlation checks. |
+
+For the time-limited build, I will avoid extra databases, a separate frontend hosting service, and multiple orchestration services unless an approved requirement needs them.
+
+## 5. My browser UI concept
+
+I want a calm **neumorphic** interface: softly raised panels, gently recessed inputs, rounded corners, and restrained shadows. Text, boundaries, and focus indicators must remain clear; shadows alone should not communicate whether an element is clickable, selected, or disabled.
+
+### Initial layout
+
+This wireframe shows proposed structure and synthetic example copy. It is not a screenshot or evidence of working features.
+
+```text
++--------------------------------------------------------------------+
+| Personal Assistant                         [Connected] [Sign out]   |
+| My daily workspace                                                  |
++--------------------------------------------------------------------+
+|                                                                    |
+|  +--------------------------------------------------------------+  |
+|  | Chat                                                         |  |
+|  |                                                              |  |
+|  | Assistant: What would you like help with?                     |  |
+|  |                                                              |  |
+|  | Me: Help me plan around today's test meetings.                |  |
+|  |                                                              |  |
+|  | Assistant: Here are the available slots ...                   |  |
+|  |                                                              |  |
+|  | [Ask a question or describe a task ...              ] [Send]  |  |
+|  +--------------------------------------------------------------+  |
+|                                                                    |
+|  [Today's schedule] [Summarize test inbox] [Draft LinkedIn post]     |
+|  Briefings and alerts arrive in Telegram.                           |
+|  Sending an email requires my approval in Telegram.                 |
++--------------------------------------------------------------------+
+```
+
+My first release would have one main chat screen and a minimal authentication view. The shortcut buttons submit ordinary requests; they do not pretend to execute scheduled jobs or bypass approval. I would postpone separate dashboard pages, analytics charts, and additional controls until required flows work. A read-only activity summary could follow if it improves the demo without delaying the observation window.
+
+My content-draft result would use the same raised-card styling: topic, draft text, source/research notes, and Copy draft / Revise / Dismiss actions. Its label must say Draft, and copying it must never be presented as publishing. I would add this within the chat flow rather than build a second content-management application.
+
+### Visual and interaction choices
+
+| Element | My proposed treatment |
+| --- | --- |
+| Background | Warm, pale gray, with a slightly raised central chat panel. |
+| Surfaces | Soft light/dark paired shadows, modest corner rounding, and a subtle visible border. |
+| Text | Dark neutral text and readable secondary labels, using system fonts to avoid extra asset dependencies. |
+| Accent | One restrained indigo/teal accent for the primary action and focus state; final color remains a review choice. |
+| Controls | Recessed composer; clear Send button; visible labels and keyboard focus. Pressing Enter sends, with Shift+Enter for a newline. |
+| Mobile layout | Single-column chat, wrapping shortcuts, adequate touch targets, no sideways scrolling. |
+| Status | Plain wording such as Connected, Connecting, or Unavailable, based on actual checks; color supplements text. A healthy web server must not imply that all tools/models work. |
+| Accessibility | Keyboard navigation, associated labels, focus visibility, readable text/boundary contrast, reduced-motion support, and usable zoom. These are my design acceptance goals, not new assignment rubric thresholds. |
+
+### States my UI must handle
+
+- **Before authentication:** My API key entry is masked, never baked into the page or logged. Session-scoped storage follows a reviewed credential-handling decision; signing out clears the UI's stored key and conversation. Grader credentials remain private.
+- **Waiting for a reply:** My chat shows that the request is in progress, prevents accidental duplicate submission, and preserves the question. The supplied Hermes UI returns complete replies; it must not suggest token streaming unless streaming is actually implemented.
+- **Model unavailable:** My message explains whether the task was held or completed through a permitted fallback. It does not claim local execution without evidence.
+- **Email send from browser chat:** My assistant blocks the approval-gated action promptly and offers a draft or directs me to Telegram/Discord. Adding decorative approval buttons would not create a valid approval mechanism. [HERMES-04]
+- **Empty inbox/calendar:** My assistant reports the empty result instead of inventing emails or meetings.
+- **Failure/retry:** A clear error preserves context. Retrying must not duplicate an external action.
+- **Scheduled work:** The browser can describe my schedule, but the video must still show actual delivered briefing/alert/recap messages. A manually generated preview is not proactive delivery evidence.
+
+If I choose OpenClaw, the existing dashboard remains the initial browser interface. The neumorphic concept would apply only through a verified supported customization or a separately approved frontend; I will not assume the dashboard can be restyled safely within the deadline.
+
+## 6. My Telegram integration plan
+
+For the proposed Telegram route, I would create a class-only bot through BotFather, store its token as a secret, start its chat, and authorize only my intended test identities. The cloud gateway would run the selected platform's Telegram adapter, with one long-polling consumer per token if polling is used. Local/staging tests need their own mock adapter or separate test bot to avoid competing with the deployed consumer. [D p. 8; S pp. 6-7]
+
+My proposed conversation shortcuts are `/help`, `/today`, `/inbox`, and `/draft`. These names are design choices, subject to the selected adapter's supported commands. Briefings, meeting alerts, and recaps arrive as normal messages. An email approval message must display the recipient and draft content before a supported explicit approval/rejection interaction is accepted by the backend.
+
+Telegram supports command menus and inline buttons, but my backend still needs to validate the caller and action; button visibility is not authorization. I can format message content and bot interactions, but I cannot apply the website's neumorphic theme to Telegram's native app. [Telegram bot features](https://core.telegram.org/bots/features)
+
+If I choose Discord instead, I will use its supported bot/channel and permission setup, keeping the same backend policies and evidence requirements. WhatsApp is outside this initial proposal.
+
+## 7. My development and testing sandbox
+
+### Dependency isolation and execution isolation
+
+A Python virtual environment gives my project its own package environment. It is **not a filesystem or network sandbox**. My design therefore pairs the selected platform's dependency environment with a container or VM execution boundary. For Hermes, that means a dedicated Python environment inside the sandbox; OpenClaw would use its pinned Node runtime and project-local dependencies inside the same kind of boundary. [Python venv documentation](https://docs.python.org/3/library/venv.html)
+
+My source authoring, dependency installation, application execution, and runtime tests must take place in the approved isolated development environment. This document-only change edits project Markdown; it does not execute application code or provision that environment.
+
+### Proposed host-safe approach
+
+My preferred starting proposal is a **disposable remote Linux development VM/container workspace**, with fresh GitHub-hosted runners for CI. Only my authorized project source and synthetic fixtures enter those environments. They receive no host home-directory mount, personal documents, shell history, existing SSH/cloud credentials, or unrelated local files. Remote workspace provisioning and transfer to a new environment require my approval. Commits/pushes to my named GitHub repository are now authorized under USER-15.
+
+Local Docker is an alternative only after I approve its host-side effects. Docker Desktop keeps settings and VM/image storage outside the project by default. A bind mount limited to Assignment 3 restricts container data access but does not mean Docker itself makes zero writes elsewhere. Starting or installing it under my current no-external-writes rule would need a specific exception. [Docker Desktop settings](https://docs.docker.com/desktop/settings-and-maintenance/settings/)
+
+My intended restriction is that project code and tests must not access unrelated host data. Operating-system/runtime files necessarily exist inside the approved sandbox. Generated logs, caches, databases, and fixtures use disposable sandbox paths; only sanitized outputs I approve are copied back into Assignment 3. A remote container/VM is not a promise of perfect isolation, so access controls must be verified.
+
+### Isolation controls to verify before runtime work
+
+| Area | Proposed boundary for my tests |
+| --- | --- |
+| Filesystem | Explicitly selected source/fixtures copied into the sandbox; read-only inputs where practical; disposable writable test state and temporary directories. No unrelated host mounts. |
+| Privileges | Non-root application/test processes, no privileged containers, no Docker socket mounted into application/test containers, and reduced capabilities. |
+| Network | Unit tests run without outbound network access. Mock integration tests use an isolated internal network. Live tests form a separate, explicitly authorized profile with only the intended services reachable. |
+| Secrets | No production credentials in unit/mock jobs. Dedicated test credentials enter only the relevant authorized live checks; no inherited host environment. |
+| Resources | Agreed CPU, memory, process-count, duration, and request limits prevent uncontrolled load/stress runs. |
+| Test data | Synthetic project fixtures and disposable service state, never existing personal files or real inbox/calendar data. |
+| Cleanup | Each run can start clean; artifacts are reviewed and sanitized before retention. Destructive tests target disposable state only. |
+
+Docker supports read-only filesystems, explicit mounts, networking controls, and resource/capability options that can implement parts of this design. Their effective configuration still needs inspection; simply calling a process “containerized” is not evidence of the intended boundary. [Docker container controls](https://docs.docker.com/engine/containers/run/)
+
+The real Gemma demonstration still needs my own hardware and Tailscale. CI mocks do not replace it. Any use or installation of local Ollama/Tailscale, model storage, or OS configuration outside Assignment 3 needs my separately approved scope. The current design does not silently grant that exception.
+
+## 8. My white-box and black-box testing plan
+
+Both approaches run within the approved sandbox. They describe how a test observes the system; unit/integration/end-to-end describe the size of the behavior under test. My plan uses both approaches across those levels.
+
+| Approach | What my tests examine | Examples |
+| --- | --- | --- |
+| White-box | Internal branches, policies, state transitions, and error paths. | Router precedence, privacy hold, context limits, simulated 429 fallback, send-approval enforcement, recipient validation, retry limits, deduplication, and memory snapshot/restore logic. |
+| Black-box | Observable behavior through supported public interfaces, without relying on internal implementation. | Browser login/chat, Telegram adapter interactions, unauthorized rejection, complete model reply, held private request, delivered job output, and memory recalled after restart. |
+
+My default CI suite uses deterministic model/service mocks and synthetic data. It checks HTTP/API contracts, errors, authorization, and delivery behavior without paid model calls. Browser tests run against a disposable test deployment with synthetic accounts/credentials. Separate authorized live tests verify the actual cloud provider, deployed Tailscale-to-Gemma path, email/calendar, and messaging service. Every report must identify which environment and dependencies were real.
+
+My load tests would measure concurrent chat requests, scheduled work, and memory updates against the mock sandbox. Stress tests would deliberately introduce timeouts, process failure, memory pressure, and storage/network faults in disposable infrastructure. Live third-party APIs and the evidence-producing 48-hour Instance are excluded from disruptive tests unless I approve a specific later test scope.
+
+### Acceptance gates
+
+| Gate | Evidence my change must provide |
+| --- | --- |
+| Static review | Valid configuration, style/type checks as applicable, dependency/secret review, and requirement mapping. |
+| White-box suite | Meaningful assertions covering changed policy branches, edge cases, failures, and invariants. Coverage highlights gaps; a percentage alone does not establish correctness. |
+| Black-box suite | Passing observable contracts and essential user flows, including failure/denial cases. |
+| Container smoke | Startup, readiness, expected permissions, and controlled shutdown/restart with synthetic state. |
+| UI review | Rendered desktop/mobile checks, keyboard behavior, loading/errors, authentication, and no unsupported browser approval flow. |
+| Release/live checks | Real cloud/local inference, messaging, calendar/email policies, persistence, and usable grader access. |
+| Long-run evidence | Genuine 48-hour operation after pre-run tests, with lifecycle, scheduled-delivery, routing, and recovery records. |
+| Security release gate | Current required scans/reviews and behavioral checks for the exact candidate artifact, no unresolved release blockers, and documented permitted residual risks in SECURITY_REGISTER.md. |
+
+No tests have run against an application yet. This change receives document review only.
+
+### My ongoing security review
+
+My [SECURITY_REGISTER.md](SECURITY_REGISTER.md) separates prospective risks from evidence-backed findings. It tracks discovery, affected commit/version/image, severity and rationale, owner, fix, regression check, retest, and any permitted residual-risk decision. Its initial risk backlog covers access control, secrets, approval bypass, SSRF, XSS, prompt injection, supply chain, sandbox/network exposure, state isolation, resource exhaustion, and content provenance.
+
+Every implementation change needs an appropriate security review and applicable static, dependency, secret, container/configuration, and sandbox behavioral checks. Required checks that fail or cannot complete must not appear as passed. My release target is no known unresolved blockers, including Critical/High findings and broken authentication, leaked live credentials, uncontrolled sends/posts, or isolation failures; lower-severity residual risks need my documented decision. Scanners do not prove an absolute absence of vulnerabilities.
+
+The content skill's source material is untrusted data. Fetching needs destination/redirect checks and bounded requests; retrieved text cannot authorize tools, alter system policy, write arbitrary memory, or execute scripts in the UI. Its absence of a publishing capability must be enforced in tool permissions and tested, rather than expressed only in a prompt.
+
+## 9. My proposed GitHub CI/CD workflow
+
+My selected repository is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent). Meaningful changes will be reviewed, checked, committed and pushed under the standing agreement in AGENTS.md. This establishes version control; it does not mean an Actions pipeline or a deployment has run. My initial branch is `main`; repository visibility, protections and plan-specific approval controls still need verification.
+
+I want **continuous integration and controlled delivery**: routine validation happens automatically, while deployment targets a reviewed immutable artifact after my release approval. Automatic redeployment on every push would conflict with my evidence window and grading freeze.
+
+```mermaid
+flowchart LR
+    Branch[My feature branch and pull request] --> Checks[Static review and sandbox tests]
+    Checks --> Container[Build and test candidate image]
+    Container --> Review[My code and evidence review]
+    Review --> Main[Approved merge]
+    Main --> Image[Trusted build and registry digest]
+    Image --> Release[Explicit release approval]
+    Release --> Instance[Deploy Cloud Run Instance]
+    Instance --> Smoke[Readiness and live smoke checks]
+    Smoke --> Record[Record release and evidence]
+    Smoke --> Recovery[Investigate or approve rollback]
+```
+
+### Workflow stages
+
+| Stage | Proposed behavior |
+| --- | --- |
+| Pull request CI | Fresh runner; no deployment secrets; lockfile-based dependencies; static/security/dependency/secret checks; white-box and black-box mock tests; UI smoke where applicable; candidate container build/test and image/configuration analysis. Findings enter my security register. Untrusted pull requests cannot publish or deploy. |
+| Reviewed main build | A trusted workflow builds the approved commit, reruns required checks, and publishes an image to Artifact Registry tagged by commit and identified by digest. The exact published image receives smoke checks. |
+| Release selection | I select a passing commit/image digest and destination. Missing configuration, failed/incomplete security checks, unresolved release-blocking findings, or an active freeze stops deployment. Security evidence must match the candidate artifact. |
+| Deployment authentication | GitHub OIDC exchanges a short-lived identity for narrowly scoped GCP access. Trust is restricted to the intended repository, workflow/ref/environment claims. Application credentials remain in the runtime secret store. |
+| Instance deployment | The deployment uses the assignment's `gcloud beta run instances` command family with reviewed region, identity, image, storage, access, and startup settings. It must not use a Service-only deployment action by mistake. |
+| Post-deploy validation | Bounded readiness checks plus cloud-model/chat smoke tests. Local Gemma is a separate check requiring my authorized hardware connection, not an assumption about GitHub runner access. |
+| Release record | Commit, image digest, effective configuration, timestamps, check results, and previous known-good digest, with sanitized artifacts. |
+| Rollback | After an approved recovery decision, redeploy the previous compatible image/configuration and verify state/health. Code rollback does not automatically reverse a state migration; backups and compatibility must be checked. |
+
+GitHub documents OIDC federation with GCP so workflows need not keep long-lived GCP keys in repository secrets. My policy will scope token issuance and use separate build, deploy, and runtime identities where appropriate. [GitHub OIDC for GCP](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-google-cloud-platform)
+
+My release gate can use protected environments if my repository plan supports the required controls. GitHub's availability depends on plan and repository visibility. If required reviewers are unavailable for my repository, I will use an explicitly authorized manual dispatch from a trusted branch with scoped deploy identity, rather than claiming an unavailable approval control exists. My solo-project review must not be represented as independent peer review. [GitHub deployment protection](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments)
+
+Google's current Instance documentation confirms a distinct singleton resource and the `gcloud beta run instances deploy` path. I will validate the final pinned CLI and complete flags when building the pipeline. [Cloud Run Instance lifecycle](https://docs.cloud.google.com/run/docs/instances/create-and-manage-instances)
+
+### Details that keep delivery predictable
+
+- My workflows should pin third-party actions to reviewed commit SHAs, keep token permissions minimal, and separate untrusted tests from credentialed publishing/deployment. Privileged `pull_request_target` execution of untrusted source is outside this proposal.
+- My dependency/build caches must exclude secrets and mutable agent state. Immutable image references prevent a moving `latest` tag from changing what is released.
+- My deployment concurrency group should serialize releases to an Instance. It should not cancel a deployment midway through changing state.
+- My initial cloud resource/IAM/OIDC setup is a separate authorized bootstrap step. CI/CD does not eliminate that work or repeated account authorization requirements.
+- My preliminary releases happen before the 48-hour window. Once the observation release is frozen, CI may continue testing branches, but CD must refuse changes to that Instance until I explicitly end the freeze. Any later intervention is logged honestly and evaluated against the assignment policy.
+- My submitted release stays unchanged and accessible through regrades. A mock test pass or successful image build never substitutes for live grading access.
+- My time-saving measures are a single codebase/container, pinned dependencies, remote builds, caching, reproducible scripts, and early smoke-tested deployment. Exact build/deploy times remain unmeasured.
+
+## 10. My SDLC milestones and proposed files
+
+| Phase | My deliverable and exit check |
+| --- | --- |
+| Requirements | Reviewed source baseline, choices and conflicts resolved, acceptance evidence mapped to the rubric. |
+| Design | Approved platform, interfaces, sandbox, security boundaries, data flow, deployment plan, and tests. |
+| Implementation | Small reviewed changes, synchronized documentation, explicit AI/external-code attribution. |
+| Verification | Sandbox tests plus scoped real-integration evidence; failures resolved before the observation window. |
+| Release | Passing immutable image, authorized Instance deployment, smoke-tested access, frozen run configuration. |
+| Operation | 48-hour evidence, monitoring, controlled recovery records, and sanitized exports. |
+| Submission/maintenance | Reports, video, Process Log, private grader credentials, final review, grading availability, and later authorized cleanup. |
+
+This is a proposed layout; the six Markdown files and .gitignore are the current project-authored files; runtime folders remain proposed:
+
+```text
+Assignment 3/
+  agent_docs/
+    AGENTS.md
+    REQUIREMENTS.md
+    DESIGN.md
+    ARCHITECTURE.md
+    SECURITY_REGISTER.md
+  .gitignore                   excludes local course inputs, secrets and generated state
+  docs/                         local original materials; excluded from repository
+  .github/workflows/            future CI and controlled delivery definitions
+  src/                         future platform integration and application code
+  tests/                       future synthetic fixtures and sandbox tests
+  deploy/                      future image, configuration and release scripts
+  static/                      future minimal Hermes UI assets, if chosen
+  reports/                     future sanitized test and operational evidence
+  README.md                    current overview; runnable setup follows implementation
+  PROCESS_LOG.md               future chronological development record
+```
+
+My exact runtime folders depend on the platform. Secrets, virtual environments, caches, private state backups, and test-account login details do not belong in Git or the ordinary submission archive.
+
+### Alignment with my detailed architecture
+
+ARCHITECTURE.md preserves this UI and skill proposal while specifying the enforceable boundaries. Its baseline permits one active gateway/scheduler writer, acknowledges durable memory only after a consistent Cloud Storage commit, and treats ambiguous external sends as uncertain rather than blindly retrying. All framework background writers and backup hooks need verification before implementation. Private-task hold applies throughout the model/tool turn; browser send denial and the content skill's lack of publishing capability remain code-level requirements.
+
+For the separate advanced-integration criterion, my architecture recommends publishing the original content skill through an allowed Hermes tap with a pinned artifact and clean-install/run evidence. This remains a choice for my review and needs separate publication authorization; A2A and three messaging services remain valid alternatives. The architecture's full requirement map includes these conditional branches and the non-runtime video/report/account obligations.
+
+## 11. My decisions before implementation
+
+| Decision | Proposed starting point or information still needed |
+| --- | --- |
+| Platform/interface | Hermes + Telegram + small neumorphic browser chat, subject to my approval. OpenClaw remains valid with its own dashboard/access path. |
+| Sandbox | Disposable remote development environment and fresh CI runners; provider/access/cost still need agreement. Local Docker would need an explicit host-write exception. |
+| GitHub | [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent) selected; project-local Git setup and routine reviewed commits/pushes authorized. Initial branch: `main`. Visibility, protections, account plan and CI/CD credentials/configuration remain unverified. |
+| Deadline | November 17, 2026, 11:59 PM confirmed; timezone assumed America/Los_Angeles and grace balance still to confirm. |
+| Hardware/models | My available RAM, feasible served context, local Gemma variant, and cloud provider/auth route still need verification. |
+| Features/skills | The four-feature proposal remains open. LinkedIn Content Brief is my new fourth-skill recommendation, with permitted-source research and draft-only delivery; implementation and advanced integration are not selected. |
+| Content preferences | Synthetic audience/topics, voice, draft length, daily generation time, source policy, and notification destination still need agreement. Direct LinkedIn search and personal-account use are outside the initial scope. |
+| Security | My register and release criteria are documented. Actual controls, scanner tooling, findings, and remediation require implementation and sandbox verification. |
+| Accounts and schedule | Dedicated test email/calendar/messaging resources, synthetic persona, timezone, delivery times, and permitted recipients need agreement. |
+| Deployment | GCP project, credits/budget, supported region, runtime identity, secrets, state bucket, and authorized bootstrap scope remain unconfigured. |
+| Policy | Private tasks held when local inference is unavailable is proposed; email sending always needs explicit human approval. |
+
+## 12. Review record
+
+On November 16, 2026, I requested a rough UI/system design, sandbox-only development/testing, white-box and black-box tests, and a GitHub CI/CD plan. Codex drafted this proposal and synchronized my working agreement and requirements. The review checked assignment alignment, source links, requirement cross-references, planned-versus-completed wording, and the unchanged approval/filesystem boundaries. It did not execute application code, run tests, start Docker, inspect personal files, or configure external accounts.
+
+On the same day, I requested ongoing vulnerability tracking and a fourth skill for daily LinkedIn content. Codex replaced the earlier fourth-skill suggestion with LinkedIn Content Brief, documented the source/access limitations, added SECURITY_REGISTER.md and security release gates, and synchronized the project Markdown. No social account was accessed and no post, scanner, or runtime test was executed. My subsequent architecture request is now documented in ARCHITECTURE.md; the architecture remains proposed and awaits my review.
+
+On November 16, 2026, I requested the complete architecture. Codex created ARCHITECTURE.md with five diagrams, per-component technology reasoning, interface/failure contracts and all 93 requirement mappings. This document now links to that detail and preserves the proposed-versus-approved distinction. My next checkpoint is architecture review and concrete implementation decisions; no runtime work has begun.
+
+My repository follow-up adds a concise technology overview in ARCHITECTURE.md A17 and a coverage/gap review in A18. The detailed component choices remain proposals. Supplied PDFs, the ZIP and extracted scripts stay local and unchanged; the new script inspection waits for my instruction. Root README.md now indexes the planning documents and records the version-control boundary.

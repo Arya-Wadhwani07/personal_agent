@@ -1,0 +1,57 @@
+# Local course materials: retain unchanged, do not publish in the initial baseline.
+/docs/
+
+# Credentials and local overrides. Only a reviewed placeholder template is eligible.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+/secrets/
+/credentials/
+/private/
+
+# Application state, private backups and generated evidence.
+/state/
+/data/
+/backups/
+/logs/
+/reports/
+/evidence/
+/recordings/
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.mp4
+*.mov
+*.zip
+
+# Environments, dependencies, caches and generated build/test output.
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+htmlcov/
+dist/
+build/
+.cache/
+tmp/
+temp/
+
+# Local tool configuration and OS/editor files.
+/.agents/
+/.codex/
+/.aws/
+/.gcloud/
+.DS_Store
+.idea/
+.vscode/
