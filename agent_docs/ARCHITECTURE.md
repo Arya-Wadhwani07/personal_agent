@@ -119,9 +119,13 @@ Figure 1 implements CORE-01 through CORE-05, FUNC-01/02, OPS-01 through OPS-04, 
 
 For Hermes, the supplied `web_ui.py` pattern listens on external `$PORT` (default 8080), forwarding `/v1/*` and `/health` to the loopback API at `127.0.0.1:$HERMES_PORT` (default 8081). The image includes the UI, and startup supervises both UI and gateway. If Tailscale Serve is used for this branch, it points at the UI. I would preserve those contracts while adding DESIGN.md's raised panels, recessed composer, readable contrast, keyboard focus, responsive layout, and honest loading/error states. [HERMES-01/02; G pp. 3-13; Z Hermes files]
 
+The supplied proxy currently forwards non-root GET and POST/PUT/DELETE/OPTIONS beyond the minimum documented API paths. My adaptation needs a compatible route/method policy and backend-authentication tests; static-page access is distinct from API authorization. Source-level resource limits and safe structured access logs need work (VULN-001/002). Exact source locations are in [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md).
+
 The browser authenticates with a securely injected `API_SERVER_KEY` of at least 16 characters. I will verify missing/wrong-key denial, keep credentials out of URLs/assets/logs, and privately supply grader access through Brightspace. A login view is not proof of server-side enforcement. Browser sessions cannot invoke approval-gated sends: they receive a prompt block with draft/messaging alternatives. Copying a content draft is not publishing it. [HERMES-03/04]
 
 I would use the selected platform's Telegram adapter with one long-polling consumer per token, authorized numeric identities, and separate test credentials for any staging consumer. Requests and callbacks carry a trusted channel/session identity; display names and model arguments are not identity evidence. Scheduled outputs go only to an explicitly configured class-only destination. Telegram API support and the platform's approval hook must both be verified. [FUNC-01; S pp. 6-7; G pp. 14-16]
+
+The starter payload contains full in-memory browser history and a gateway model label, with no explicit session identifier. I must verify trusted API-session identity rather than assume an API key/history provides isolation. The approval example's undefined policy/platform map and unknown-platform fallthrough need a registered hook with trusted provenance and deny-by-default handling.
 
 The following are proposed internal contracts, not invented public endpoints or claims about existing framework method names:
 
@@ -299,6 +303,8 @@ Figure 4 describes durable acknowledgement. For a turn containing a memory updat
 
 The initial operating topology permits only one active gateway/scheduler writer. Deployment must stop/drain the old writer before starting the replacement and must not run staging against the same state or bot token. A manifest conflict detects unsafe overlap but is not sufficient distributed leader fencing. If the chosen Instance/platform lifecycle permits uncontrolled overlap, I need a verified exclusive-owner/fencing mechanism or a revised topology before release. I am not claiming horizontal scalability.
 
+Tailscale daemon identity is a separate writer from application workspace state. The OpenClaw persistent daemon path must retain the actual identity; its before/after source snippet is not two commands to execute together. I will verify supported consistency/restart behavior for daemon-managed state separately rather than assume the application coordinator controls its writes.
+
 My restore tests will cover simultaneous chat/jobs, background writes, failure before and after manifest commit, interrupted snapshots, corrupt/missing snapshots, duplicate action recovery, and a fresh conversation recalling a newly saved synthetic fact after Instance restart. Backups, mount paths, ownership, and permissions become actual deployment evidence. [OPS-01/02/03]
 
 ## A9. Security architecture and release gates
@@ -324,7 +330,7 @@ A private “hold” policy concerns model/tool data handling, not an assertion 
 
 ## A10. Runtime lifecycle, availability, and the observation window
 
-My startup dependency order is configuration validation → scoped secret/identity access → state restore and owner check → Tailscale setup → platform gateway/scheduler initialization → UI → readiness. Local inference health is tracked separately: an offline laptop must not prevent cloud-eligible chat from becoming available. Startup records the observed platform version, runtime user and effective isolation details without secrets. [CORE-08; SEC-01; HERMES-02]
+The supplied start-agent.sh is only a two-process supervisor; the following is my planned integrated lifecycle, not behavior already present in that file. My startup dependency order is configuration validation → scoped secret/identity access → state restore and owner check → Tailscale setup → platform gateway/scheduler initialization → UI → readiness. Local inference health is tracked separately: an offline laptop must not prevent cloud-eligible chat from becoming available. Startup records the observed platform version, runtime user and effective isolation details without secrets. [CORE-08; SEC-01; HERMES-02]
 
 UI or gateway death causes the supervised unit to exit/recover rather than leaving a misleading half-alive deployment. Shutdown stops new work, drains bounded requests, pauses scheduling, checkpoints state and terminates children. Startup/shutdown logic must preserve the supplied Tailscale and state behavior. Recovery attempts have limits, and errors in state restore are not hidden by creating a fresh empty workspace.
 
@@ -608,8 +614,26 @@ My short end-to-end explanation is: I send a request in browser chat or Telegram
 
 I have supplied the repository and authorized routine reviewed commits/pushes. The working agreement now records this standing permission, so Codex does not need to ask again for each ordinary push within approved scope. Global Git configuration, destructive history changes, repository visibility/access changes, skill publication and cloud deployment are not included.
 
-This follow-up preserves all previous 93 requirements and adds USER-15 for version control, giving 94 individually mapped IDs. The appendix summarizes existing choices; it does not introduce an unreviewed framework, database, provider or test tool. No missing assignment obligation was identified against the existing source-derived baseline and its recorded 103-page/19-file review. This review does not claim a fresh PDF extraction or a new inspection of the extracted scripts.
+This follow-up preserves all previous 93 requirements and adds USER-15 for version control, giving 94 individually mapped IDs. The appendix summarizes existing choices; it does not introduce an unreviewed framework, database, provider or test tool. No missing assignment obligation was identified against the existing source-derived baseline and its recorded 103-page/19-file review. That repository-only review did not re-extract the PDFs or inspect the extracted scripts; the later authorized script inspection is recorded in A19.
 
 My remaining gaps are evidence and decisions, not completed features: actual platform/model/runtime fit; supported routing/approval/state hooks; sandbox and service setup; repository visibility/protections; CI/CD implementation; real skill/feature execution; security/performance tests; reports/video and 48-hour operation. The source ambiguities about MP4 packaging, preventive restarts, deadline timezone and remaining grace days still need resolution. A14 and REQUIREMENTS.md section 11 retain the detailed gates.
 
-The extracted starter directory is present, but its new review is deferred until I request it. I will then compare the extracted files with the archive/source baseline, inspect the chosen platform's hooks and startup/access behavior, and update these plans if that inspection reveals a mismatch. None of those scripts has been executed by this change.
+My subsequent authorized review has read all 19 extracted starter files and verified byte identity with their archive members. SCRIPT_REVIEW.md and A19 record adaptation requirements, two source-level security findings and remaining framework integration gates. None of the supplied scripts has been executed or modified.
+
+## A19. Implementation plan after the extracted-script review
+
+My [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md) documents all 19 files, ZIP identity, observed contracts and source references. The plan is now more concrete without selecting a platform or authorizing implementation.
+
+| Order | Architectural work | Gate before I proceed |
+| --- | --- | --- |
+| 1 | Verify pinned platform/runtime API, session, pre-LLM/pre-tool, scheduler and backup hooks. | No undefined example symbols, guessed signatures or assumed writer control. |
+| 2 | Adapt Hermes UI/proxy if selected: preserve required paths and complete responses; add bounds, safe logs/errors, loopback routing, session/auth handling and accessible truthful UI. | VULN-001/002 resolved or appropriately reviewed and negative API/resource/log/render tests completed; no existing fix claimed. |
+| 3 | Integrate restore/owner checks, Tailscale identity, gateway/scheduler/UI startup, readiness and bounded shutdown. | Child failure, hung-child shutdown, state/identity restart and cloud-available/local-down tests. |
+| 4 | Implement routing and send policy using actual hooks and completed model results. | Task-aware routes, context/privacy, reversible 429, unknown-session denial and exact human approval/allowlist controls. |
+| 5 | Exercise synthetic services, four skills plus weather and selected proactive features. | Real trigger/completion/delivery and durable-memory evidence; mocks labeled separately. |
+| 6 | Build CI and releases around the verified image/lifecycle. | Isolated tests/security gates, trusted immutable artifact and explicit freeze-aware deployment. |
+| 7 | Rehearse full PDF-derived access/video and run genuine observation. | Resource/schema-correct queries with sufficient records; companion omissions do not drop grading steps. |
+
+Query scripts do not emit telemetry or implement routing. The starter supervisor does not implement restore/private-network setup or proactive scheduling. The example approval hook does not implement a complete human send gate. These are explicit release prerequisites, not completed features.
+
+No new requirement ID is needed: all 94 IDs remain mapped in A15. This review found adaptation/security gaps, not a missing captured assignment obligation. Runtime tests, rendered UI/diagrams, exploitability, authentication and cloud operation are still unverified.

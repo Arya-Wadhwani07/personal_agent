@@ -186,6 +186,14 @@ My content-draft result would use the same raised-card styling: topic, draft tex
 
 If I choose OpenClaw, the existing dashboard remains the initial browser interface. The neumorphic concept would apply only through a verified supported customization or a separately approved frontend; I will not assume the dashboard can be restyled safely within the deadline.
 
+### Refinements from the actual starter UI
+
+My read-only review of Hermes/web_ui.py confirms sessionStorage for the masked key, browser-memory history, a non-streaming Bearer POST to `/v1/chat/completions`, and reply extraction from `choices[0].message.content`. The `hermes-agent` request label does not identify the serving model. I must preserve the contract and verify session separation in the pinned framework.
+
+The starter's green status only checks unauthenticated `/health`; chat fetch has no explicit browser deadline. My design starts Unknown/Connecting, separates gateway/auth/model status, retains failed drafts, handles bounded waiting without pretending to cancel backend actions, and treats empty/invalid replies as errors. I will add sign-out/key/history clearing, associated labels, an accessible Send name, reduced-motion behavior and content-draft controls. Existing escape-before-format behavior stays intact and receives adversarial tests; this review did not prove XSS.
+
+Broad proxy forwarding, resource limits and safe errors/logs must be resolved before UI acceptance. Styling cannot substitute for backend authentication, a real approval hook or durable memory. [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md), [SECURITY_REGISTER.md](SECURITY_REGISTER.md)
+
 ## 6. My Telegram integration plan
 
 For the proposed Telegram route, I would create a class-only bot through BotFather, store its token as a secret, start its chat, and authorize only my intended test identities. The cloud gateway would run the selected platform's Telegram adapter, with one long-polling consumer per token if polling is used. Local/staging tests need their own mock adapter or separate test bot to avoid competing with the deployed consumer. [D p. 8; S pp. 6-7]
@@ -313,6 +321,12 @@ Google's current Instance documentation confirms a distinct singleton resource a
 - My submitted release stays unchanged and accessible through regrades. A mock test pass or successful image build never substitutes for live grading access.
 - My time-saving measures are a single codebase/container, pinned dependencies, remote builds, caching, reproducible scripts, and early smoke-tested deployment. Exact build/deploy times remain unmeasured.
 
+### Script-derived build and test prerequisites
+
+The bundle supplies fragments rather than a complete application image, router or CI workflow. I will verify framework hooks and state writers, then adapt the gateway and address the two source findings inside the approved sandbox. Startup needs restore/Tailscale/readiness integration, loopback/port validation and bounded shutdown. Its process-watch sleep is not a proactive scheduler.
+
+If selected, OpenClaw needs exact socket/user/origin/port and effective grants verified. The before/after daemon commands are mutually exclusive; persistent identity is a separate writer. Log queries need the actual resource/schema and enough results for all video calls. My full recording checklist remains in REQUIREMENTS.md because companion text omits PDF obligations.
+
 ## 10. My SDLC milestones and proposed files
 
 | Phase | My deliverable and exit check |
@@ -325,7 +339,7 @@ Google's current Instance documentation confirms a distinct singleton resource a
 | Operation | 48-hour evidence, monitoring, controlled recovery records, and sanitized exports. |
 | Submission/maintenance | Reports, video, Process Log, private grader credentials, final review, grading availability, and later authorized cleanup. |
 
-This is a proposed layout; the six Markdown files and .gitignore are the current project-authored files; runtime folders remain proposed:
+This is a proposed layout; the seven Markdown files and .gitignore are the current project-authored files; runtime folders remain proposed:
 
 ```text
 Assignment 3/
@@ -335,6 +349,7 @@ Assignment 3/
     DESIGN.md
     ARCHITECTURE.md
     SECURITY_REGISTER.md
+    SCRIPT_REVIEW.md
   .gitignore                   excludes local course inputs, secrets and generated state
   docs/                         local original materials; excluded from repository
   .github/workflows/            future CI and controlled delivery definitions
@@ -379,4 +394,6 @@ On the same day, I requested ongoing vulnerability tracking and a fourth skill f
 
 On November 16, 2026, I requested the complete architecture. Codex created ARCHITECTURE.md with five diagrams, per-component technology reasoning, interface/failure contracts and all 93 requirement mappings. This document now links to that detail and preserves the proposed-versus-approved distinction. My next checkpoint is architecture review and concrete implementation decisions; no runtime work has begun.
 
-My repository follow-up adds a concise technology overview in ARCHITECTURE.md A17 and a coverage/gap review in A18. The detailed component choices remain proposals. Supplied PDFs, the ZIP and extracted scripts stay local and unchanged; the new script inspection waits for my instruction. Root README.md now indexes the planning documents and records the version-control boundary.
+My repository follow-up adds a concise technology overview in ARCHITECTURE.md A17 and a coverage/gap review in A18. The detailed component choices remain proposals. Supplied PDFs, the ZIP and extracted scripts stay local and unchanged; the newly authorized 19-file review is recorded in SCRIPT_REVIEW.md. Root README.md now indexes the planning documents and records the version-control boundary.
+
+On November 16, 2026, I authorized the extracted-script review. Codex read all 19 unchanged files, verified archive identity and updated the UI, lifecycle, approval, storage and evidence plan. SCRIPT_REVIEW.md contains the adaptation order and planned tests; neither a browser nor a supplied script was run.

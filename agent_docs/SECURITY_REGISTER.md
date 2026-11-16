@@ -1,6 +1,6 @@
 # My Security Risk and Finding Register
 
-Status: design-stage tracking only. My application, dependency lockfiles, container image, and pipeline have not been implemented or scanned. No confirmed vulnerability has been recorded; this does **not** establish that the future implementation is vulnerability-free.
+Status: design-stage tracking plus a completed manual review of supplied starter code. My application, dependency lockfiles, container image, and pipeline have not been implemented or automatically scanned. Two source-level findings are recorded below; their impact on a deployed application has not been tested. This review does not establish that the future implementation is vulnerability-free.
 
 Last updated: November 16, 2026.
 
@@ -67,14 +67,36 @@ My pre-commit review checks explicit paths, content/diff and applicable verifica
 
 ## My observed findings
 
-No findings have been entered yet because implementation assessment has not started. I will add `VULN-###` entries when evidence exists rather than populate this register with invented findings or “passed” controls.
+I recorded two statically observed findings in the unmodified Hermes starter, not a deployed application. Both are **Triaged — adaptation and runtime verification pending**. I own remediation decisions with Codex assisting; the target is resolution/review before adopting this proxy in an exposed application. No CVE is asserted, no automated scanner/database version applies, and neither finding has a fix commit, regression result or closure evidence yet.
+
+The common source artifact is `docs/Assignment3_local_Gemma_scripts/Hermes/web_ui.py`, SHA-256 `5730d4e2e6152ce276b16c2b98f8a3fda48019a8b594fc016618645d8e068e2b`, byte-identical to the ZIP member on November 16, 2026. [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md) records archive identity and the scope. Sources remain local and unchanged.
+
+### VULN-001 — unbounded proxy resource handling
+
+- **Discovered:** November 16, 2026, Codex-assisted manual source review; affected RISK-10, SEC-07 and USER-13.
+- **Evidence:** Lines 288-290 read supplied Content-Length without an application size bound; lines 299-300 buffer the upstream response in full; lines 327-332 create a thread per request without a source-level concurrency cap. Body parsing is outside the proxy error-handling block. The upstream 120-second timeout does not establish client-body, total-request or concurrency limits.
+- **Severity/exposure:** Provisional Medium for availability risk if adopted as an exposed gateway. Effective platform limits, reachable load and impact remain unmeasured; this is not a demonstrated outage.
+- **Remediation plan:** Validate framing and nonnegative bounded lengths, restrict body/response sizes and concurrent work, add client-read and total-operation deadlines, and return safe errors/backpressure. Verify deployment limits too.
+- **Retest required:** Invalid/negative/oversized lengths, slow/incomplete bodies, oversized responses and bounded concurrency/stress against an authorized disposable target, with resource/recovery evidence.
+- **Current outcome:** Unfixed source finding; no execution, exploit, mitigation claim or residual-risk acceptance. Required checks must pass before adopting the proxy.
+
+### VULN-002 — unsafe access-log construction and error disclosure
+
+- **Discovered:** November 16, 2026, Codex-assisted manual source review; affected RISK-02, SEC-05/07, CORE-10 and USER-13.
+- **Evidence:** Lines 322-324 interpolate access-log text into JSON after replacing double quotes only, without JSON-escaping backslashes or applying a field/query redaction policy. Lines 314-320 return raw exception text to the client. This differs from the required sanitized, structured evidence design.
+- **Severity/exposure:** Provisional Medium for log integrity and potential information disclosure if sensitive request/error data reaches these paths. No real credential leakage, attacker-controlled log entry or deployed exploit was observed. Normal chat uses an Authorization header, so this observation does not establish that the normal chat request logs its API key.
+- **Remediation plan:** Use a JSON serializer with allowlisted metadata, omit query strings/message text/secrets, and return sanitized error categories with correlation IDs. Keep detailed diagnostics restricted and redacted.
+- **Retest required:** Synthetic query/exception sentinels, backslash/control-character cases, parseable log records and absence of sensitive sentinels from responses/logs, inside the approved sandbox.
+- **Current outcome:** Unfixed source finding; no execution, fix commit, retest or residual-risk acceptance.
+
+Broad proxy routing, incomplete approval hooks, default-green health and daemon state snippets are additional review gates in SCRIPT_REVIEW.md. I have not labeled these as proven authentication bypass, XSS, or deployed vulnerabilities. Existing escape-before-format logic is a control to preserve and test.
 
 ## My security check record
 
 | Check | Planned scope | Current status |
 | --- | --- | --- |
 | Threat-model/design review | Trust boundaries, grader access, tools, memory, content research, and residual risks. | Initial design review recorded; controls remain unverified. |
-| Static code analysis | Application and tool-adapter code for security-relevant patterns. | Not run; no implementation. |
+| Static code analysis | Application and tool-adapter code for security-relevant patterns. | Manual review of all 19 starter files completed; VULN-001/002 open. Automated analysis and application assessment not run. |
 | Dependency analysis | Direct/transitive packages against advisory data, with pinned version evidence. | Not run; no lockfiles/build inventory. |
 | Secret detection | Source, relevant Git history, selected build contexts, and sanitized output artifacts. | Not run; no repository pipeline configured. |
 | Container/configuration analysis | Runtime packages, image, user/capabilities, mounts, networking, IAM, and CI configuration. | Not run; no deployable image or environment. |
@@ -97,3 +119,4 @@ If a live credential is exposed, my first remediation decision is revocation/rot
 | 2026-11-16 | I requested ongoing vulnerability tracking. Codex created this register, defined the release gate, and connected security review to the proposed content skill and CI/CD. | Documentation review only; no scan, penetration test, or remediation claim. |
 | 2026-11-16 | I requested the detailed architecture. Codex linked its trust boundaries and storage/send failure contracts to the existing risk backlog. | Design review only; no new confirmed vulnerability, implemented mitigation, scan or retest. |
 | 2026-11-16 | I supplied the repository and authorized coherent commits/pushes. Codex documented staged-content controls and local-only source/secret/state exclusions. | Documentation/staging review only; repository visibility and automated scans remain unverified. |
+| 2026-11-16 | I authorized extracted-script review. Codex recorded VULN-001/002 from the unchanged Hermes proxy, with source identity, provisional severity and adaptation/retest gates. | Manual static evidence only; no exploit, scan, runtime test, fix or closure claimed. |
