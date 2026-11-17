@@ -1,20 +1,18 @@
-# My Local Gemma Starter-Script Review
+# Monday — Starter-Script Review
 
-## My November 17 regression and implementation update
+I reviewed all **19 supplied files** without running them and checked that the extracted copies match the original archive. This page records the source contract and adaptation decisions. Original course files remain unchanged.
 
-I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **139 offline tests in 23.09 seconds**. The preceding coverage run measured **74% combined statement/branch coverage** in the test process; the new scheduler integration runs in a separate native subprocess. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper. Startup now reconciles my five managed native schedules while retaining execution history and pauses; duplicate managed names stop startup, and a missing owner pauses restored notification jobs. Alert sources run concurrently with a 30-second limit each, followed by a 55-second delivery budget. Cancellation marks an in-flight send unknown and leaves unattempted alerts pending; these limits cover network waits, not arbitrary local storage stalls.
+[Current implementation evidence](IMPLEMENTATION_STATUS.md) · [Security findings](SECURITY_REGISTER.md)
 
-My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
+## On this page
 
-I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. My public tap was fetched at commit 5ba6fa6 and passed the native safety scan. A fresh isolated Hermes profile then used Gemma to execute the installed helper successfully; the first ambiguous invocation failed and the explicit helper-command retry passed. This standalone skill check served a 4,096-token context, so it does not replace my separate 65,536-token application check or required video. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
-
-## My November 17 integration checkpoint
-
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private Gemma inference passed through an isolated Tailscale client, while an excluded tag was blocked. The separate cloud OAuth login is saved; cloud storage recovery and the actual Cloud Run path remain unverified. Published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
-
-Status: the original read-only source review remains complete and supplied files remain unchanged. My separately authored implementation and Docker sandbox now exist. I preserved the browser chat protocol while replacing the broad starter proxy with bounded, allowlisted routes and structured errors. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) records implementation tests; the source findings below remain the historical review of the supplied files.
-
-I requested a careful review of the extracted local Gemma bundle and updates to my plans. The bundle contains shell scripts, Python, configuration and text instructions; the browser JavaScript is embedded in Hermes/web_ui.py. It is not a separate JavaScript application.
+- [Instructor clarification overrides for my adaptation](#instructor-clarification-overrides-for-my-adaptation)
+- [My review scope and source identity](#my-review-scope-and-source-identity)
+- [File-by-file inventory](#file-by-file-inventory)
+- [Hermes browser and proxy contract](#hermes-browser-and-proxy-contract)
+- [Source findings and incomplete integration points](#source-findings-and-incomplete-integration-points)
+- [My revised implementation order](#my-revised-implementation-order)
+- [Planned verification matrix](#planned-verification-matrix)
 
 ## Instructor clarification overrides for my adaptation
 
@@ -60,17 +58,36 @@ The supplied files remain local and excluded from Git. Links below resolve in my
 
 The actual browser code sends a non-streaming POST to `/v1/chat/completions` with a Bearer key and `{model: 'hermes-agent', messages: conversationHistory}`. The reply is read from `choices[0].message.content`. That model string names the gateway contract; it does not prove which local/cloud model responded. My routing evidence must record the actual serving model. [web_ui.py, lines 220-253; CORE-10]
 
-The key is masked and optionally saved in sessionStorage. Conversation history is browser-memory-only and the full history is submitted each time; there is no explicit session ID in the payload. I must verify how the selected Hermes release isolates API sessions. Browser history does not satisfy durable agent memory, and sharing one grader API key is not evidence of independent per-user identities. [web_ui.py, lines 130-166, 235-247; HERMES-03; OPS-02]
+The key is masked and optionally saved in sessionStorage. Conversation history is browser-memory-only and the full history is submitted each time; there is no explicit session ID in the payload.
 
-The health request is unauthenticated, has a five-second browser timeout and repeats every 30 seconds. The status begins green and reflects only HTTP success from `/health`; it does not validate the key, tools or model route. My adapted UI will begin Unknown/Connecting and distinguish gateway reachability, authentication and model/tool availability. Exact readiness behavior must be verified with the backend. [web_ui.py, lines 63-64, 168-175]
+- I must verify how the selected Hermes release isolates API sessions. Browser history does not satisfy durable agent memory, and sharing one grader API key is not evidence of independent per-user identities. [web_ui.py, lines 130-166, 235-247; HERMES-03; OPS-02]
 
-The existing Markdown formatter escapes HTML special characters before inserting a small set of formatting tags. I did **not** establish an XSS vulnerability merely from its use of innerHTML. My adaptation must preserve escaping, test hostile text, and treat any added links/rich cards as new rendering surfaces. The current UI also lacks sign-out/key clearing, approval buttons, content-draft controls, associated input labels, an accessible label on the icon-only send button and reduced-motion handling. Those are planned changes, not existing features. [web_ui.py, lines 130-143, 177-207; USER-11]
+The health request is unauthenticated, has a five-second browser timeout and repeats every 30 seconds.
 
-On failure, the composer has already been cleared and the user message remains in history. Chat fetch has no explicit client deadline/cancellation; successful empty content is displayed and stored as `(empty response)`. I will add a bounded request lifecycle, preserve a recoverable failed message, distinguish authentication/provider/network/invalid-response errors, and prevent blind retry of an action with an uncertain outcome. Aborting browser waiting must not be represented as cancelling backend side effects. History/context limits and safe repeated submission need tests. [web_ui.py, lines 220-253; CORE-11; A6 in ARCHITECTURE.md]
+- The status begins green and reflects only HTTP success from `/health`; it does not validate the key, tools or model route.
+- My adapted UI will begin Unknown/Connecting and distinguish gateway reachability, authentication and model/tool availability. Exact readiness behavior must be verified with the backend. [web_ui.py, lines 63-64, 168-175]
 
-The Python proxy forwards all non-root GETs and POST/PUT/DELETE/OPTIONS to a fixed loopback backend, not just the paths named in its introductory comment. It forwards Authorization, Content-Type and Accept, and buffers the response. API authentication is delegated to the backend; the publicly served static page is not itself an authentication bypass. I need an explicit reviewed route/method policy and missing/wrong-key tests for every exposed operation, while retaining the required `/v1/*` and `/health` contracts. No route-specific authentication bypass was proven by this review. [web_ui.py, lines 263-313; HERMES-01/03]
+The existing Markdown formatter escapes HTML special characters before inserting a small set of formatting tags.
 
-The supplied code uses Python's basic HTTP server. Official documentation notes its limited security checks; the default urllib machinery can also use environment proxies and redirect handlers. My adaptation must keep UI-to-gateway calls on the fixed loopback destination without inheriting the Tailscale model proxy, constrain redirects, and audit headers/errors. Only the local-model adapter receives the private model-network privilege. This is a proposed hardening plan, not a demonstrated redirect exploit. [Python HTTP server](https://docs.python.org/3/library/http.server.html), [urllib.request](https://docs.python.org/3/library/urllib.request.html)
+- I did **not** establish an XSS vulnerability merely from its use of innerHTML.
+- My adaptation must preserve escaping, test hostile text, and treat any added links/rich cards as new rendering surfaces.
+- The current UI also lacks sign-out/key clearing, approval buttons, content-draft controls, associated input labels, an accessible label on the icon-only send button and reduced-motion handling. Those are planned changes, not existing features. [web_ui.py, lines 130-143, 177-207; USER-11]
+
+On failure, the composer has already been cleared and the user message remains in history. Chat fetch has no explicit client deadline/cancellation; successful empty content is displayed and stored as `(empty response)`.
+
+- I will add a bounded request lifecycle, preserve a recoverable failed message, distinguish authentication/provider/network/invalid-response errors, and prevent blind retry of an action with an uncertain outcome. Aborting browser waiting must not be represented as cancelling backend side effects. History/context limits and safe repeated submission need tests. [web_ui.py, lines 220-253; CORE-11; A6 in ARCHITECTURE.md]
+
+The Python proxy forwards all non-root GETs and POST/PUT/DELETE/OPTIONS to a fixed loopback backend, not just the paths named in its introductory comment.
+
+- It forwards Authorization, Content-Type and Accept, and buffers the response. API authentication is delegated to the backend; the publicly served static page is not itself an authentication bypass.
+- I need an explicit reviewed route/method policy and missing/wrong-key tests for every exposed operation, while retaining the required `/v1/*` and `/health` contracts.
+- No route-specific authentication bypass was proven by this review. [web_ui.py, lines 263-313; HERMES-01/03]
+
+The supplied code uses Python's basic HTTP server. Official documentation notes its limited security checks; the default urllib machinery can also use environment proxies and redirect handlers.
+
+- My adaptation must keep UI-to-gateway calls on the fixed loopback destination without inheriting the Tailscale model proxy, constrain redirects, and audit headers/errors.
+- Only the local-model adapter receives the private model-network privilege.
+- This is a proposed hardening plan, not a demonstrated redirect exploit. [Python HTTP server](https://docs.python.org/3/library/http.server.html), [urllib.request](https://docs.python.org/3/library/urllib.request.html)
 
 ## Source findings and incomplete integration points
 
@@ -109,8 +126,8 @@ Each step remains subject to platform/sandbox and implementation approval. This 
 | Evidence/video | Correct resource/schema query, enough rows for four complete requests, exact local-off/on sequence, applicable Serve status, real messaging/briefing/alert/recap and secret-free recording. | Planned; no recording or operational evidence. |
 | Source/document integrity | 19 ZIP-to-extracted comparisons; 25 source-file hashes before/after; stable requirement coverage, links/tables and Git diff/staging review. | Read-only comparisons passed; final documentation/source integrity checks recorded with the change. |
 
-No new assignment requirement was discovered that needs a new requirement ID: the existing **94 IDs** already cover the supplied obligations. The important changes are concrete adapter behavior, source-level findings, missing implementation hooks and stronger acceptance tests. The PDFs remain authoritative where these short companion files omit steps. I have not run unit, integration, smoke, load, stress, penetration or browser tests, nor an automated vulnerability scanner.
+No new assignment requirement was discovered that needs a new requirement ID: the existing **94 IDs** already cover the supplied obligations.
 
-## My November 17 grader-access update
-
-I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
+- The important changes are concrete adapter behavior, source-level findings, missing implementation hooks and stronger acceptance tests.
+- The PDFs remain authoritative where these short companion files omit steps.
+- I have not run unit, integration, smoke, load, stress, penetration or browser tests, nor an automated vulnerability scanner.

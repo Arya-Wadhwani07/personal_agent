@@ -1,18 +1,8 @@
-# My Instructor Clarifications and Decisions
+# Monday — Instructor Clarifications
 
-## My November 17 regression and implementation update
+I use **Q01–Q14** to resolve conflicts between older assignment guidance and the professor’s later answers. Instructor statements, endorsed clarifications and unanswered student questions remain distinct.
 
-I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **139 offline tests in 23.09 seconds**. The preceding coverage run measured **74% combined statement/branch coverage** in the test process; the new scheduler integration runs in a separate native subprocess. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper. Startup now reconciles my five managed native schedules while retaining execution history and pauses; duplicate managed names stop startup, and a missing owner pauses restored notification jobs. Alert sources run concurrently with a 30-second limit each, followed by a 55-second delivery budget. Cancellation marks an in-flight send unknown and leaves unattempted alerts pending; these limits cover network waits, not arbitrary local storage stalls.
-
-My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
-
-I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. My public tap was fetched at commit 5ba6fa6 and passed the native safety scan. A fresh isolated Hermes profile then used Gemma to execute the installed helper successfully; the first ambiguous invocation failed and the explicit helper-command retry passed. This standalone skill check served a 4,096-token context, so it does not replace my separate 65,536-token application check or required video. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
-
-## My November 17 integration checkpoint
-
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private Gemma inference passed through an isolated Tailscale client, while an excluded tag was blocked. The separate cloud OAuth login is saved; cloud storage recovery and the actual Cloud Run path remain unverified. Published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
-
-Recorded November 16, 2026, from the forum excerpts I pasted into this chat. No forum URLs or absolute posting dates were supplied. Labels such as “two weeks ago” describe the pasted snapshot, not independently verified dates. I distinguish instructor/endorsed answers from student reports and unanswered questions. Original PDFs remain unchanged; the existing 94 requirement IDs are retained.
+[Requirements](REQUIREMENTS.md) · [Current evidence](IMPLEMENTATION_STATUS.md)
 
 ## My clarification register
 
@@ -70,8 +60,7 @@ No forum answer authorizes closing unrelated host applications, increasing my bu
 
 ## My documentation review
 
-This update preserves all 94 requirement IDs and their architecture mappings. Review covered all 14 clarification entries, precedence, pending-versus-completed wording, Markdown tables/fences and local links. SHA-256 comparison confirmed that all 25 original PDF/archive/extracted files remain unchanged. Runtime unit/integration/load/stress tests are not applicable to this Markdown-only change; prior runtime evidence remains separately scoped in IMPLEMENTATION_STATUS.md. The primary OAuth path is verified; live fallback and deployed acceptance remain unfinished.
+This update preserves all 94 requirement IDs and their architecture mappings. Review covered all 14 clarification entries, precedence, pending-versus-completed wording, Markdown tables/fences and local links. SHA-256 comparison confirmed that all 25 original PDF/archive/extracted files remain unchanged.
 
-## My November 17 grader-access update
-
-I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
+- Runtime unit/integration/load/stress tests are not applicable to this Markdown-only change; prior runtime evidence remains separately scoped in IMPLEMENTATION_STATUS.md.
+- The primary OAuth path is verified; live fallback and deployed acceptance remain unfinished.

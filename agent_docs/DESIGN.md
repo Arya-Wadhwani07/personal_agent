@@ -1,48 +1,33 @@
-# My Assignment 3 Design
+# Monday — Product and UI Design
 
-## My federation and recovery correction — November 17
+I want Monday to make my synthetic schedule, messages and draft content easy to review. **Telegram handles everyday conversations and approvals; browser chat gives graders a simple entry point.**
 
-My GitHub diagnostic confirmed an ID-qualified OIDC subject: `repo:Arya-Wadhwani07@77002960/personal_agent@1460469388:environment:production`. I corrected the Google provider's exact subject condition and verified its saved policy. Numeric owner/repository IDs, `main`, the production environment and the exact release workflow remain restricted. A fresh publish run still needs to prove authentication end to end; the previous run passed native build/tests/security checks before this identity mismatch stopped it.
+My browser uses the **Daylight neumorphic theme**: soft raised panels, recessed inputs, readable contrast and clear error/loading states. Monday is the bot name; Daylight is the visual theme.
 
-My startup now fills missing native profile defaults after durable restore and before schedule/gateway startup. A preflight snapshot without a native workspace no longer leaves those defaults absent; saved preferences remain intact. The isolated, network-disabled regression suite passed **165 tests in 21.07 seconds**, including startup ordering and this restore case. My local Telegram cloud/local replies are confirmed. No Cloud Run Instance is running yet, and my 48-hour observation has not started. These results supersede older current-status claims below, while preserving their historical evidence.
+[Current evidence](IMPLEMENTATION_STATUS.md) · [Technical architecture](ARCHITECTURE.md) · [Requirements](REQUIREMENTS.md)
 
-## My cloud and release checkpoint — November 17
+## On this page
 
-My latest offline regression run passed **157 tests in 24.33 seconds**. The preceding packaged-image run passed 147 tests in 18.88 seconds with patched SQLite. The updated local bot is running the hardened image and its public health check returns ready. My cloud architecture image and live deployment acceptance are still in progress; **the 48-hour observation has not started**.
-
-My project now has a private GCS bucket, Artifact Registry repository, dedicated runtime/release service accounts, a minimal Instance deployment role, and repository/owner-ID, branch, environment and workflow restricted GitHub federation. All ten cloud secret payloads are versioned in Secret Manager with per-secret access. CI reads the pinned private environment configuration without repository credentials. Google and Telegram credentials stay private.
-
-Real GCS tests under the runtime identity passed state restore, usage-quota restore and stale-writer rejection. Native Hermes cloud OAuth bootstrap, real token refresh and recovery into a fresh profile also passed. The local OAuth profile was not changed. Paid API-key inference remains disabled by a zero OpenAI quota; cloud configuration bounds Tavily to 50 basic searches and NVIDIA's fixed free developer-catalog endpoint to 20 attempts. Failed or uncertain requests consume quota before network I/O; quotas survive state restore. These limits do not turn Google budget alerts into a billing hard cap.
-
-My arm64 runtime scan has **zero release-blocking findings after evidence-based triage**, with 45 raw High package findings retained under eight expiring, profile-specific dispositions. SQLite 3.54.1, ACL 2.4.0 and patched Tailscale dependencies are built from pinned verified sources. The ACL upstream suite passed 14 tests with two expected NFS exclusions; its test harness uses Bash and accepts the container device cgroup's stronger EPERM denial. Removed mount/nsenter/infocmp entrypoints, absent systemd-homed/Archive::Tar components, verified Hermes WebSocket fixes, non-root execution, no effective capabilities, and enforced no-new-privileges support the remaining dispositions. Any unknown Critical/High, changed package version, expired disposition or failed runtime-profile check blocks the gate. This is not a claim that the scanner reports no vulnerabilities. The final amd64 image needs its own scan and profile proof.
-
-My $4 planning allocation and cloud identifiers are recorded in `config/cloud-plan.json`. At the checked Instance rates, 1 vCPU/2 GiB for 72 hours estimates $1.070496 in compute before other charges; I reserve $0.40 for 50 basic searches and $1 for storage/operations/secrets/other services. Availability beyond that window needs a fresh total-cost check. No billable Instance has been started yet. Deployment approval, live cloud-to-Mac inference, operational delivery evidence, the genuine 48-hour record, grader account sign-in, video and final submission evidence remain separate acceptance steps.
-
-Earlier dated checkpoints below preserve the development history; this checkpoint supersedes their current-status claims.
-
-## My November 17 regression and implementation update
-
-I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **139 offline tests in 23.09 seconds**. The preceding coverage run measured **74% combined statement/branch coverage** in the test process; the new scheduler integration runs in a separate native subprocess. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper. Startup now reconciles my five managed native schedules while retaining execution history and pauses; duplicate managed names stop startup, and a missing owner pauses restored notification jobs. Alert sources run concurrently with a 30-second limit each, followed by a 55-second delivery budget. Cancellation marks an in-flight send unknown and leaves unattempted alerts pending; these limits cover network waits, not arbitrary local storage stalls.
-
-My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
-
-I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. My public tap was fetched at commit 5ba6fa6 and passed the native safety scan. A fresh isolated Hermes profile then used Gemma to execute the installed helper successfully; the first ambiguous invocation failed and the explicit helper-command retry passed. This standalone skill check served a 4,096-token context, so it does not replace my separate 65,536-token application check or required video. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
-
-## My November 17 integration checkpoint
-
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private Gemma inference passed through an isolated Tailscale client, while an excluded tag was blocked. The separate cloud OAuth login is saved; cloud storage recovery and the actual Cloud Run path remain unverified. Published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
-
-Status: implementation is underway in my approved Docker sandbox. I selected Hermes, Telegram, Gmail, and a dedicated Google Calendar. The Daylight browser interface implements the proposed soft neumorphic styling, plain-text chat, visible connection/error states, and Telegram-only email approval. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) distinguishes implemented behavior from pending live evidence. Cloud deployment and the 48-hour run have not started.
-
-Last updated: November 17, 2026.
-
-My design follows [REQUIREMENTS.md](REQUIREMENTS.md) and the boundaries in [AGENTS.md](AGENTS.md). My [detailed architecture](ARCHITECTURE.md) expands the topology into component/technology rationale, routing and approval policies, state recovery, deployment, evidence, and a map of all 94 requirement IDs. Source keys D, G, S, R, V, and Z refer to the assignment-source register in REQUIREMENTS.md. Choices labeled proposed are not final selections.
+- [1. My immediate priorities](#1-my-immediate-priorities)
+- [2. The two interfaces my assignment needs](#2-the-two-interfaces-my-assignment-needs)
+- [3. How I would use the assistant](#3-how-i-would-use-the-assistant)
+- [4. My proposed architecture](#4-my-proposed-architecture)
+- [5. My browser UI concept](#5-my-browser-ui-concept)
+- [6. My Telegram integration plan](#6-my-telegram-integration-plan)
+- [7. My development and testing sandbox](#7-my-development-and-testing-sandbox)
+- [8. My white-box and black-box testing plan](#8-my-white-box-and-black-box-testing-plan)
+- [9. My proposed GitHub CI/CD workflow](#9-my-proposed-github-cicd-workflow)
+- [10. My SDLC milestones and proposed files](#10-my-sdlc-milestones-and-proposed-files)
+- [11. My selected baseline and remaining decisions](#11-my-selected-baseline-and-remaining-decisions)
+- [12. Review record](#12-review-record)
 
 ## 1. My immediate priorities
 
 I want a useful personal assistant with a simple interface, reliable deployment, and evidence for the full rubric. The deadline I confirmed is **November 17, 2026, at 11:59 PM**. For planning, I am using **America/Los_Angeles**, my current timezone; the course timezone and number of remaining grace days still need confirmation.
 
-My operational evidence has not started. Q07 places grader checks after End Date (deadline + 2) and again 48 hours later. I prepare the final deployment and retain genuine logs/access through that period and regrades; I do not impose an unsupported deadline-minus-48-hours rule. Q09 requires fresh logs/video after a primary-model change; Q10 exempts minor non-model fixes from a new full run. Exact grading time and grace balance remain unknown. [CLARIFICATIONS.md](CLARIFICATIONS.md)
+My operational evidence has not started. Q07 places grader checks after End Date (deadline + 2) and again 48 hours later.
+
+- I prepare the final deployment and retain genuine logs/access through that period and regrades; I do not impose an unsupported deadline-minus-48-hours rule. Q09 requires fresh logs/video after a primary-model change; Q10 exempts minor non-model fixes from a new full run. Exact grading time and grace balance remain unknown. [CLARIFICATIONS.md](CLARIFICATIONS.md)
 
 To reduce last-minute deployment work, my plan brings an initial cloud deployment forward, after a small version passes its checks. I will build the remaining functionality in verified increments, then freeze a release for the real observation window. CI/CD can automate repeatable work; it cannot guarantee a grade, remove cloud startup time, or manufacture uptime evidence.
 
@@ -61,9 +46,9 @@ These distinctions come from D pp. 2, 8 and G pp. 3-20, 23-28. My browser UI doe
 
 ### Proposed starting point
 
-My selected combination is **Hermes + Telegram + Daylight browser chat**. The browser and real local-model integration have been exercised; live messaging and cloud deployment remain pending.
+My selected combination is **Hermes + Telegram + Monday browser chat**. The browser, local-model integration and local Telegram replies have been exercised; cloud deployment remains pending.
 
-If I prefer OpenClaw, the same architecture and test strategy still apply, but the grader-access branch and UI implementation change. I will approve the platform before implementation.
+If I prefer OpenClaw, the same architecture and test strategy still apply, but the grader-access branch and UI implementation change. Hermes is my approved platform; OpenClaw is retained only as an assignment alternative.
 
 ## 3. How I would use the assistant
 
@@ -75,9 +60,11 @@ My fictional profile will describe a student managing a small project and a synt
 4. **Email review:** The assistant prepares a draft. A supported messaging approval flow lets me review the exact recipient and content before a send; browser chat offers a draft or directs me to messaging.
 5. **Evening:** My recap reflects actual completed work, unresolved decisions, and tomorrow's schedule.
 
-My proposed four advanced features are morning briefing, end-of-day recap, email integration, and proactive alerts. My skill floor still includes calendar, email, web search, and a fourth meaningful skill. Weather remains part of the briefing regardless of how the selected framework packages it. [FUNC-02/03/05/08; FEAT-01 through FEAT-04]
+My selected four advanced features are morning briefing, end-of-day recap, email integration, and proactive alerts. My skill floor still includes calendar, email, web search, and a fourth meaningful skill. Weather remains part of the briefing regardless of how the selected framework packages it. [FUNC-02/03/05/08; FEAT-01 through FEAT-04]
 
-My proposed fourth skill is now **LinkedIn Content Brief**, reflecting my interest in a daily outreach draft. It would research a topic, suggest an angle, and deliver an original, source-backed post draft for my review. Calendar, email, and web search remain the other three required skills; this skill adds topic selection, synthesis, drafting, and history rather than merely renaming web search. Weather remains a separate briefing capability.
+My fourth skill is **LinkedIn Content Brief**, reflecting my interest in a daily outreach draft.
+
+- It would research a topic, suggest an angle, and deliver an original, source-backed post draft for my review. Calendar, email, and web search remain the other three required skills; this skill adds topic selection, synthesis, drafting, and history rather than merely renaming web search. Weather remains a separate briefing capability.
 
 ### My LinkedIn Content Brief skill
 
@@ -96,7 +83,10 @@ My goal is a useful daily draft, not automatic engagement or a promise of increa
 
 Direct LinkedIn search is **not included in the initial implementation**. LinkedIn's official policy prohibits unauthorized scraping/website automation and fake accounts. I will not work around that through browser cookies or a third-party scraping service. [LinkedIn automation policy](https://www.linkedin.com/help/linkedin/answer/a1341387/prohibited-software-and-extensions)
 
-The documented Posts API supports posting/retrieval with specific permissions; member-reading access is restricted, and the documented author retrieval is not evidence of unrestricted keyword search across LinkedIn. My inference is that native LinkedIn search should not be a deadline-critical dependency without a verified authorized endpoint and approved app access. Any later API integration needs a supported use case, current permissions, and separate approval. [LinkedIn Posts API](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api), [LinkedIn API access](https://learn.microsoft.com/en-us/linkedin/marketing/increasing-access)
+The documented Posts API supports posting/retrieval with specific permissions; member-reading access is restricted, and the documented author retrieval is not evidence of unrestricted keyword search across LinkedIn.
+
+- My inference is that native LinkedIn search should not be a deadline-critical dependency without a verified authorized endpoint and approved app access.
+- Any later API integration needs a supported use case, current permissions, and separate approval. [LinkedIn Posts API](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api), [LinkedIn API access](https://learn.microsoft.com/en-us/linkedin/marketing/increasing-access)
 
 This means my initial skill produces **drafts for LinkedIn from permitted research**, rather than claiming to scan LinkedIn itself. If I later want actual outreach on my personal profile, I can separately review/export suitable content outside the synthetic assignment environment. Automated posting, likes, comments, connection requests, and messages remain outside scope.
 
@@ -104,7 +94,9 @@ This means my initial skill produces **drafts for LinkedIn from permitted resear
 
 My proposed tests cover relevant sources and dated claims; one complete draft with provenance; repeated-topic detection; missing/stale/conflicting source handling; timezones and idempotent scheduled delivery; malicious source instructions; safe URL fetching and UI rendering; and proof that no publishing request or personal-profile access occurs. Unit/mock checks use synthetic fixtures; authorized live web research, if added, is identified separately.
 
-This daily draft does not replace the assignment's morning briefing, proactive alert, recap, or four-feature floor. If I select the skill-publication advanced integration, I can package my original implementation for an allowed registry/tap, provide its public pinned version, and verify installation/execution on a fresh environment. That option and publication still need approval; having a fourth skill alone does not earn the advanced-integration points. [FUNC-02/03/05; ADV-01 through ADV-03]
+This daily draft does not replace the assignment's morning briefing, proactive alert, recap, or four-feature floor.
+
+- If I select the skill-publication advanced integration, I can package my original implementation for an allowed registry/tap, provide its public pinned version, and verify installation/execution on a fresh environment. That option and publication still need approval; having a fourth skill alone does not earn the advanced-integration points. [FUNC-02/03/05; ADV-01 through ADV-03]
 
 ## 4. My proposed architecture
 
@@ -222,13 +214,18 @@ If I choose OpenClaw, the existing dashboard remains the initial browser interfa
 
 My read-only review of Hermes/web_ui.py confirms sessionStorage for the masked key, browser-memory history, a non-streaming Bearer POST to `/v1/chat/completions`, and reply extraction from `choices[0].message.content`. The `hermes-agent` request label does not identify the serving model. I must preserve the contract and verify session separation in the pinned framework.
 
-The starter's green status only checks unauthenticated `/health`; chat fetch has no explicit browser deadline. My design starts Unknown/Connecting, separates gateway/auth/model status, retains failed drafts, handles bounded waiting without pretending to cancel backend actions, and treats empty/invalid replies as errors. I will add sign-out/key/history clearing, associated labels, an accessible Send name, reduced-motion behavior and content-draft controls. Existing escape-before-format behavior stays intact and receives adversarial tests; this review did not prove XSS.
+The starter's green status only checks unauthenticated `/health`; chat fetch has no explicit browser deadline.
+
+- My design starts Unknown/Connecting, separates gateway/auth/model status, retains failed drafts, handles bounded waiting without pretending to cancel backend actions, and treats empty/invalid replies as errors.
+- I will add sign-out/key/history clearing, associated labels, an accessible Send name, reduced-motion behavior and content-draft controls. Existing escape-before-format behavior stays intact and receives adversarial tests; this review did not prove XSS.
 
 Broad proxy forwarding, resource limits and safe errors/logs must be resolved before UI acceptance. Styling cannot substitute for backend authentication, a real approval hook or durable memory. [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md), [SECURITY_REGISTER.md](SECURITY_REGISTER.md)
 
 ## 6. My Telegram integration plan
 
-For the proposed Telegram route, I would create a class-only bot through BotFather, store its token as a secret, start its chat, and authorize only my intended test identities. The cloud gateway would run the selected platform's Telegram adapter, with one long-polling consumer per token if polling is used. Local/staging tests need their own mock adapter or separate test bot to avoid competing with the deployed consumer. [D p. 8; S pp. 6-7]
+For the proposed Telegram route, I would create a class-only bot through BotFather, store its token as a secret, start its chat, and authorize only my intended test identities.
+
+- The cloud gateway would run the selected platform's Telegram adapter, with one long-polling consumer per token if polling is used. Local/staging tests need their own mock adapter or separate test bot to avoid competing with the deployed consumer. [D p. 8; S pp. 6-7]
 
 My proposed conversation shortcuts are `/help`, `/today`, `/inbox`, and `/draft`. These names are design choices, subject to the selected adapter's supported commands. Briefings, meeting alerts, and recaps arrive as normal messages. An email approval message must display the recipient and draft content before a supported explicit approval/rejection interaction is accepted by the backend.
 
@@ -240,7 +237,11 @@ If I choose Discord instead, I will use its supported bot/channel and permission
 
 ### Dependency isolation and execution isolation
 
-A Python virtual environment gives my project its own package environment. It is **not a filesystem or network sandbox**. My design therefore pairs the selected platform's dependency environment with a container or VM execution boundary. For Hermes, that means a dedicated Python environment inside the sandbox; OpenClaw would use its pinned Node runtime and project-local dependencies inside the same kind of boundary. [Python venv documentation](https://docs.python.org/3/library/venv.html)
+A Python virtual environment gives my project its own package environment.
+
+- It is **not a filesystem or network sandbox**.
+- My design therefore pairs the selected platform's dependency environment with a container or VM execution boundary.
+- For Hermes, that means a dedicated Python environment inside the sandbox; OpenClaw would use its pinned Node runtime and project-local dependencies inside the same kind of boundary. [Python venv documentation](https://docs.python.org/3/library/venv.html)
 
 My source authoring, dependency installation, application execution, and runtime tests must take place in the approved isolated development environment. This document-only change edits project Markdown; it does not execute application code or provision that environment.
 
@@ -277,7 +278,10 @@ Both approaches run within the approved sandbox. They describe how a test observ
 | White-box | Internal branches, policies, state transitions, and error paths. | Router precedence, privacy hold, context limits, simulated 429 fallback, send-approval enforcement, recipient validation, retry limits, deduplication, and memory snapshot/restore logic. |
 | Black-box | Observable behavior through supported public interfaces, without relying on internal implementation. | Browser login/chat, Telegram adapter interactions, unauthorized rejection, complete model reply, held private request, delivered job output, and memory recalled after restart. |
 
-My default CI suite uses deterministic model/service mocks and synthetic data. It checks HTTP/API contracts, errors, authorization, and delivery behavior without paid model calls. Browser tests run against a disposable test deployment with synthetic accounts/credentials. Separate authorized live tests verify the actual cloud provider, deployed Tailscale-to-Gemma path, email/calendar, and messaging service. Every report must identify which environment and dependencies were real.
+My default CI suite uses deterministic model/service mocks and synthetic data.
+
+- It checks HTTP/API contracts, errors, authorization, and delivery behavior without paid model calls. Browser tests run against a disposable test deployment with synthetic accounts/credentials. Separate authorized live tests verify the actual cloud provider, deployed Tailscale-to-Gemma path, email/calendar, and messaging service.
+- Every report must identify which environment and dependencies were real.
 
 My load tests would measure concurrent chat requests, scheduled work, and memory updates against the mock sandbox. Stress tests would deliberately introduce timeouts, process failure, memory pressure, and storage/network faults in disposable infrastructure. Live third-party APIs and the evidence-producing 48-hour Instance are excluded from disruptive tests unless I approve a specific later test scope.
 
@@ -298,15 +302,22 @@ Local application tests have run within the scope recorded in IMPLEMENTATION_STA
 
 ### My ongoing security review
 
-My [SECURITY_REGISTER.md](SECURITY_REGISTER.md) separates prospective risks from evidence-backed findings. It tracks discovery, affected commit/version/image, severity and rationale, owner, fix, regression check, retest, and any permitted residual-risk decision. Its initial risk backlog covers access control, secrets, approval bypass, SSRF, XSS, prompt injection, supply chain, sandbox/network exposure, state isolation, resource exhaustion, and content provenance.
+My [SECURITY_REGISTER.md](SECURITY_REGISTER.md) separates prospective risks from evidence-backed findings.
 
-Every implementation change needs an appropriate security review and applicable static, dependency, secret, container/configuration, and sandbox behavioral checks. Required checks that fail or cannot complete must not appear as passed. My release target is no known unresolved blockers, including Critical/High findings and broken authentication, leaked live credentials, uncontrolled sends/posts, or isolation failures; lower-severity residual risks need my documented decision. Scanners do not prove an absolute absence of vulnerabilities.
+- It tracks discovery, affected commit/version/image, severity and rationale, owner, fix, regression check, retest, and any permitted residual-risk decision. Its initial risk backlog covers access control, secrets, approval bypass, SSRF, XSS, prompt injection, supply chain, sandbox/network exposure, state isolation, resource exhaustion, and content provenance.
+
+Every implementation change needs an appropriate security review and applicable static, dependency, secret, container/configuration, and sandbox behavioral checks. Required checks that fail or cannot complete must not appear as passed.
+
+- My release target is no known unresolved blockers, including Critical/High findings and broken authentication, leaked live credentials, uncontrolled sends/posts, or isolation failures; lower-severity residual risks need my documented decision. Scanners do not prove an absolute absence of vulnerabilities.
 
 The content skill's source material is untrusted data. Fetching needs destination/redirect checks and bounded requests; retrieved text cannot authorize tools, alter system policy, write arbitrary memory, or execute scripts in the UI. Its absence of a publishing capability must be enforced in tool permissions and tested, rather than expressed only in a prompt.
 
 ## 9. My proposed GitHub CI/CD workflow
 
-My selected repository is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent). Meaningful changes will be reviewed, checked, committed and pushed under the standing agreement in AGENTS.md. This establishes version control; it does not mean an Actions pipeline or a deployment has run. My initial branch is `main`; repository visibility, protections and plan-specific approval controls still need verification.
+My selected repository is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent). Meaningful changes will be reviewed, checked, committed and pushed under the standing agreement in AGENTS.md.
+
+- This establishes version control; it does not mean an Actions pipeline or a deployment has run.
+- My initial branch is `main`; repository visibility, protections and plan-specific approval controls still need verification.
 
 I want **continuous integration and controlled delivery**: routine validation happens automatically, while deployment targets a reviewed immutable artifact after my release approval. Automatic redeployment on every push would conflict with my evidence window and grading freeze.
 
@@ -339,7 +350,10 @@ flowchart LR
 
 GitHub documents OIDC federation with GCP so workflows need not keep long-lived GCP keys in repository secrets. My policy will scope token issuance and use separate build, deploy, and runtime identities where appropriate. [GitHub OIDC for GCP](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-google-cloud-platform)
 
-My release gate can use protected environments if my repository plan supports the required controls. GitHub's availability depends on plan and repository visibility. If required reviewers are unavailable for my repository, I will use an explicitly authorized manual dispatch from a trusted branch with scoped deploy identity, rather than claiming an unavailable approval control exists. My solo-project review must not be represented as independent peer review. [GitHub deployment protection](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments)
+My release gate can use protected environments if my repository plan supports the required controls. GitHub's availability depends on plan and repository visibility.
+
+- If required reviewers are unavailable for my repository, I will use an explicitly authorized manual dispatch from a trusted branch with scoped deploy identity, rather than claiming an unavailable approval control exists.
+- My solo-project review must not be represented as independent peer review. [GitHub deployment protection](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments)
 
 Google's current Instance documentation confirms a distinct singleton resource and the `gcloud beta run instances deploy` path. I will validate the final pinned CLI and complete flags when building the pipeline. [Cloud Run Instance lifecycle](https://docs.cloud.google.com/run/docs/instances/create-and-manage-instances)
 
@@ -398,9 +412,14 @@ My exact runtime folders depend on the platform. Secrets, virtual environments, 
 
 ### Alignment with my detailed architecture
 
-ARCHITECTURE.md preserves this UI and skill proposal while specifying the enforceable boundaries. Its baseline permits one active gateway/scheduler writer, acknowledges durable memory only after a consistent Cloud Storage commit, and treats ambiguous external sends as uncertain rather than blindly retrying. All framework background writers and backup hooks need verification before implementation. Private-task hold applies throughout the model/tool turn; browser send denial and the content skill's lack of publishing capability remain code-level requirements.
+ARCHITECTURE.md preserves this UI and skill proposal while specifying the enforceable boundaries. Its baseline permits one active gateway/scheduler writer, acknowledges durable memory only after a consistent Cloud Storage commit, and treats ambiguous external sends as uncertain rather than blindly retrying.
 
-For the separate advanced-integration criterion, my architecture recommends publishing the original content skill through an allowed Hermes tap with a pinned artifact and clean-install/run evidence. This remains a choice for my review and needs separate publication authorization; A2A and three messaging services remain valid alternatives. The architecture's full requirement map includes these conditional branches and the non-runtime video/report/account obligations.
+- All framework background writers and backup hooks need verification before implementation. Private-task hold applies throughout the model/tool turn; browser send denial and the content skill's lack of publishing capability remain code-level requirements.
+
+For the separate advanced-integration criterion, my architecture recommends publishing the original content skill through an allowed Hermes tap with a pinned artifact and clean-install/run evidence.
+
+- This remains a choice for my review and needs separate publication authorization; A2A and three messaging services remain valid alternatives.
+- The architecture's full requirement map includes these conditional branches and the non-runtime video/report/account obligations.
 
 ## 11. My selected baseline and remaining decisions
 
@@ -420,15 +439,27 @@ I preserve G's detailed browser access procedure; Q01's older provisional GUI/Ta
 
 ### My provider and skill design refinement
 
-For eligible cloud work, I plan OpenAI first and NVIDIA only as bounded fallback. If the cloud chain is unavailable or deliberately rate-limited for the required demonstration, an eligible request can use local Gemma; private requests remain local or held. Each attempt records the actual model, routing reason and outcome. My OAuth proxy and optional API adapter implement this chain; live provider checks remain pending.
+For eligible cloud work, I plan OpenAI first and NVIDIA only as bounded fallback.
+
+- If the cloud chain is unavailable or deliberately rate-limited for the required demonstration, an eligible request can use local Gemma; private requests remain local or held.
+- Each attempt records the actual model, routing reason and outcome.
+- My OAuth proxy and optional API adapter implement this chain; live provider checks remain pending.
 
 My web-search skill calls Tavily directly with my own key; merely adding attribution around bundled search would not qualify under Q05. My README lists the integration and intended use of all four skills. I retain explicit approval for every synthetic email send and no social publishing capability.
 
 ## 12. Review record
 
-On November 16, 2026, I requested a rough UI/system design, sandbox-only development/testing, white-box and black-box tests, and a GitHub CI/CD plan. Codex drafted this proposal and synchronized my working agreement and requirements. The review checked assignment alignment, source links, requirement cross-references, planned-versus-completed wording, and the unchanged approval/filesystem boundaries. It did not execute application code, run tests, start Docker, inspect personal files, or configure external accounts.
+On November 16, 2026, I requested a rough UI/system design, sandbox-only development/testing, white-box and black-box tests, and a GitHub CI/CD plan.
 
-On the same day, I requested ongoing vulnerability tracking and a fourth skill for daily LinkedIn content. Codex replaced the earlier fourth-skill suggestion with LinkedIn Content Brief, documented the source/access limitations, added SECURITY_REGISTER.md and security release gates, and synchronized the project Markdown. No social account was accessed and no post, scanner, or runtime test was executed. My subsequent architecture request is now documented in ARCHITECTURE.md; the architecture remains proposed and awaits my review.
+- Codex drafted this proposal and synchronized my working agreement and requirements.
+- The review checked assignment alignment, source links, requirement cross-references, planned-versus-completed wording, and the unchanged approval/filesystem boundaries.
+- It did not execute application code, run tests, start Docker, inspect personal files, or configure external accounts.
+
+On the same day, I requested ongoing vulnerability tracking and a fourth skill for daily LinkedIn content.
+
+- Codex replaced the earlier fourth-skill suggestion with LinkedIn Content Brief, documented the source/access limitations, added SECURITY_REGISTER.md and security release gates, and synchronized the project Markdown.
+- No social account was accessed and no post, scanner, or runtime test was executed.
+- My subsequent architecture request is now documented in ARCHITECTURE.md; the architecture remains proposed and awaits my review.
 
 On November 16, 2026, I requested the complete architecture. Codex created ARCHITECTURE.md with five diagrams, per-component technology reasoning, interface/failure contracts and all 93 requirement mappings. This document now links to that detail and preserves the proposed-versus-approved distinction. My next checkpoint is architecture review and concrete implementation decisions; no runtime work has begun.
 
@@ -437,7 +468,3 @@ My repository follow-up adds a concise technology overview in ARCHITECTURE.md A1
 On November 16, 2026, I authorized the extracted-script review. Codex read all 19 unchanged files, verified archive identity and updated the UI, lifecycle, approval, storage and evidence plan. SCRIPT_REVIEW.md contains the adaptation order and planned tests; neither a browser nor a supplied script was run.
 
 The instructor clarification update applies Q01–Q14 to the active plan. Earlier review entries describe their original documentation milestone, not current implementation status.
-
-## My November 17 grader-access update
-
-I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.

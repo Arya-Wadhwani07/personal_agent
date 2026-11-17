@@ -1,14 +1,8 @@
-# My Grader Access Checklist
+# Monday — Grader Access
 
-## My November 17 regression and implementation update
+I use dedicated class-only accounts with made-up data. **Passwords, backup codes and the browser access key belong only in the prescribed private Brightspace comments.** They never belong in this repository, the ZIP or the video.
 
-I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **139 offline tests in 23.09 seconds**. The preceding coverage run measured **74% combined statement/branch coverage** in the test process; the new scheduler integration runs in a separate native subprocess. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper. Startup now reconciles my five managed native schedules while retaining execution history and pauses; duplicate managed names stop startup, and a missing owner pauses restored notification jobs. Alert sources run concurrently with a 30-second limit each, followed by a 55-second delivery budget. Cancellation marks an in-flight send unknown and leaves unattempted alerts pending; these limits cover network waits, not arbitrary local storage stalls.
-
-My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
-
-I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. My public tap was fetched at commit 5ba6fa6 and passed the native safety scan. A fresh isolated Hermes profile then used Gemma to execute the installed helper successfully; the first ambiguous invocation failed and the explicit helper-command retry passed. This standalone skill check served a 4,096-token context, so it does not replace my separate 65,536-token application check or required video. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
-
-I follow the professor's additional Q13/Q14 clarification and the supplied [CloudRunSettings.txt](../docs/Assignment3_local_Gemma_scripts/CloudRunSettings.txt). My existing ACCESS-01/02/03 and VIDEO requirements already cover these obligations; no new requirement IDs are needed.
+**Still to verify:** password-only account sign-in, final cloud URL, token validity through grading and the Zoom local-model demonstration. [Current evidence](IMPLEMENTATION_STATUS.md)
 
 ## My selected account path
 
@@ -20,13 +14,21 @@ I apply the same access rules to a separate calendar account if I use one. A Cal
 
 ## My OAuth validity check
 
-My consent app is currently in Testing. The professor specifies seven-day refresh-token expiry for this configuration. Before grading I either reauthorize shortly beforehand or review and explicitly approve an appropriate Production transition. I record the actual authorization time and expected validity privately, including the repeat check and regrade period. A successful refresh today is not proof of access throughout grading.
+My consent app is currently in Testing.
+
+- The professor specifies seven-day refresh-token expiry for this configuration.
+- Before grading I either reauthorize shortly beforehand or review and explicitly approve an appropriate Production transition.
+- I record the actual authorization time and expected validity privately, including the repeat check and regrade period.
+- A successful refresh today is not proof of access throughout grading.
 
 Account security changes can invalidate access, so I repeat the agent's refresh/calendar/email checks after any authorized account change. I do not change the submitted password afterward.
 
 ## My conditional App Password alternative
 
-Path 2 applies only if I change the integration to use a Google App Password. In that case, I retain 2-Step Verification, remove Google Authenticator if configured as the professor instructs, and submit at least four unused backup codes. Each code is single-use. A code consumed during my sign-in rehearsal is excluded, and I still need at least four unused codes for submission. Regenerating the set invalidates the previously submitted codes; I do not regenerate it or change the password after submission. Additional Google device checks can still interfere, which is why I selected OAuth/Path 1.
+Path 2 applies only if I change the integration to use a Google App Password. In that case, I retain 2-Step Verification, remove Google Authenticator if configured as the professor instructs, and submit at least four unused backup codes.
+
+- Each code is single-use.
+- A code consumed during my sign-in rehearsal is excluded, and I still need at least four unused codes for submission. Regenerating the set invalidates the previously submitted codes; I do not regenerate it or change the password after submission. Additional Google device checks can still interfere, which is why I selected OAuth/Path 1.
 
 ## My grader-style rehearsal
 

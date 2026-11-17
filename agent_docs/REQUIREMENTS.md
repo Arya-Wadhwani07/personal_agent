@@ -1,44 +1,33 @@
-# My Assignment 3 Requirements
+# Monday — Requirements
 
-## My federation and recovery correction — November 17
+I use this baseline to track **94 requirement, option and workflow IDs** against the assignment sources and rubric. Every ID and source reference remains part of the acceptance contract.
 
-My GitHub diagnostic confirmed an ID-qualified OIDC subject: `repo:Arya-Wadhwani07@77002960/personal_agent@1460469388:environment:production`. I corrected the Google provider's exact subject condition and verified its saved policy. Numeric owner/repository IDs, `main`, the production environment and the exact release workflow remain restricted. A fresh publish run still needs to prove authentication end to end; the previous run passed native build/tests/security checks before this identity mismatch stopped it.
+**Read first:** [Current evidence](IMPLEMENTATION_STATUS.md) · [Instructor clarifications](CLARIFICATIONS.md) · [Working agreement](AGENTS.md)
 
-My startup now fills missing native profile defaults after durable restore and before schedule/gateway startup. A preflight snapshot without a native workspace no longer leaves those defaults absent; saved preferences remain intact. The isolated, network-disabled regression suite passed **165 tests in 21.07 seconds**, including startup ordering and this restore case. My local Telegram cloud/local replies are confirmed. No Cloud Run Instance is running yet, and my 48-hour observation has not started. These results supersede older current-status claims below, while preserving their historical evidence.
+## On this page
 
-## My cloud and release checkpoint — November 17
-
-My latest offline regression run passed **157 tests in 24.33 seconds**. The preceding packaged-image run passed 147 tests in 18.88 seconds with patched SQLite. The updated local bot is running the hardened image and its public health check returns ready. My cloud architecture image and live deployment acceptance are still in progress; **the 48-hour observation has not started**.
-
-My project now has a private GCS bucket, Artifact Registry repository, dedicated runtime/release service accounts, a minimal Instance deployment role, and repository/owner-ID, branch, environment and workflow restricted GitHub federation. All ten cloud secret payloads are versioned in Secret Manager with per-secret access. CI reads the pinned private environment configuration without repository credentials. Google and Telegram credentials stay private.
-
-Real GCS tests under the runtime identity passed state restore, usage-quota restore and stale-writer rejection. Native Hermes cloud OAuth bootstrap, real token refresh and recovery into a fresh profile also passed. The local OAuth profile was not changed. Paid API-key inference remains disabled by a zero OpenAI quota; cloud configuration bounds Tavily to 50 basic searches and NVIDIA's fixed free developer-catalog endpoint to 20 attempts. Failed or uncertain requests consume quota before network I/O; quotas survive state restore. These limits do not turn Google budget alerts into a billing hard cap.
-
-My arm64 runtime scan has **zero release-blocking findings after evidence-based triage**, with 45 raw High package findings retained under eight expiring, profile-specific dispositions. SQLite 3.54.1, ACL 2.4.0 and patched Tailscale dependencies are built from pinned verified sources. The ACL upstream suite passed 14 tests with two expected NFS exclusions; its test harness uses Bash and accepts the container device cgroup's stronger EPERM denial. Removed mount/nsenter/infocmp entrypoints, absent systemd-homed/Archive::Tar components, verified Hermes WebSocket fixes, non-root execution, no effective capabilities, and enforced no-new-privileges support the remaining dispositions. Any unknown Critical/High, changed package version, expired disposition or failed runtime-profile check blocks the gate. This is not a claim that the scanner reports no vulnerabilities. The final amd64 image needs its own scan and profile proof.
-
-My $4 planning allocation and cloud identifiers are recorded in `config/cloud-plan.json`. At the checked Instance rates, 1 vCPU/2 GiB for 72 hours estimates $1.070496 in compute before other charges; I reserve $0.40 for 50 basic searches and $1 for storage/operations/secrets/other services. Availability beyond that window needs a fresh total-cost check. No billable Instance has been started yet. Deployment approval, live cloud-to-Mac inference, operational delivery evidence, the genuine 48-hour record, grader account sign-in, video and final submission evidence remain separate acceptance steps.
-
-Earlier dated checkpoints below preserve the development history; this checkpoint supersedes their current-status claims.
-
-## My November 17 regression and implementation update
-
-I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **139 offline tests in 23.09 seconds**. The preceding coverage run measured **74% combined statement/branch coverage** in the test process; the new scheduler integration runs in a separate native subprocess. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper. Startup now reconciles my five managed native schedules while retaining execution history and pauses; duplicate managed names stop startup, and a missing owner pauses restored notification jobs. Alert sources run concurrently with a 30-second limit each, followed by a 55-second delivery budget. Cancellation marks an in-flight send unknown and leaves unattempted alerts pending; these limits cover network waits, not arbitrary local storage stalls.
-
-My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
-
-I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. My public tap was fetched at commit 5ba6fa6 and passed the native safety scan. A fresh isolated Hermes profile then used Gemma to execute the installed helper successfully; the first ambiguous invocation failed and the explicit helper-command retry passed. This standalone skill check served a 4,096-token context, so it does not replace my separate 65,536-token application check or required video. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
-
-## My November 17 integration checkpoint
-
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private Gemma inference passed through an isolated Tailscale client, while an excluded tag was blocked. The separate cloud OAuth login is saved; cloud storage recovery and the actual Cloud Run path remain unverified. Published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
-
-Status: implementation is underway. [CLARIFICATIONS.md](CLARIFICATIONS.md) records the instructor excerpts as Q01–Q14; their interpretations are incorporated into my existing 94 requirement IDs. My cloud plan is Hermes OpenAI browser OAuth primary with NVIDIA NIM fallback, alongside local Gemma. Local OAuth integration is verified; deployed acceptance remains pending; actual evidence is tracked in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
-
-Last updated: November 17, 2026.
+- [1. Purpose and scope](#1-purpose-and-scope)
+- [2. Core architecture and hybrid routing](#2-core-architecture-and-hybrid-routing)
+- [3. Skills, messaging, and proactive behavior](#3-skills-messaging-and-proactive-behavior)
+- [4. Memory, deployment, and continuous operation](#4-memory-deployment-and-continuous-operation)
+- [5. Security and data restrictions](#5-security-and-data-restrictions)
+- [6. Advanced integration: choose one for the base 10%](#6-advanced-integration-choose-one-for-the-base-10)
+- [7. Platform-specific grader access](#7-platform-specific-grader-access)
+- [8. Video requirements and exact demonstration sequence](#8-video-requirements-and-exact-demonstration-sequence)
+- [9. Submission, reports, and academic integrity](#9-submission-reports-and-academic-integrity)
+- [10. Rubric coverage](#10-rubric-coverage)
+- [11. Source precedence, ambiguities, and recommendations](#11-source-precedence-ambiguities-and-recommendations)
+- [12. Project workflow and verification plan](#12-project-workflow-and-verification-plan)
+- [13. Source coverage and second-pass review](#13-source-coverage-and-second-pass-review)
+- [14. Decisions and proposed next steps](#14-decisions-and-proposed-next-steps)
+- [Change history](#change-history)
 
 ## 1. Purpose and scope
 
-My project is a proactive personal AI assistant using **Hermes or OpenClaw**, hosted on **Google Cloud Run Instances**, with a cloud LLM and **local Gemma 4 through Ollama on my hardware**, connected through **Tailscale**. The assistant integrates messaging, tools, persistent memory, and autonomous scheduled/event-driven behavior. The assignment provides the project concept, while the synthetic persona, integrations, and feature details are mine to choose. [D pp. 1-4]
+My project is a proactive personal AI assistant using **Hermes or OpenClaw**, hosted on **Google Cloud Run Instances**, with a cloud LLM and **local Gemma 4 through Ollama on my hardware**, connected through **Tailscale**.
+
+- The assistant integrates messaging, tools, persistent memory, and autonomous scheduled/event-driven behavior.
+- The assignment provides the project concept, while the synthetic persona, integrations, and feature details are mine to choose. [D pp. 1-4]
 
 I use this document to track assignment obligations, conditional options, source conflicts, acceptance evidence, and my workflow constraints. The acceptance column describes the required final evidence; the implementation status records which checks have actually run. A local or mocked result does not satisfy a deployed-service criterion.
 
@@ -59,7 +48,10 @@ Page references use physical PDF pages, counted from 1. Archive paths are relati
 
 Classification: **Required** applies to everyone; **Conditional** applies to a selected platform, integration, claim, or accommodation; **Choose** identifies a required choice among alternatives; **Recommended** is source guidance rather than an added grading floor; **Optional** is elective; **User** is a project workflow constraint.
 
-The assignment-specific platform versions, model examples, and prices remain source guidance rather than live guarantees. The rough design separately cites official documentation checked for container/virtual-environment boundaries, Telegram interactions, GitHub deployment controls, and Cloud Run Instances. Before implementation, I will verify the exact selected versions and accounts; the design review does not establish that my environment works.
+The assignment-specific platform versions, model examples, and prices remain source guidance rather than live guarantees.
+
+- The rough design separately cites official documentation checked for container/virtual-environment boundaries, Telegram interactions, GitHub deployment controls, and Cloud Run Instances.
+- Before implementation, I will verify the exact selected versions and accounts; the design review does not establish that my environment works.
 
 ## 2. Core architecture and hybrid routing
 
@@ -225,7 +217,11 @@ If I choose ADV-03, I will show the applications side by side on my recorded des
 3. Service 3: `Which app did I tell you about Bluebird on?` Expected: service 1.
 4. On each additional service I claim, I will repeat the service-2 question.
 
-Before recording, I will check that my cloud agent answers in Chrome, my laptop is awake/powered with Ollama and Tailscale available, authorization is fresh, the log query works, messaging is on the recorded desktop, and no secrets are visible. My alert needs to arrive during steps 13-15; the guide suggests creating a meeting about 35-40 minutes before recording for a 30-minute reminder. My rehearsal will cover job run-now and local-off/on detection. The guide's approximate 30-second health detection and 45-second model load are examples, not performance SLAs. [G pp. 24-29]
+Before recording, I will check that my cloud agent answers in Chrome, my laptop is awake/powered with Ollama and Tailscale available, authorization is fresh, the log query works, messaging is on the recorded desktop, and no secrets are visible.
+
+- My alert needs to arrive during steps 13-15; the guide suggests creating a meeting about 35-40 minutes before recording for a 30-minute reminder.
+- My rehearsal will cover job run-now and local-off/on detection.
+- The guide's approximate 30-second health detection and 45-second model load are examples, not performance SLAs. [G pp. 24-29]
 
 ## 9. Submission, reports, and academic integrity
 
@@ -367,7 +363,10 @@ The PDFs specify no universal throughput, latency percentile, stress duration, t
 
 ## 13. Source coverage and second-pass review
 
-My source review with Codex covered all **103 PDF pages**, which were text-extracted and read. The image-based Zoom/device instructions and rubric table were additionally rendered and visually inspected. All **19 archive files** were read without execution, including the `.env` template and `.hujson` access-policy example. PDF line wrapping was not treated as executable source syntax; Z provides intact script counterparts.
+My source review with Codex covered all **103 PDF pages**, which were text-extracted and read.
+
+- The image-based Zoom/device instructions and rubric table were additionally rendered and visually inspected.
+- All **19 archive files** were read without execution, including the `.env` template and `.hujson` access-policy example. PDF line wrapping was not treated as executable source syntax; Z provides intact script counterparts.
 
 | Source sections | Coverage in this baseline | Review status |
 | --- | --- | --- |
@@ -391,11 +390,16 @@ My source review with Codex covered all **103 PDF pages**, which were text-extra
 | R pp. 17-23: deployment, verification, mistakes/references | OPS, test plan, guidance | Read and cross-checked; optional status preserved. |
 | Z: `CloudRunSettings.txt`; Hermes 9 files; OpenClaw 9 files | ACCESS, HERMES, OPENCLAW, VIDEO, source attribution | All 19 read; no scripts executed or installed. |
 
-Second-pass checks retained minimum counts/durations, seven rubric weights, all six feature options, three advanced options, both access branches and exact video requirements. Q01–Q14 now resolve cloud authentication, local-credit, skill, resource, observation and grading-restart issues; packaging remains open. The original source review verified SHA-256 integrity. This update uses the supplied Q&A and existing extracted baseline, not a fresh PDF extraction.
+Second-pass checks retained minimum counts/durations, seven rubric weights, all six feature options, three advanced options, both access branches and exact video requirements. Q01–Q14 now resolve cloud authentication, local-credit, skill, resource, observation and grading-restart issues; packaging remains open.
+
+- The original source review verified SHA-256 integrity.
+- This update uses the supplied Q&A and existing extracted baseline, not a fresh PDF extraction.
 
 ## 14. Decisions and proposed next steps
 
-I selected Hermes, Telegram, Gmail, a dedicated Google Calendar, local Gemma 4 E2B and the LinkedIn Content Brief workflow. Hermes OpenAI browser OAuth is my primary-cloud choice with NVIDIA fallback; exact model IDs and live migration verification remain open. Briefing, recap, email integration and proactive alerts are my four-feature plan. Skill publication remains the proposed advanced integration and needs separate approval/evidence.
+I selected Hermes, Telegram, Gmail, a dedicated Google Calendar, local Gemma 4 E2B and the LinkedIn Content Brief workflow.
+
+- Hermes OpenAI browser OAuth is my primary-cloud choice with NVIDIA fallback; exact model IDs and live migration verification remain open. Briefing, recap, email integration and proactive alerts are my four-feature plan. Skill publication remains the proposed advanced integration and needs separate approval/evidence.
 
 My next steps are to migrate/test the final provider chain, connect class-only accounts/private networking, verify state/security/scheduling/access, and collect final-model logs and video. Q07–Q11 govern observation, changes and restarts. The November 17, 11:59 PM deadline remains confirmed; timezone/grace balance and MP4 packaging still need confirmation.
 
@@ -420,9 +424,14 @@ Source checks cover the five PDFs, ZIP and 19 extracted files without execution.
 
 My repository destination is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent); routine commits/pushes are authorized under USER-15. The architecture's [technology appendix](ARCHITECTURE.md#a17-appendix--technology-and-development-stack-overview) gives a shorter explanation of the development/runtime stack, while A2 retains the tradeoffs and references.
 
-The current cross-check retains every previously captured assignment requirement, all seven rubric categories, the six-feature menu, three advanced-integration options, both access branches, video/report/account obligations, and the 48-hour window. No new missing source obligation was identified against the existing 103-page/19-file baseline. This is a baseline-to-design review, not a new extraction of the PDFs or a claim that implementation is complete.
+The current cross-check retains every previously captured assignment requirement, all seven rubric categories, the six-feature menu, three advanced-integration options, both access branches, video/report/account obligations, and the 48-hour window.
 
-The remaining work includes cloud-provider migration, exact models and remaining account verification, complete persistence/networking/scheduling, repository protections and CI execution, latest-source security checks, live integrations, reports/video and genuine operating evidence. Packaging, timezone/grace balance and the unanswered fallback-only question remain open. Local implementation and tests are recorded in IMPLEMENTATION_STATUS.md. The 19-file starter review remains unchanged; originals have not been executed or modified.
+- No new missing source obligation was identified against the existing 103-page/19-file baseline.
+- This is a baseline-to-design review, not a new extraction of the PDFs or a claim that implementation is complete.
+
+The remaining work includes cloud-provider migration, exact models and remaining account verification, complete persistence/networking/scheduling, repository protections and CI execution, latest-source security checks, live integrations, reports/video and genuine operating evidence. Packaging, timezone/grace balance and the unanswered fallback-only question remain open. Local implementation and tests are recorded in IMPLEMENTATION_STATUS.md.
+
+- The 19-file starter review remains unchanged; originals have not been executed or modified.
 
 ## Change history
 
@@ -440,8 +449,7 @@ The remaining work includes cloud-provider migration, exact models and remaining
 
 ### Instructor clarification update
 
-On November 16, I supplied Q01–Q14 and requested OpenAI/Claude primary with NVIDIA fallback. I retained all 94 IDs while revising cloud authentication, local-credit requirements, skill eligibility, resource sizing, final-model evidence and grading restarts. My later instruction selects supported Hermes OpenAI browser OAuth. Offline routing tests and browser sign-in passed; final evidence remains pending. Instructor/endorsed answers were reviewed separately from anecdotes and unresolved questions.
+On November 16, I supplied Q01–Q14 and requested OpenAI/Claude primary with NVIDIA fallback.
 
-## My November 17 grader-access update
-
-I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
+- I retained all 94 IDs while revising cloud authentication, local-credit requirements, skill eligibility, resource sizing, final-model evidence and grading restarts.
+- My later instruction selects supported Hermes OpenAI browser OAuth. Offline routing tests and browser sign-in passed; final evidence remains pending. Instructor/endorsed answers were reviewed separately from anecdotes and unresolved questions.

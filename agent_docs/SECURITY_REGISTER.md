@@ -1,50 +1,49 @@
-# My Security Risk and Finding Register
+# Monday — Security Register
 
-## My federation and recovery correction — November 17
+I track design risks, observed findings and verified fixes separately. **The current native image gate passed; live deployed security acceptance is still pending.** A passing scoped gate is not a guarantee that no vulnerabilities exist.
 
-My GitHub diagnostic confirmed an ID-qualified OIDC subject: `repo:Arya-Wadhwani07@77002960/personal_agent@1460469388:environment:production`. I corrected the Google provider's exact subject condition and verified its saved policy. Numeric owner/repository IDs, `main`, the production environment and the exact release workflow remain restricted. A fresh publish run still needs to prove authentication end to end; the previous run passed native build/tests/security checks before this identity mismatch stopped it.
+**Current baseline:** patched SQLite/ACL/Tailscale dependencies, non-root execution, no effective capabilities, no-new-privileges and exact-version dispositions expiring November 24. [Current evidence](IMPLEMENTATION_STATUS.md) · [Disposition file](../config/image-dispositions.json)
 
-My startup now fills missing native profile defaults after durable restore and before schedule/gateway startup. A preflight snapshot without a native workspace no longer leaves those defaults absent; saved preferences remain intact. The isolated, network-disabled regression suite passed **165 tests in 21.07 seconds**, including startup ordering and this restore case. My local Telegram cloud/local replies are confirmed. No Cloud Run Instance is running yet, and my 48-hour observation has not started. These results supersede older current-status claims below, while preserving their historical evidence.
+Earlier finding narratives below retain their discovery context. The latest disposition/retest record controls their present status.
 
-## My cloud and release checkpoint — November 17
+## On this page
 
-My latest offline regression run passed **157 tests in 24.33 seconds**. The preceding packaged-image run passed 147 tests in 18.88 seconds with patched SQLite. The updated local bot is running the hardened image and its public health check returns ready. My cloud architecture image and live deployment acceptance are still in progress; **the 48-hour observation has not started**.
+- [Current finding summary](#current-finding-summary)
+- [My security standard](#my-security-standard)
+- [What I track](#what-i-track)
+- [My initial risk backlog](#my-initial-risk-backlog)
+- [Alignment with my architecture](#alignment-with-my-architecture)
+- [Repository boundary and history](#repository-boundary-and-history)
+- [Original starter findings — discovery record](#original-starter-findings--discovery-record)
+- [My security check record](#my-security-check-record)
+- [How I keep the record current](#how-i-keep-the-record-current)
+- [Review history](#review-history)
+- [My clarification-driven controls](#my-clarification-driven-controls)
+- [Earlier November 17 findings — before the hardened image](#earlier-november-17-findings--before-the-hardened-image)
+- [My reviewed image dispositions](#my-reviewed-image-dispositions)
 
-My project now has a private GCS bucket, Artifact Registry repository, dedicated runtime/release service accounts, a minimal Instance deployment role, and repository/owner-ID, branch, environment and workflow restricted GitHub federation. All ten cloud secret payloads are versioned in Secret Manager with per-secret access. CI reads the pinned private environment configuration without repository credentials. Google and Telegram credentials stay private.
+## Current finding summary
 
-Real GCS tests under the runtime identity passed state restore, usage-quota restore and stale-writer rejection. Native Hermes cloud OAuth bootstrap, real token refresh and recovery into a fresh profile also passed. The local OAuth profile was not changed. Paid API-key inference remains disabled by a zero OpenAI quota; cloud configuration bounds Tavily to 50 basic searches and NVIDIA's fixed free developer-catalog endpoint to 20 attempts. Failed or uncertain requests consume quota before network I/O; quotas survive state restore. These limits do not turn Google budget alerts into a billing hard cap.
+| Finding | Current outcome | Remaining limit |
+| --- | --- | --- |
+| VULN-001: proxy resource bounds | Replacement API limits and overload/recovery tests passed. | Actual deployed limits still need acceptance. |
+| VULN-002: unsafe logs/errors | Structured allowlisted audit fields and sanitized-error tests passed. | Inspect native/cloud logs after deployment. |
+| VULN-003: old SQLite baseline | Hardened image uses SQLite 3.54.1; state/recovery tests passed. | Complete real Instance restart acceptance. |
+| VULN-004: project/budget authorization | Exact project and finite approved-budget checks passed. | Billing tracking is not a hard spending cap. |
+| VULN-005: OS image findings | SQLite/ACL patched; remaining exact-version findings have tested profile-specific dispositions. | Dispositions expire November 24; raw findings remain visible. |
+| VULN-006/008: container Go dependencies | Verified-source Tailscale build updates x/net, x/crypto and compress; image gate passed. | Mac Tailscale installation is unchanged. |
+| VULN-007: late UI response after sign-out | Session/key check and delayed-response browser regression passed. | Deployed browser acceptance remains. |
 
-My arm64 runtime scan has **zero release-blocking findings after evidence-based triage**, with 45 raw High package findings retained under eight expiring, profile-specific dispositions. SQLite 3.54.1, ACL 2.4.0 and patched Tailscale dependencies are built from pinned verified sources. The ACL upstream suite passed 14 tests with two expected NFS exclusions; its test harness uses Bash and accepts the container device cgroup's stronger EPERM denial. Removed mount/nsenter/infocmp entrypoints, absent systemd-homed/Archive::Tar components, verified Hermes WebSocket fixes, non-root execution, no effective capabilities, and enforced no-new-privileges support the remaining dispositions. Any unknown Critical/High, changed package version, expired disposition or failed runtime-profile check blocks the gate. This is not a claim that the scanner reports no vulnerabilities. The final amd64 image needs its own scan and profile proof.
-
-My $4 planning allocation and cloud identifiers are recorded in `config/cloud-plan.json`. At the checked Instance rates, 1 vCPU/2 GiB for 72 hours estimates $1.070496 in compute before other charges; I reserve $0.40 for 50 basic searches and $1 for storage/operations/secrets/other services. Availability beyond that window needs a fresh total-cost check. No billable Instance has been started yet. Deployment approval, live cloud-to-Mac inference, operational delivery evidence, the genuine 48-hour record, grader account sign-in, video and final submission evidence remain separate acceptance steps.
-
-Earlier dated checkpoints below preserve the development history; this checkpoint supersedes their current-status claims.
-
-## My November 17 regression and implementation update
-
-I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **139 offline tests in 23.09 seconds**. The preceding coverage run measured **74% combined statement/branch coverage** in the test process; the new scheduler integration runs in a separate native subprocess. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper. Startup now reconciles my five managed native schedules while retaining execution history and pauses; duplicate managed names stop startup, and a missing owner pauses restored notification jobs. Alert sources run concurrently with a 30-second limit each, followed by a 55-second delivery budget. Cancellation marks an in-flight send unknown and leaves unattempted alerts pending; these limits cover network waits, not arbitrary local storage stalls.
-
-My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
-
-I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. My public tap was fetched at commit 5ba6fa6 and passed the native safety scan. A fresh isolated Hermes profile then used Gemma to execute the installed helper successfully; the first ambiguous invocation failed and the explicit helper-command retry passed. This standalone skill check served a 4,096-token context, so it does not replace my separate 65,536-token application check or required video. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
-
-## My November 17 integration checkpoint
-
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private Gemma inference passed through an isolated Tailscale client, while an excluded tag was blocked. The separate cloud OAuth login is saved; cloud storage recovery and the actual Cloud Run path remain unverified. Published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
-
-Status: implementation review is underway. My application source and dependency lock now exist; isolated policy/API tests and initial static/dependency scans have run. The initial dependency scan found no known advisories in its resolved scope; subsequent dependency changes require a fresh scan. Three initial static alerts were reviewed: fixed HTTPS bootstrap URL, empty OAuth cache value, and intentional container ingress binding. These are scoped configurations, not evidence that all vulnerabilities are absent. Current verification is in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
-
-**VULN-003 — SQLite WAL-reset risk (mitigated in code; closure review pending):** The container links SQLite 3.40.1. Hermes warned that WAL mode is affected by the [SQLite WAL-reset issue](https://sqlite.org/wal.html#walresetbug). I changed my custom database to rollback journaling, matching Hermes's own fallback. No corruption was observed. Concurrent-write, snapshot and restart-related tests passed in the recorded suite. Final image/version/mode verification and closure evidence remain required; the finding is not marked closed.
-
-Last updated: November 17, 2026.
-
-My register supports [REQUIREMENTS.md](REQUIREMENTS.md), especially SEC-01 through SEC-08 and USER-13, and the controls proposed in [DESIGN.md](DESIGN.md) and [ARCHITECTURE.md](ARCHITECTURE.md). It will supply evidence for my final security audit rather than replace that deliverable. My working boundaries remain in [AGENTS.md](AGENTS.md).
+[Native release gate evidence](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44166861878) · [Earlier discovery records](HISTORY.md)
 
 ## My security standard
 
 I want to prevent vulnerabilities throughout development and catch problems before anyone uses the agent. My release target is **no known unresolved release-blocking vulnerabilities**, supported by current review, scans, and behavioral tests. A clean scanner result cannot guarantee that every vulnerability has been found.
 
-My release gate blocks unresolved Critical/High findings, exposed live credentials, authentication or authorization bypass, uncontrolled email/social publishing, unintended public inference access, and violations of my sandbox boundary. These behavior-based blockers apply even if a scanner rates them lower. An untriaged scanner result is not a pass; failed, unavailable, stale, or incomplete required checks also block the security gate until resolved.
+My release gate blocks unresolved Critical/High findings, exposed live credentials, authentication or authorization bypass, uncontrolled email/social publishing, unintended public inference access, and violations of my sandbox boundary.
+
+- These behavior-based blockers apply even if a scanner rates them lower.
+- An untriaged scanner result is not a pass; failed, unavailable, stale, or incomplete required checks also block the security gate until resolved.
 
 Any lower-severity residual risk needs my explicit documented decision, rationale, compensating control, owner, and review/expiry date. It remains visible in the final audit. This process must never waive an assignment requirement or relabel an unfixed release blocker as safe. The deadline does not change this standard.
 
@@ -95,13 +94,21 @@ The architecture review highlights implementation gates within existing risks: R
 
 ## Repository boundary and history
 
-My approved repository destination is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent). Routine commits/pushes do not relax secret handling or the release gate. For the initial baseline, only project-authored documentation and .gitignore are staged; course PDFs, archives, extracted starter files, credentials, private state and generated outputs stay out of Git. Repository visibility/protections must be verified before application-source publication.
+My approved repository destination is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent). Routine commits/pushes do not relax secret handling or the release gate.
 
-My pre-commit review checks explicit paths, content/diff and applicable verification results. This manual documentation/staging review is not an automated secret scan or a passing application-security assessment. Future scanners need to cover the actual source/history and exact candidate artifacts. A leaked secret already committed would require authorized revocation/rotation and a coordinated remediation decision; ignoring or deleting the file alone would not erase history.
+- For the initial baseline, only project-authored documentation and .gitignore are staged; course PDFs, archives, extracted starter files, credentials, private state and generated outputs stay out of Git. Repository visibility/protections must be verified before application-source publication.
 
-## My observed findings
+My pre-commit review checks explicit paths, content/diff and applicable verification results.
 
-I recorded two statically observed findings in the unmodified Hermes starter, not a deployed application. Both were identified in the starter; my replacement application now has scoped mitigation and regression evidence, while deployed acceptance remains pending. I own remediation decisions with Codex assisting; the target is resolution/review before adopting this proxy in an exposed application. No CVE is asserted, no automated scanner/database version applies, and neither finding has a fix commit, regression result or closure evidence yet.
+- This manual documentation/staging review is not an automated secret scan or a passing application-security assessment. Future scanners need to cover the actual source/history and exact candidate artifacts.
+- A leaked secret already committed would require authorized revocation/rotation and a coordinated remediation decision; ignoring or deleting the file alone would not erase history.
+
+## Original starter findings — discovery record
+
+I recorded two statically observed findings in the unmodified Hermes starter, not a deployed application. Both were identified in the starter; my replacement application now has scoped mitigation and regression evidence, while deployed acceptance remains pending.
+
+- I own remediation decisions with Codex assisting; the target is resolution/review before adopting this proxy in an exposed application.
+- No CVE is asserted, no automated scanner/database version applies, and neither finding has a fix commit, regression result or closure evidence yet.
 
 The common source artifact is `docs/Assignment3_local_Gemma_scripts/Hermes/web_ui.py`, SHA-256 `5730d4e2e6152ce276b16c2b98f8a3fda48019a8b594fc016618645d8e068e2b`, byte-identical to the ZIP member on November 16, 2026. [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md) records archive identity and the scope. Sources remain local and unchanged.
 
@@ -138,13 +145,18 @@ Broad proxy routing, incomplete approval hooks, default-green health and daemon 
 | Black-box | Isolated API and Chromium auth/plain-text rendering/overload checks passed; model replies mocked. | Live cloud/messaging/account and complete injection evaluation remain pending. |
 | Release gate | Not eligible for release. | Required live checks, open findings and exact final artifact evidence remain incomplete. |
 
-My tool selection will match the platform and repository plan. GitHub can surface code-scanning results from CodeQL or compatible third-party tools, but feature availability and licensing must be checked for my repository. If a hosted feature is unavailable, I need an approved equivalent scanner/reporting path rather than silently skipping the check. [GitHub code scanning](https://docs.github.com/en/code-security/concepts/code-scanning/code-scanning), [GitHub security availability](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security)
+My tool selection will match the platform and repository plan. GitHub can surface code-scanning results from CodeQL or compatible third-party tools, but feature availability and licensing must be checked for my repository.
+
+- If a hosted feature is unavailable, I need an approved equivalent scanner/reporting path rather than silently skipping the check. [GitHub code scanning](https://docs.github.com/en/code-security/concepts/code-scanning/code-scanning), [GitHub security availability](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security)
 
 ## How I keep the record current
 
 Each approved implementation change includes a security review of affected paths and updates this register when risks, findings, controls, or evidence change. Before merge/release, applicable checks must cover the candidate artifact. A periodic advisory recheck can produce new findings even without code changes; its schedule and network access need approval during implementation.
 
-If a live credential is exposed, my first remediation decision is revocation/rotation through an authorized account operation, followed by removing the exposure and retesting; deleting a string alone does not invalidate it. An incident during the observation/grading freeze comes back to me for a documented containment/fix decision. The freeze must not be used to hide a vulnerability, and any interruption remains part of the uptime evidence.
+If a live credential is exposed, my first remediation decision is revocation/rotation through an authorized account operation, followed by removing the exposure and retesting; deleting a string alone does not invalidate it.
+
+- An incident during the observation/grading freeze comes back to me for a documented containment/fix decision.
+- The freeze must not be used to hide a vulnerability, and any interruption remains part of the uptime evidence.
 
 ## Review history
 
@@ -165,29 +177,7 @@ I keep the instructor rulings in [CLARIFICATIONS.md](CLARIFICATIONS.md) separate
 - **Evidence integrity:** Final primary-model changes require new logs/video. Minor non-model fixes retain Q10's observation exemption but still require affected security/regression checks and an honest change/outage record. Unanswered fallback-only questions do not create a waiver.
 - **Topology:** One Instance with an internal broker preserves the documented deployment path. I do not copy separate-Service IAM recipes into Instance configuration without verifying the actual architecture.
 
-## My November 17 grader-access update
-
-I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
-
-### VULN-004 — release authorization did not bind project and budget
-
-- **Discovery/owner:** November 17, 2026, Codex-assisted review of `scripts/deploy.py`; I own the release decision. Related risks: RISK-07/10.
-- **Affected artifact:** Published checkpoint `7006869`. The script accepted any syntactically valid project and any float greater than zero, without matching `config/release.json`'s approved project or $4 ceiling. NaN/infinite values could bypass the intended numeric check.
-- **Severity/exposure:** Medium authorization/control defect in a manually invoked release workflow. The separate readiness gate was false; no deployment or unauthorized spending occurred.
-- **Remediation:** Exact project match, finite decimal budget within the reviewed ceiling, and literal boolean readiness. These checks do not impose a provider-side billing cap.
-- **Verification:** All 19 release tests passed, including a different valid project/image, excessive/invalid/non-finite budgets and invalid readiness. Ruff and Bandit passed for the modified code. Source remediation is verified; final commit and CI evidence follow the reviewed checkpoint.
-
-### My owned-tailnet setup boundary
-
-I confirmed the Mac is online in my own tailnet, with administrator capability. The university tailnet policy is untouched. The restrictive policy passed inspection, validation and isolated positive/negative connection checks. The temporary token stayed out of application configuration and has been revoked; a retry returned 401 and its local file was cleared. The actual Cloud Run path remains unverified. My Google Cloud login is isolated in project-local configuration; read-only project/billing checks passed without provisioning.
-
-### My private-network verification and OAuth recovery review
-
-The first negative network probe ran on the same host as the Tailscale endpoint and received an unexpected HTTP response. I did not count it as passing isolation evidence. Serve was paused while I corrected the test boundary. On an internal Docker network, both clients proved direct host access was blocked; only Tailscale's public HTTPS control/relay destinations were reachable through a temporary proxy. The permitted tag completed synthetic inference and the excluded tag was blocked. Test nodes/keys/proxy/network were cleaned up, while the restricted private forwarder remains enabled. No public Funnel or broad LAN Ollama listener was configured.
-
-The cloud OAuth persistence gap is now addressed in source by a separate, bounded private credential object and generation-conditional refresh intent. A pending refresh cannot silently fall back to the old bootstrap. Tests cover stale/concurrent writers, native aliases, interruption, a failed post-rotation write, cross-profile refusal and an inference gate when recovery is unresolved. The adapter is tied to pinned Hermes entry points; framework upgrades require retesting. Its bootstrap and rotating object contain live credentials, so private bucket/secret IAM and live recovery remain release blockers. A clean offline suite does not establish those deployed controls.
-
-## My November 17 findings and retests
+## Earlier November 17 findings — before the hardened image
 
 - **VULN-001 (application mitigation verified; deployed bounds pending):** My replacement ASGI boundary caps request/response sizes, in-flight requests and body-read time. tests/test_api.py now checks oversized chunked requests, oversized upstream responses, a slow body releasing its slot, overload and recovery. My bounded load probe requires every recovery request to succeed. I preserve the original starter unchanged.
 - **VULN-002 (application mitigation verified; live logging pending):** My replacement emits JSON-serialized allowlisted audit fields and sanitized service errors. tests/test_audit.py rejects prompt fields and verifies escaped control characters; tests/test_api.py proves a synthetic private upstream error is absent from the public response. Routing tests check prompt/credential exclusion. Native/cloud log review remains a separate acceptance check.
@@ -198,27 +188,48 @@ The cloud OAuth persistence gap is now addressed in source by a separate, bounde
 - **Scanner metadata review (not a waiver):** Hermes source is pinned and archive-verified at v0.22.7, while its upstream distribution metadata intentionally says 0.0.0. The scanner consequently reports older Hermes advisories, including duplicate CVE-2026-53869 entries with fixed version 0.16.0. These need source-version applicability records; I have not blanket-ignored future Hermes findings.
 - **Secret check:** An exact-value comparison against configured credentials found zero matches across 69 source/Markdown/skill files and all Git history. My first scanner attempt misclassified Google's public token_uri endpoint as a secret; excluding public OAuth endpoint metadata removed that false positive. This is a scoped check, not proof about every possible secret format or final submission artifact.
 
-My release remains blocked by VULN-005/006 and incomplete deployed checks. The runtime-vulnerability CI workflow uses a pinned scanner and exits unsuccessfully on High/Critical findings without suppressions. The dependency scan's clean result cannot override the image result. [Trivy image scanning](https://trivy.dev/docs/latest/guide/references/configuration/cli/trivy_image/), [Debian SQLite advisory](https://security-tracker.debian.org/tracker/CVE-2025-7458), [Debian MiniZip applicability notes](https://security-tracker.debian.org/tracker/CVE-2023-45853).
+At that earlier checkpoint, VULN-005/006 and incomplete deployed checks blocked release.
+
+- The current outcomes are summarized above.
+- The current gate retains raw findings and fails on unknown findings, profile drift or expired exact-version dispositions.
+- The dependency scan's clean result cannot override the image result. [Trivy image scanning](https://trivy.dev/docs/latest/guide/references/configuration/cli/trivy_image/), [Debian SQLite advisory](https://security-tracker.debian.org/tracker/CVE-2025-7458), [Debian MiniZip applicability notes](https://security-tracker.debian.org/tracker/CVE-2023-45853).
 
 
 ### My image applicability investigation
 
-I inspected the scanned runtime without a network, as UID 10001 with effective capabilities zero and no-new-privileges enabled. The image has no systemd-homed binary and no Archive/Tar.pm under the installed Perl library tree. The systemd and Perl package findings therefore need component-level applicability records; these observations do not waive the other package findings. Debian identifies the Perl issue as Archive::Tar allocation from an untrusted tar size. [Debian Perl advisory](https://security-tracker.debian.org/tracker/CVE-2026-9538)
+I inspected the scanned runtime without a network, as UID 10001 with effective capabilities zero and no-new-privileges enabled.
 
-The image still contains mount/nsenter and SQLite 3.46.1. Lack of mount privileges limits the local mount attack paths in the inspected sandbox, but I have not treated that as proof for a future cloud configuration. The SQLite FTS5 advisory concerns a corrupted database index; native Hermes also uses SQLite, so I cannot dismiss it merely because my custom queries are parameterized. No CVE suppression or release exception was added. [Debian SQLite advisory](https://security-tracker.debian.org/tracker/CVE-2026-119374)
+- The image has no systemd-homed binary and no Archive/Tar.pm under the installed Perl library tree.
+- The systemd and Perl package findings therefore need component-level applicability records; these observations do not waive the other package findings. Debian identifies the Perl issue as Archive::Tar allocation from an untrusted tar size. [Debian Perl advisory](https://security-tracker.debian.org/tracker/CVE-2026-9538)
+
+The image still contains mount/nsenter and SQLite 3.46.1. Lack of mount privileges limits the local mount attack paths in the inspected sandbox, but I have not treated that as proof for a future cloud configuration.
+
+- The SQLite FTS5 advisory concerns a corrupted database index; native Hermes also uses SQLite, so I cannot dismiss it merely because my custom queries are parameterized.
+- No CVE suppression or release exception was added. [Debian SQLite advisory](https://security-tracker.debian.org/tracker/CVE-2026-119374)
 
 
 ### My symbol-level Tailscale follow-up
 
-On November 17 I used pinned govulncheck v1.9.0 in a disposable Go 1.27 container to inspect the exact Linux arm64 Tailscale 1.104.7 binaries from my pinned image. The scanner reported its database last modified November 11. For GO-2026-6860 / CVE-2026-78661 it reported the module version but no affected HTML-parser package/function. This narrows VULN-006 for these artifacts; it does not establish the status of the future amd64 deployment or the Mac app. I added no blanket CVE suppression. [Go advisory](https://pkg.go.dev/vuln/GO-2026-6860), [scanner scope](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)
+On November 17 I used pinned govulncheck v1.9.0 in a disposable Go 1.27 container to inspect the exact Linux arm64 Tailscale 1.104.7 binaries from my pinned image.
 
-**VULN-008 (High, open, release blocking):** The same scan found affected fse/huff0 functions from github.com/klauspost/compress v1.20.0 in both binaries. GO-2026-6865 / CVE-2026-116591 describes crafted compressed input causing a decoder panic; upstream lists v1.20.2 as patched and classifies it High. Symbol presence is not proof that the untrusted-input path is reachable in my deployment, but I cannot mark this component clean. I own upstream-version or reachability review and retesting before release. Reports remain private under .cache/audit/go/. I did not execute a crash payload, modify the installed Mac app, or deploy these binaries. [Upstream advisory](https://github.com/klauspost/compress/security/advisories/GHSA-fpmh-frq8-7rj8)
+- The scanner reported its database last modified November 11.
+- For GO-2026-6860 / CVE-2026-78661 it reported the module version but no affected HTML-parser package/function.
+- This narrows VULN-006 for these artifacts; it does not establish the status of the future amd64 deployment or the Mac app.
+- I added no blanket CVE suppression. [Go advisory](https://pkg.go.dev/vuln/GO-2026-6860), [scanner scope](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)
+
+**VULN-008 (High, open, release blocking):** The same scan found affected fse/huff0 functions from github.com/klauspost/compress v1.20.0 in both binaries. GO-2026-6865 / CVE-2026-116591 describes crafted compressed input causing a decoder panic; upstream lists v1.20.2 as patched and classifies it High. Symbol presence is not proof that the untrusted-input path is reachable in my deployment, but I cannot mark this component clean.
+
+- I own upstream-version or reachability review and retesting before release. Reports remain private under .cache/audit/go/.
+- I did not execute a crash payload, modify the installed Mac app, or deploy these binaries. [Upstream advisory](https://github.com/klauspost/compress/security/advisories/GHSA-fpmh-frq8-7rj8)
 
 ## My reviewed image dispositions
 
-`config/image-dispositions.json` records the exact package versions, source references, rationale and November 24 review expiry. `scripts/image_profile.py` checks the actual image; `scripts/image_gate.py` refuses profile drift, unknown findings and expired reviews. The full Trivy JSON remains available alongside the gate result. My local evidence is under `.cache/audit/`; the CI workflow uploads raw findings, profile proof and gate decisions.
+`config/image-dispositions.json` records the exact package versions, source references, rationale and November 24 review expiry. `scripts/image_profile.py` checks the actual image; `scripts/image_gate.py` refuses profile drift, unknown findings and expired reviews.
 
-- VULN-005: SQLite/ACL patched; remaining util-linux findings have no mount/nsenter entrypoints or privileged caller in the enforced runtime. infocmp was removed; systemd-homed and Archive::Tar are absent. Final amd64 verification is pending.
+- The full Trivy JSON remains available alongside the gate result.
+- My local evidence is under `.cache/audit/`; the CI workflow uploads raw findings, profile proof and gate decisions.
+
+- VULN-005: SQLite/ACL patched; remaining util-linux findings have no mount/nsenter entrypoints or privileged caller in the enforced runtime. infocmp was removed; systemd-homed and Archive::Tar are absent. Native amd64 verification passed in the published release; deployed runtime acceptance remains pending.
 - VULN-006/008: container Tailscale is built from verified v1.104.7 source with updated x/net, x/crypto and klauspost/compress. The hardened arm64 Trivy scan no longer reports the earlier Go findings. My Mac installation is unchanged.
 - Hermes metadata remains honestly recorded as upstream's `0.0.0`; the verified v0.22.7 source and behavioral Host/Origin checks support the specific CVE-2026-53869 disposition.
 

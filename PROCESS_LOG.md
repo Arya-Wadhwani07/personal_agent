@@ -1,8 +1,8 @@
-# My Development Process Log
+# Monday — Development Process Log
 
 ## My implementation narrative
 
-I am building a class-only personal assistant with Hermes, Telegram, Gmail, a dedicated Google Calendar and a small browser interface. My first step was to preserve the supplied course materials and organize the assignment into 94 traceable requirements. I selected a content-research and drafting workflow as my fourth skill, with no automatic social publishing.
+I am building Monday, my class-only personal assistant with Hermes, Telegram, Gmail, a dedicated Google Calendar and a small browser interface. My first step was to preserve the supplied course materials and organize the assignment into 94 traceable requirements. I selected a content-research and drafting workflow as my fourth skill, with no automatic social publishing.
 
 Codex assisted with requirements interpretation, architecture, source generation and testing. All application authoring and execution took place in approved Docker containers, with project-scoped mounts and disposable test state. I kept credentials and runtime data out of Git.
 
@@ -10,11 +10,14 @@ The implementation separates the public browser edge, native Hermes gateway and 
 
 My provider selection changed from an API-key proposal to supported Hermes OpenAI browser OAuth after I asked for another assignment check. Hermes now owns authentication and refresh; the routing proxy forwards its authenticated requests. A real synthetic comparison completed on gpt-6.1-sol. Google consent, refresh and dedicated-calendar reads also passed, and I confirmed a Telegram reply.
 
-The latest isolated suite passed 94 tests. Browser interactions, static analysis and package advisory checks provided additional evidence within their stated limits. Cloud deployment, live cloud OAuth recovery, live fallback, final reports and the Zoom video remain unfinished. I will record actual operating evidence rather than treat local tests as a completed 48-hour run.
+My latest isolated suite passed 165 tests in 21.07 seconds. Browser interactions, static analysis and package advisory checks provided additional evidence within their stated limits. Real GCS/OAuth recovery and direct search/fallback checks passed.
+
+- Cloud deployment, deployed workflow acceptance, final reports and the Zoom video remain unfinished.
+- I will record actual operating evidence rather than treat local tests as a completed 48-hour run.
 
 I installed Tailscale and signed into my own tailnet. An isolated permitted client reached Gemma while an excluded client was blocked; I also completed a separate cloud OAuth sign-in. Containerized Google Cloud sign-in verified project access and billing. Codex tightened release checks to bind the project and $4 ceiling; these checks do not impose a billing hard cap.
 
-## My change and evidence record
+## Earlier change and evidence record
 
 | Stage | Work and attribution | Evidence or limit |
 | --- | --- | --- |
@@ -33,8 +36,22 @@ My required personal reflection is still pending my own input; Codex has not inv
 
 ### November 17 technical checkpoint
 
-With Codex assistance, I added project-scoped cloud provisioning, keyless GitHub trust, pinned Secret Manager versions, persistent request quotas, patched runtime libraries and an evidence-based image gate. Live GCS state/OAuth recovery checks passed. The Tailscale build adapts upstream's version-stamping instructions; SQLite and ACL use checksum-verified upstream sources. ACL tests required Bash and a container-specific device-denial expectation, while retaining their permission assertions. My personal reflection and final-length submission edit remain deferred as requested.
+With Codex assistance, I added project-scoped cloud provisioning, keyless GitHub trust, pinned Secret Manager versions, persistent request quotas, patched runtime libraries and an evidence-based image gate. Live GCS state/OAuth recovery checks passed.
+
+- The Tailscale build adapts upstream's version-stamping instructions; SQLite and ACL use checksum-verified upstream sources. ACL tests required Bash and a container-specific device-denial expectation, while retaining their permission assertions.
+- My personal reflection and final-length submission edit remain deferred as requested.
 
 ## November 17: federation and first-start recovery
 
-With Codex assistance, I used the non-secret GitHub identity diagnostic to identify the exact rejected subject condition, updated the project-scoped provider and checked the saved policy without broadening its restrictions. I also corrected default-profile initialization after restoring a preflight snapshot. My isolated regression suite passed 165 tests in 21.07 seconds. Cloud publication/deployment and the actual observation window still require their own successful evidence.
+With Codex assistance, I used the non-secret GitHub identity diagnostic to identify the exact rejected subject condition, updated the project-scoped provider and checked the saved policy without broadening its restrictions.
+
+- I also corrected default-profile initialization after restoring a preflight snapshot.
+- My isolated regression suite passed 165 tests in 21.07 seconds.
+- Cloud publication/deployment and the actual observation window still require their own successful evidence.
+
+## November 17: readability and product name
+
+I named the bot **Monday** and asked Codex to simplify the Markdown.
+
+- The [reference repository](https://github.com/aadit11/AgenticAIThree) informed presentation only: short introductions, descriptive headings, bullets and compact tables.
+- My own project choices, wording, requirements and evidence remain independent. Repeated checkpoints now live in HISTORY.md, with current results in IMPLEMENTATION_STATUS.md. Native image publication succeeded after correcting the verified GitHub subject condition; my production review and main-branch rule are confirmed.

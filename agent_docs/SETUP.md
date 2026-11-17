@@ -1,136 +1,154 @@
-# My Class-Only Account Setup
+# Monday — Setup and Operation
 
-## My federation and recovery correction — November 17
+I keep account secrets in ignored project files and execute application code only inside the approved Docker sandbox. **Existing working credentials do not need to be regenerated.**
 
-My GitHub diagnostic confirmed an ID-qualified OIDC subject: `repo:Arya-Wadhwani07@77002960/personal_agent@1460469388:environment:production`. I corrected the Google provider's exact subject condition and verified its saved policy. Numeric owner/repository IDs, `main`, the production environment and the exact release workflow remain restricted. A fresh publish run still needs to prove authentication end to end; the previous run passed native build/tests/security checks before this identity mismatch stopped it.
+[Current status](IMPLEMENTATION_STATUS.md) · [Grader access](GRADER_ACCESS.md) · [Working agreement](AGENTS.md)
 
-My startup now fills missing native profile defaults after durable restore and before schedule/gateway startup. A preflight snapshot without a native workspace no longer leaves those defaults absent; saved preferences remain intact. The isolated, network-disabled regression suite passed **165 tests in 21.07 seconds**, including startup ordering and this restore case. My local Telegram cloud/local replies are confirmed. No Cloud Run Instance is running yet, and my 48-hour observation has not started. These results supersede older current-status claims below, while preserving their historical evidence.
+## What is already set up
 
-## My cloud and release checkpoint — November 17
+- **Telegram:** bot token, numeric owner and home destination; local replies confirmed.
+- **Google:** own desktop OAuth client, Gmail/Calendar APIs, class-only identity and dedicated calendar; refresh and reads passed.
+- **OpenAI:** separate local and cloud Hermes browser OAuth logins; the cloud grant’s real refresh/recovery passed.
+- **Gemma:** installed `gemma4:e2b`; the application’s 65,536-token serving context was verified.
+- **Tailscale:** my own tailnet, restricted agent tag and private laptop forwarding; permitted/denied client tests passed.
+- **GCP:** project, billing, scoped identities, bucket, Artifact Registry and ten versioned secrets exist.
+- **GitHub:** successful image publication, restricted OIDC, my required production review and a `main` branch rule.
 
-My latest offline regression run passed **157 tests in 24.33 seconds**. The preceding packaged-image run passed 147 tests in 18.88 seconds with patched SQLite. The updated local bot is running the hardened image and its public health check returns ready. My cloud architecture image and live deployment acceptance are still in progress; **the 48-hour observation has not started**.
+Cloud deployment and its end-to-end acceptance remain separate. I do not run two Telegram pollers for the same bot.
 
-My project now has a private GCS bucket, Artifact Registry repository, dedicated runtime/release service accounts, a minimal Instance deployment role, and repository/owner-ID, branch, environment and workflow restricted GitHub federation. All ten cloud secret payloads are versioned in Secret Manager with per-secret access. CI reads the pinned private environment configuration without repository credentials. Google and Telegram credentials stay private.
+## Private configuration
 
-Real GCS tests under the runtime identity passed state restore, usage-quota restore and stale-writer rejection. Native Hermes cloud OAuth bootstrap, real token refresh and recovery into a fresh profile also passed. The local OAuth profile was not changed. Paid API-key inference remains disabled by a zero OpenAI quota; cloud configuration bounds Tavily to 50 basic searches and NVIDIA's fixed free developer-catalog endpoint to 20 attempts. Failed or uncertain requests consume quota before network I/O; quotas survive state restore. These limits do not turn Google budget alerts into a billing hard cap.
+| File or value | Purpose |
+| --- | --- |
+| `.env.example` | Reviewed placeholders and expected variable names. |
+| `.env` | Local runtime credentials and settings; ignored by Git. |
+| `secrets/google-client.json` | Downloaded Google desktop OAuth client. |
+| `state/hermes/auth.json` | Local native Hermes login. |
+| `secrets/cloud-oauth/hermes/auth.json` | Separate cloud bootstrap login. |
+| Secret Manager | Pinned cloud runtime credentials and private environment configuration. |
 
-My arm64 runtime scan has **zero release-blocking findings after evidence-based triage**, with 45 raw High package findings retained under eight expiring, profile-specific dispositions. SQLite 3.54.1, ACL 2.4.0 and patched Tailscale dependencies are built from pinned verified sources. The ACL upstream suite passed 14 tests with two expected NFS exclusions; its test harness uses Bash and accepts the container device cgroup's stronger EPERM denial. Removed mount/nsenter/infocmp entrypoints, absent systemd-homed/Archive::Tar components, verified Hermes WebSocket fixes, non-root execution, no effective capabilities, and enforced no-new-privileges support the remaining dispositions. Any unknown Critical/High, changed package version, expired disposition or failed runtime-profile check blocks the gate. This is not a claim that the scanner reports no vulnerabilities. The final amd64 image needs its own scan and profile proof.
+I never paste passwords, tokens, callback URLs or credential JSON into chat, Git or videos. The application’s recipient allowlist is separate from Google’s OAuth test-user list.
 
-My $4 planning allocation and cloud identifiers are recorded in `config/cloud-plan.json`. At the checked Instance rates, 1 vCPU/2 GiB for 72 hours estimates $1.070496 in compute before other charges; I reserve $0.40 for 50 basic searches and $1 for storage/operations/secrets/other services. Availability beyond that window needs a fresh total-cost check. No billable Instance has been started yet. Deployment approval, live cloud-to-Mac inference, operational delivery evidence, the genuine 48-hour record, grader account sign-in, video and final submission evidence remain separate acceptance steps.
+## Run and test locally
 
-Earlier dated checkpoints below preserve the development history; this checkpoint supersedes their current-status claims.
+From Assignment 3:
 
-## My November 17 regression and implementation update
+```sh
+docker build --target runtime -t assignment3-agent:local .
+docker compose up -d --no-build
+```
 
-I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **139 offline tests in 23.09 seconds**. The preceding coverage run measured **74% combined statement/branch coverage** in the test process; the new scheduler integration runs in a separate native subprocess. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper. Startup now reconciles my five managed native schedules while retaining execution history and pauses; duplicate managed names stop startup, and a missing owner pauses restored notification jobs. Alert sources run concurrently with a 30-second limit each, followed by a 55-second delivery budget. Cancellation marks an in-flight send unknown and leaves unattempted alerts pending; these limits cover network waits, not arbitrary local storage stalls.
+1. I open `http://127.0.0.1:18080` and enter my private `API_SERVER_KEY` in the connection form.
+2. In Telegram I send “Compare two fictional study plans in two sentences.”
+3. I then send “What is 17 plus 25?” and check both replies arrive.
+4. For a send demonstration, I first request a synthetic draft, use `/review DRAFT_ID`, inspect its exact payload and approve only that one send.
 
-My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
+The two Telegram prompts already passed locally. Browser/API and Telegram checks do not begin the cloud observation window.
 
-I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. My public tap was fetched at commit 5ba6fa6 and passed the native safety scan. A fresh isolated Hermes profile then used Gemma to execute the installed helper successfully; the first ambiguous invocation failed and the explicit helper-command retry passed. This standalone skill check served a 4,096-token context, so it does not replace my separate 65,536-token application check or required video. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
-
-## My November 17 integration checkpoint
-
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private Gemma inference passed through an isolated Tailscale client, while an excluded tag was blocked. The separate cloud OAuth login is saved; cloud storage recovery and the actual Cloud Run path remain unverified. Published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
-
-I use only throwaway accounts and fictional messages/events. Real tokens stay in Assignment 3's ignored `.env` and `secrets/` paths; I do not paste them into chat, GitHub, screenshots or the recording.
-
-## 1. My private configuration
-
-My setup helper has created an ignored `.env` within Assignment 3 with two different random access keys of at least 32 characters. I preserve that file rather than overwrite existing values. For a fresh checkout, the helper initializes it from `.env.example` without displaying secrets. I fill the remaining fields only when the corresponding class-only service is ready. Docker runtime files are authorized; project files remain inside Assignment 3.
-
-## 2. My Telegram bot
-
-1. From my assignment-only Telegram setup, I open the official **@BotFather**, send `/newbot`, and choose a bot name and username.
-2. I save the returned token as `TELEGRAM_BOT_TOKEN` in `.env`.
-3. I open my new bot and send `/start`. My setup check can read this pending update and display its numeric sender ID without displaying the token. I save the intended owner ID as `TELEGRAM_ALLOWED_USERS`; this implementation expects one owner.
-4. After the gateway is connected, I test a normal request/reply. For email, I request a draft, send `/review DRAFT_ID`, inspect the complete recipient/subject/body, then choose the approval button. A model instruction or a browser message cannot approve a send.
-
-BotFather is Telegram's documented bot-creation route. I keep the token out of browser URLs and shell history. [Official Telegram tutorial](https://core.telegram.org/bots/tutorial)
-
-## 3. My throwaway Gmail and dedicated calendar
-
-1. I create or choose a throwaway Google account containing no personal mail. Q01 permits a second temporary mailbox playing the fictional correspondent; only these synthetic recipients belong in my allowlist. I create a separate calendar named **Assignment 3 — Synthetic**, add fictional events, and copy its **Calendar ID** from calendar settings into `GOOGLE_CALENDAR_ID`. I do not use `primary`.
-2. After selecting my GCP project, I enable **Gmail API** and **Google Calendar API** there. I configure the Google Auth Platform consent screen and add my throwaway account as a test user if the app is in Testing.
-3. I create an OAuth client with application type **Desktop app**. I save its downloaded JSON as `secrets/google-client.json` inside Assignment 3.
-4. I run `scripts/google_oauth.py` inside the approved container setup profile, publishing only `127.0.0.1:8765`. The helper prints a consent URL. I open it, deliberately choose the throwaway account, and review the requested scopes. It validates that Gmail reports the exact class-only email address I supplied, then saves the client settings and refresh token to `.env` without printing tokens.
-5. I populate `EMAIL_ALLOWLIST` with only the intended synthetic test recipients, separated by commas. I prepare a few fictional unread/flagged messages and upcoming meetings.
-
-My selected scopes are `gmail.readonly`, `gmail.send`, and `calendar.events.readonly`, using their full Google scope URLs. Drafts are held in my application database, so this version does not request Gmail draft-management permissions. Calendar access is currently read-only. The code gate, rather than the send scope, controls every actual send. Google documents the desktop loopback consent flow and PKCE. [Desktop OAuth guide](https://developers.google.com/identity/protocols/oauth2/native-app)
-
-I check consent/refresh-token expiry before freezing the deployment. External applications in Testing can receive seven-day refresh tokens for these scopes; merely obtaining a token does not establish access through regrades. Production/verification requirements and an authorized renewal plan must be settled before claiming continuous grading access. [Google token-expiration guidance](https://developers.google.com/identity/protocols/oauth2#expiration)
-
-## 4. My pending cloud and inference setup
-
-I supplied project `assignment3-515003` and a $4 total ceiling for hosting and paid checks. I reserve funds for storage, networking and grading availability before enabling paid API calls. A budget alert is not a hard spending cap; deployment remains gated.
-
-My installed `gemma4:e2b` completed direct local checks and a real Hermes memory-tool turn at a served context of 65,536. Local Docker uses `host.docker.internal`; deployment must instead use the approved Tailscale laptop address and userspace proxy. The laptop endpoint must not be exposed publicly or broadly on my LAN.
-
-Before deployment, I also need a dedicated state bucket, runtime service account, Secret Manager entries, GitHub deployment authentication, and the already validated Tailscale grants and a deployed connection check. Secret values go through private setup/Secret Manager, never workflow YAML or GitHub issue text. My isolated Google Cloud CLI sign-in and read-only project/billing checks passed. Gmail and Calendar APIs are enabled; Cloud Run, Artifact Registry, Secret Manager and deployment identity setup remain pending. No cloud resources have been provisioned.
-
-## 5. My final provider and grading checklist
-
-My selected primary is Hermes OpenAI browser OAuth, with NVIDIA fallback and local Gemma 4 E2B. I use `A3_PRIMARY_AUTH=oauth` and an account-supported `A3_OPENAI_MODEL`. `scripts/openai_oauth.py` uses the pinned Hermes browser PKCE flow and stores credentials in my project, never in my existing Codex home. Docker publishes host loopback 1455 to container 1456; its relay reaches Hermes's container-loopback listener. USC blocks device-code login, so a busy browser port fails instead of switching flows. Local and cloud receive separate sign-ins because refresh tokens rotate. The proxy forwards Hermes's own authenticated requests to the fixed Codex backend; it does not treat OAuth tokens as OpenAI API keys. Local OAuth inference passed, and I completed a separate native cloud sign-in with a distinct refresh grant. A cloud-only storage adapter now records native refresh intent before rotation and saves the new grant before returning it. Synthetic recovery tests passed; live GCS recovery remains a release blocker.
-
-I configure my own Tavily key for direct search, not a wrapper around bundled search. My README identifies the work and use of each of the four skills. Every email send, including a synthetic test send, requires explicit human approval.
-
-Before grading, I verify browser access according to G, Telegram functionality, laptop/Ollama/Tailscale availability, actual served context and complete local tool use. Q01's older provisional access post does not replace the detailed access instructions.
-
-I keep planned three-hour restarts disabled. Measured 1 vCPU/4 GiB is permitted if necessary, subject to my budget and documented justification. I keep final-model logs/video; primary-model changes require new evidence, while minor non-model fixes do not require a new full 48-hour run. Graders test after End Date and again 48 hours later; I retain availability through regrades and record actual incidents. [Clarification register](CLARIFICATIONS.md)
-
-## My Google consent troubleshooting record
-
-I enabled Gmail and Google Calendar APIs in my chosen project. The initial 403 `access_denied` was a Testing-audience issue: I added the class-only sign-in address under **Google Auth Platform → Audience → Test users**. A fresh consent callback then saved credentials successfully. Token refresh, Gmail identity and read-only access to my dedicated calendar passed. The application recipient allowlist is separate from Google's test-user list. Exact account addresses and calendar identifiers stay in ignored configuration. [Google OAuth setup](https://developers.google.com/workspace/guides/configure-oauth-consent)
-
-## My November 17 grader-access update
-
-My Tailscale 1.104.7 installer is available in the visible, Git-ignored `setup_downloads/` folder inside Assignment 3, with the original download retained in the ignored cache. macOS verified the Tailscale Inc. developer signature and Apple notarization outside the restricted command sandbox; the initial sandboxed trust check could not establish validity. I completed the macOS administrator approval and sign-in. After initially joining the shared USC network, I connected this Mac to a separate tailnet I control. The targeted status check reports Running/online and administrator access. No public Funnel or inference exposure is authorized by installation alone. [Official macOS download](https://tailscale.com/download/mac)
-
-I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
-
-## My private network and cloud setup checkpoint
-
-My applied rule allows only `tag:assignment3-agent` to reach the laptop's TCP port 11434. The prepared private policy is in `secrets/tailscale-policy.json`; it includes positive access assertions and negative assertions for other ports, UDP and a denied test identity. I reviewed the owned tailnet's default allow-all policy, retained a private backup and applied the restricted replacement using its ETag. No university-wide rules are changed. Policy validation and isolated allowed/denied connection checks passed. Ollama stays on loopback; private Tailscale Serve forwards only the selected port. The actual Cloud Run-to-laptop path remains untested. [Policy syntax](https://tailscale.com/docs/reference/syntax/policy-file), [Serve CLI](https://tailscale.com/docs/reference/tailscale-cli/serve)
-
-For the temporary setup credential, I open **Settings → Keys → API access tokens → Generate access token** in my own Tailscale console, choose one day, and save only the token in the ignored `secrets/tailscale-api-key.txt`. A device auth key is a different credential. The temporary administration token stayed out of the agent runtime. It has been revoked, an authenticated retry returned 401, and its local file was cleared. I do not share it in chat or commit it. [API authentication](https://tailscale.com/docs/reference/tailscale-api)
-
-My Google Cloud CLI runs in the isolated `a3-gcloud` container with its configuration under ignored `.gcloud/`. I used its native browser login and supplied the one-time code through `secrets/gcp-login-code.txt`; the helper cleared the code after consuming it. Project access and billing are verified. Login does not create resources or establish a hard spending cap. My release script rejects a different project, a non-finite budget, and a budget above the reviewed $4 ceiling; actual usage monitoring and a funded availability window are still deployment prerequisites. [Google Cloud CLI authentication](https://docs.cloud.google.com/sdk/docs/authenticate)
-
-## My cloud OAuth recovery procedure
-
-I completed a separate Hermes browser sign-in for cloud deployment. Its bootstrap file stays under ignored `secrets/cloud-oauth/hermes/auth.json`, separate from local `state/hermes/auth.json`. The gated release maps a pinned Secret Manager version to `/run/a3-oauth/auth.json`; the secret has not yet been uploaded.
-
-On cloud startup, my gateway restores the latest dedicated authentication object from the private state bucket. The bootstrap is used only when that object does not exist. Hermes still owns the browser flow and refresh HTTP requests. My pinned storage adapter records a generation-conditional `refresh_pending` marker before Hermes refreshes, then stores the rotated grant before returning it. Normal native saves also write through to that object. An interrupted or ambiguous refresh blocks subsequent inference and prevents fallback to stale bootstrap credentials.
-
-If recovery reports a pending refresh, I complete a fresh separate cloud sign-in and review a deliberate reset of the authentication checkpoint. I do not delete the marker or restore an old refresh token just to bypass the failure. This recovery/reset procedure still needs live GCS validation before release. Credentials are excluded from the general workspace ZIP and are never included in submission artifacts or logs.
-
-
-## My repeatable offline regression check
-
-From Assignment 3, I build the locked test image, then run tests with no network, a read-only root, disposable state and the agreed resource limits:
+## Repeatable offline checks
 
 ```sh
 docker build --target test -t a3-tests .
-docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 256 --memory 4g --cpus 4 --tmpfs /tmp:rw,nosuid,nodev,size=512m a3-tests .venv/bin/python -m pytest -q -p no:cacheprovider --basetemp=/tmp/pytest
+docker run --rm --network none --read-only --cap-drop ALL \
+  --security-opt no-new-privileges --pids-limit 256 --memory 4g --cpus 4 \
+  --tmpfs /tmp:rw,nosuid,nodev,size=512m \
+  a3-tests .venv/bin/python -m pytest -q -p no:cacheprovider --basetemp=/tmp/pytest
 ```
 
-My Isolated validation workflow runs the corresponding lint, static-security, regression and package-advisory checks. The separate Runtime vulnerability gate must also pass or have evidence-backed false-positive dispositions before release; a green test run alone is insufficient. Current image High findings remain unresolved. For a manual email check I review the exact draft through Telegram and explicitly approve that single send; no test command authorizes it. Cloud recovery, real schedules, final-model comparison and the 48-hour/video checks remain separate from this offline suite.
+- My CI also checks lint, static security and installed-package advisories.
+- The separate image gate checks the actual runtime and retains raw scanner results.
+- Unknown High/Critical findings, profile drift or expired dispositions block release.
+- I keep the native amd64 build in GitHub: the Mac emulator failed an upstream ACL syscall check, so I did not disable that test.
+- The source downloader retries temporary errors at most four times and always verifies the pinned hash.
 
+## Publish and deploy
 
-A temporary GitHub archive-download limit can fail a build before tests. My pinned-source bootstrap retries temporary failures at most four times and retains mandatory hash verification. If all attempts fail, I inspect the build log and retry only after upstream availability recovers; I never remove the pin to make the build green.
+1. I open **Actions → Approved Cloud Run Instance release → Run workflow**.
+2. For a new image, I select `main`, choose **publish** and leave `image_digest` empty. I approve the production job when GitHub requests it.
+3. I review the test/security results and the published immutable digest.
+4. After a concrete release review, I approve deployment of that digest. **Publication alone does not deploy the bot.**
+5. The local Telegram poller stops before the cloud poller starts. Local Ollama and Tailscale remain available.
+6. I verify cloud health, authenticated chat, Telegram, local inference, services, schedules and recovery before starting observation.
 
+My current published image and workflow links are in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md). `config/release.json` and the manual production approval gate control deployment; I do not bypass a blocked gate.
 
-## My remaining account setup actions
+## Start the 48-hour record
 
-My Telegram, Google OAuth, OpenAI OAuth and owned-tailnet setup already exist. I do not regenerate those credentials merely because deployment is unfinished. For grader access, I follow the professor's OAuth Path 1 on the dedicated test accounts only: Google Account → Security → 2-Step Verification → Turn off, then verify password-only sign-in in a private window in a different browser. I confirm the assistant account can open its Gmail inbox and dedicated calendar without an additional phone/device challenge. I keep all passwords out of chat, Git, the ZIP and the video.
+Only after all live acceptance checks pass, I run the observation helper inside the approved Cloud CLI container:
 
-Before grading I check the Google consent token's age; Testing-mode refresh tokens need reauthorization within their seven-day validity window. Codex prepares a fresh consent flow if needed. I submit the required account passwords and deployment access key only in Brightspace Comments using CloudRunSettings.txt. For local demonstrations I keep the Mac powered and awake with Ollama and my own Tailscale network connected. The Zoom recording follows successful cloud acceptance; the account checks do not waive the security or deployment gate.
+```sh
+python scripts/observation.py --start path/to/live-acceptance.json
+python scripts/observation.py --collect
+```
 
-If missing owner configuration paused restored native jobs, I review and resume them deliberately through Hermes's cron management after configuration is corrected. Startup intentionally preserves pauses. Reconciliation itself does not send messages.
+- **Start:** records actual UTC time, freezes deployment and saves the manifest privately to GCS and Cloud Logging.
+- **Collection:** exports structured events and reports elapsed time and heartbeat gaps separately.
+- **Evidence:** 48 elapsed hours alone do not prove continuous coverage, delivery or absence of restarts.
+- **Availability:** planned three-hour restarts stay disabled; access must remain available for grading and regrades within a reviewed budget.
 
-## My current bot test and native cloud-image publication
+## Remaining actions I handle
 
-My updated local bot returns ready at `http://localhost:18080`. In Telegram, I confirmed replies to “Compare two fictional study plans in two sentences” and “What is 17 plus 25?” The browser API smoke checks returned 200 in 5.84 and 2.28 seconds respectively. These local deployment checks do not start the cloud observation interval.
+- [ ] Approve the exact deployment after the engineering release review.
+- [ ] Follow [GRADER_ACCESS.md](GRADER_ACCESS.md) to test password-only sign-in to the dedicated accounts in another browser’s private window.
+- [ ] Check Google consent-token age before grading; Testing-mode refresh tokens for these scopes expire after seven days.
+- [ ] Keep the Mac awake and powered with Ollama and my own Tailscale connection during local demonstrations.
+- [ ] Complete the Zoom video and provide my own reflection when the final system is ready.
+- [ ] Put grader credentials only in Brightspace Comments using the supplied template.
 
-My Mac's amd64 emulator does not implement the syscall required by ACL's physical-path tests. I keep those tests enabled and use the GitHub Ubuntu amd64 runner to publish the cloud image. In **Actions → Approved Cloud Run Instance release → Run workflow**, I select `main`, choose operation `publish`, leave `image_digest` empty and run it. This mode tests, scans and uploads an image; it does not deploy an Instance. Its summary provides the immutable registry digest. The `deploy` mode remains behind `config/release.json` and my release approval.
+## Account setup reference
 
-After deployed live acceptance, `scripts/observation.py --start <live-acceptance.json>` records the actual current UTC time, freezes deployment and stores the manifest in my private bucket and Cloud Logging. `--collect` exports structured events and reports elapsed time and heartbeat gaps separately. Missing evidence cannot become a successful 48-hour claim.
+<details>
+<summary>Telegram setup if I need a fresh class-only bot</summary>
+
+1. I use Telegram’s **BotFather** to create the bot and save its token as `TELEGRAM_BOT_TOKEN` in the ignored `.env`.
+2. I send `/start` to the bot and verify the numeric owner ID before setting `TELEGRAM_ALLOWED_USERS`.
+3. I test a normal reply and the exact-draft review flow. A model instruction or browser message is not approval.
+
+[Official Telegram tutorial](https://core.telegram.org/bots/tutorial)
+
+</details>
+
+<details>
+<summary>Google consent and dedicated calendar setup</summary>
+
+1. I use only the disposable class-only account and create a dedicated synthetic calendar. I copy its Calendar ID into `GOOGLE_CALENDAR_ID`; I do not use `primary`.
+2. I enable Gmail and Google Calendar APIs, configure the consent screen and add the account as a test user when the app is in Testing.
+3. I create a **Desktop app** OAuth client and save the download to `secrets/google-client.json`.
+4. In the approved setup container, `scripts/google_oauth.py` publishes only the local callback on `127.0.0.1:8765`. I review consent and select the intended test account.
+5. The helper checks Gmail identity before privately saving credentials. I configure only the second synthetic mailbox in `EMAIL_ALLOWLIST`.
+
+My scopes are `gmail.readonly`, `gmail.send` and `calendar.events.readonly`. Drafts live in my database, so Gmail draft-management scope is unnecessary. Calendar access remains read-only; the human grader can add events through the test account.
+
+**403 access_denied:** I previously fixed this by adding the test account under **Google Auth Platform → Audience → Test users**, then completing fresh consent.
+
+[Desktop OAuth](https://developers.google.com/identity/protocols/oauth2/native-app) · [Consent setup](https://developers.google.com/workspace/guides/configure-oauth-consent) · [Token expiry](https://developers.google.com/identity/protocols/oauth2#expiration)
+
+</details>
+
+<details>
+<summary>OpenAI OAuth and cloud recovery</summary>
+
+- I use `A3_PRIMARY_AUTH=oauth` and the verified model `gpt-6.1-sol`.
+- `scripts/openai_oauth.py` uses Hermes’s native browser PKCE flow. Local and cloud receive distinct grants because refresh tokens rotate.
+- The setup relay publishes host loopback 1455 to container 1456. It leaves my existing Codex login untouched; USC’s blocked device-code flow is not a fallback.
+- Cloud startup restores the latest private authentication object. The pinned bootstrap secret is used only when no object exists.
+- Refresh intent is recorded before rotation and the rotated grant is stored before returning it. An ambiguous/interrupted refresh blocks inference.
+- If recovery reports a pending refresh, I complete a fresh separate cloud login and review a deliberate checkpoint reset. I do not delete markers or reuse stale tokens to bypass it.
+
+Real bootstrap, rotation and fresh-profile recovery passed. Full deployed restart remains an acceptance check. OAuth files are excluded from ordinary workspace archives.
+
+</details>
+
+<details>
+<summary>Private networking and resource limits</summary>
+
+- Ollama stays on loopback. Private Tailscale Serve forwards only TCP 11434 for the authorized `tag:assignment3-agent`.
+- My own tailnet is separate from USC’s network. The temporary administration token was revoked after scoped policy setup and positive/negative tests.
+- The cloud enrollment key stays private. Tailscale uses non-root userspace networking and a SOCKS proxy; no public Funnel is configured.
+- The reviewed cloud starting size is 1 vCPU / 2 GiB. Resource changes require measurements and a remaining-budget review.
+- My $4 tracking budget is not a hard cap. The monthly budget remains in place after the custom-period API update was rejected.
+- A restored paused cron job stays paused until deliberately resumed; startup preserves its history and pause state.
+
+[Tailscale policy](https://tailscale.com/docs/reference/syntax/policy-file) · [Serve](https://tailscale.com/docs/reference/tailscale-cli/serve) · [Cloud CLI authentication](https://docs.cloud.google.com/sdk/docs/authenticate)
+
+</details>
