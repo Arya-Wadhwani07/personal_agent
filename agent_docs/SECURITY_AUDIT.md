@@ -44,7 +44,7 @@ Reproduction: `tests/test_injection_attacks.py`, inside the offline test contain
 
 [SECURITY_REGISTER.md](SECURITY_REGISTER.md) contains stable finding IDs, remediation, exact artifacts and residual dispositions. `config/image-dispositions.json` specifies package versions, rationale and November 24 review expiry. Unknown Critical/High findings, altered versions, expired decisions or runtime-profile drift block release.
 
-The earlier `ecb61d2` native image passed its gate. The publish workflow scans every new runtime image and retains its own raw report and decision; source tests do not substitute for that artifact-specific result.
+The `ba45c35` native candidate passed its [publish gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44195006786). The publish workflow scans every new runtime image and retains its own raw report and decision; source tests do not substitute for that artifact-specific result.
 
 ## Operational controls
 

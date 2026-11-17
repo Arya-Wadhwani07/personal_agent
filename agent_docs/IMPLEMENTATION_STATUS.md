@@ -30,7 +30,7 @@ These probes have distinct scopes. The [release checklist](FINAL_REVIEW.md) repe
 
 ## Artifact-specific image evidence
 
-The earlier `ecb61d2` native image passed build, tests, runtime profile and the vulnerability gate: [publish run](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44166861878). It is retained as historical artifact evidence, not substituted for a newer image's result.
+The `ba45c35` candidate passed [isolated validation](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44193721357), the [native image gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44193721370), and [approved publication](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44195006786). Artifact Registry confirms digest `sha256:2d4c6c096ffd2f3aa2d409bcb597880714af3c543dc5ed7e28eeae6b1babf732` for that source. Publication is separate from production deployment and observation.
 
 Every publish runs the image/profile gate again and retains raw findings. Exact-version dispositions expire November 24; unknown Critical/High findings, profile drift or expired decisions block release. [Security register](SECURITY_REGISTER.md)
 
@@ -39,5 +39,5 @@ Every publish runs the image/profile gate again and retains raw findings. Exact-
 - **Instance target:** `assignment3-515003`, `us-west1`, 1 vCPU / 2 GiB.
 - **Existing registry and bucket region:** `us-central1`; these are separate resources from the Instance.
 - **Release control:** exact image digest, reviewed region, pinned secrets, required GitHub production review and main-branch restriction.
-- **Budget:** $4 tracking target; lifetime search/NVIDIA quotas; no billing hard-cap claim.
+- **Budget:** verified regional rates give $2.140992 compute over 144 hours at 1 vCPU / 2 GiB. With $0.40 search and $1.00 other-services reserves, the projection is $3.540992. Actual usage and availability extensions are reviewed against the $4 target; this is not a hard billing cap.
 - **Evidence:** actual live acceptance, timestamps, logs, video and grader access fields are collected outside the frozen source and supplied through the prescribed submission channels.

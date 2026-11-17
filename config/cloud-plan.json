@@ -10,14 +10,27 @@
   "search_call_limit": 50,
   "nvidia_call_limit": 20,
   "openai_call_limit": 0,
-  "compute_window_hours": 72,
-  "compute_estimate_usd": "1.070496",
+  "compute_window_hours": 144,
+  "compute_estimate_usd": "2.14099200",
   "search_reserve_usd": "0.40",
   "other_services_reserve_usd": "1.00",
-  "unallocated_usd": "1.529504",
+  "unallocated_usd": "0.45900800",
   "cost_rate_checked": "2026-11-17",
-  "note": "Estimate, not a cloud billing hard cap. Recheck total usage before extending the availability window. NVIDIA developer catalog is a free, rate-limited trial endpoint; at most 20 attempts, with no paid deployment or subscription. Search reserves 50 basic calls at the current $0.008 PAYG rate. Instance region corrected to us-west1; existing storage/registry remain in us-central1. Recheck regional compute and cross-region transfer costs before release; earlier numeric estimates are provisional.",
+  "note": "Regional Instance rates verified against Google Billing Catalog effective 2026-11-17T08:00:00Z. Six-day compute projection plus $0.40 search and $1.00 other-services reserve totals $3.540992; $0.459008 remains unallocated. Reserve covers provisional storage, operations, registry, networking and pre-release usage; it is not a measurement of billed spend. Existing registry/bucket remain us-central1 and Instance is us-west1. Monitor actual total usage; re-review funding and grading/regrade dates before extending 144 hours or consuming the reserve. No hard billing cap or authorization to exceed $4; no automatic grading shutdown is scheduled.",
   "artifact_registry_region": "us-central1",
   "state_bucket_region": "us-central1",
-  "cost_review_required": true
+  "cost_review_required": false,
+  "instance_cpu_usd_per_second": "0.00000027",
+  "instance_memory_usd_per_gib_second": "0.00000193",
+  "regional_catalog_cpu_sku": "544F-7CA8-8735",
+  "regional_catalog_memory_sku": "CF33-30BC-1A5C",
+  "ephemeral_storage_usd_per_gib_hour": "0.000109589",
+  "compute_estimates_usd": {
+    "48": "0.71366400",
+    "72": "1.07049600",
+    "144": "2.14099200",
+    "168": "2.49782400"
+  },
+  "pricing_reference": "https://cloud.google.com/run/pricing",
+  "network_reference": "https://cloud.google.com/storage/pricing"
 }

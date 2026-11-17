@@ -21,7 +21,7 @@ The original proxy is identified by SHA-256 `5730d4e2e6152ce276b16c2b98f8a3fda48
 
 ## Image applicability and release gate
 
-The native `ecb61d2` image passed its [published gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44166861878). This result applies to that digest. Every later publish reruns the gate against its own image.
+The native `ba45c35` candidate passed its [published gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44195006786). This result applies to that digest. Every later publish reruns the gate against its own image.
 
 - **Runtime profile:** non-root UID, zero effective capabilities, no-new-privileges and userspace-only Tailscale.
 - **Component evidence:** systemd-homed and Perl Archive::Tar are absent; removed utility entrypoints constrain the recorded util-linux/ncurses findings.

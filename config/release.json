@@ -7,10 +7,7 @@
   "cpu": "1",
   "memory": "2Gi",
   "blockers": [
-    "Updated Telegram presentation requires a newly published native image and security gate",
-    "Final live acceptance and submission-evidence review remain incomplete",
-    "Explicit deployment approval remains pending",
-    "Recheck cost and live acceptance in corrected us-west1 Instance region"
+    "Explicit approval of this exact deployment is required"
   ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
@@ -26,8 +23,8 @@
     "a3-runtime-env": "2",
     "a3-tailscale-auth-key": "1"
   },
-  "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:022db95cf04cb1c740ba536d3bc8974efe37dbcf3fb05a360312018660e3baa6",
-  "source_commit": "ecb61d23c139cfcb31537125ffca910458c655b2",
+  "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:2d4c6c096ffd2f3aa2d409bcb597880714af3c543dc5ed7e28eeae6b1babf732",
+  "source_commit": "ba45c3560e26e2416d0f8bd0582c0abead012764",
   "live_acceptance_pending": true,
   "authorization": "Manual GitHub production approval required before deployment",
   "region": "us-west1"

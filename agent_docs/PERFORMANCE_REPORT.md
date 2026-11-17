@@ -46,3 +46,5 @@ My cloud plan uses a **$4 tracking target**, 50 Tavily attempts, 20 NVIDIA attem
 ## Reproduction and release use
 
 The JSON artifact records the exact synthetic inputs, baseline commit, corrected broker hash, local image and observed outputs. I run the same three task categories through the final authenticated grader interface for deployment acceptance, preserving the actual environment label. I use the release checklist to distinguish this measured comparison from deployed connectivity and the separate 48-hour operational record.
+
+The separate cloud resource projection uses verified Oregon Instance catalog rates: $0.00000027 per vCPU-second and $0.00000193 per GiB-second. At 1 vCPU / 2 GiB, compute is $0.713664 for 48 hours or $2.140992 for 144 hours. My six-day plan reserves another $1.40 for search and other services; this is an estimate, not measured billed spending. [Cloud Run pricing](https://cloud.google.com/run/pricing) · [Storage and cross-region transfer](https://cloud.google.com/storage/pricing)
