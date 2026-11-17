@@ -17,7 +17,7 @@ CONDITION = (
     "assertion.repository_id == '1460469388' && "
     "assertion.repository_owner_id == '77002960' && "
     "assertion.ref == 'refs/heads/main' && "
-    "assertion.sub == 'repo:Arya-Wadhwani07/personal_agent:environment:production' && "
+    "assertion.sub == 'repo:Arya-Wadhwani07@77002960/personal_agent@1460469388:environment:production' && "
     "assertion.workflow_ref == 'Arya-Wadhwani07/personal_agent/.github/workflows/release.yml@refs/heads/main'"
 )
 

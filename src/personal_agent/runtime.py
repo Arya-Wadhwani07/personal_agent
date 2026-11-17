@@ -121,6 +121,9 @@ async def serve():
                 await asyncio.sleep(0.5)
             else:
                 raise RuntimeError("Policy restore/readiness deadline exceeded")
+        # The durable snapshot may predate native workspace initialization.
+        # Restore first, then fill missing defaults without replacing saved profiles.
+        initialize(s)
         if s.local_proxy:
             from .network import start_tailnet
 

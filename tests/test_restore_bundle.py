@@ -51,3 +51,25 @@ def test_corrupt_bundle_does_not_replace_existing_database(tmp_path):
     preserved = Store(target)
     assert preserved.recall() == {"old": "preserved"}
     preserved.close()
+
+
+def test_bootstrap_snapshot_gets_missing_profile_after_restore(settings, monkeypatch):
+    import os
+
+    from personal_agent.runtime import initialize
+
+    monkeypatch.setattr(os, "environ", os.environ.copy())
+    bucket = FakeBucket()
+    source = settings.state_dir.parent / "preflight"
+    store = Store(source, GCSCheckpoint(bucket))
+    store.reserve_call("tavily", 50)
+    store.close()
+    home = initialize(settings)
+    GCSCheckpoint(bucket).restore(settings.state_dir)
+    assert not (home / "SOUL.md").exists()
+    initialize(settings)
+    assert "fictional class-only profile" in (home / "SOUL.md").read_text()
+    assert "Alex Chen" in (home / "memories/USER.md").read_text()
+    (home / "SOUL.md").write_text("My saved fictional preference.")
+    initialize(settings)
+    assert (home / "SOUL.md").read_text() == "My saved fictional preference."

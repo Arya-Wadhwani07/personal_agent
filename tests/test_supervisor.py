@@ -10,7 +10,7 @@ from personal_agent import runtime
 
 @pytest.mark.parametrize("shutdown", ["child_failure", "signal"])
 async def test_supervisor_stops_all_children(settings, monkeypatch, shutdown):
-    children, handlers = [], []
+    children, handlers, events = [], [], []
     class Process:
         def __init__(self, role):
             self.role, self.returncode = role, None
@@ -33,6 +33,7 @@ async def test_supervisor_stops_all_children(settings, monkeypatch, shutdown):
     async def spawn(*command):
         role = ("seed" if command[-1].endswith("seed_jobs.py") else
                 "gateway" if command[-1].endswith("gateway_launcher") else command[-1])
+        events.append(role)
         process = Process(role)
         children.append(process)
         if role == "edge" and shutdown == "signal":
@@ -45,9 +46,10 @@ async def test_supervisor_stops_all_children(settings, monkeypatch, shutdown):
             pass
         async def get(self, url, **kwargs):
             assert url == "http://127.0.0.1:8090/health"
+            events.append("restored")
             return SimpleNamespace(status_code=200)
     monkeypatch.setattr(runtime.Settings, "from_env", lambda: settings)
-    monkeypatch.setattr(runtime, "initialize", lambda s: None)
+    monkeypatch.setattr(runtime, "initialize", lambda s: events.append("initialize"))
     monkeypatch.setattr(runtime.asyncio, "create_subprocess_exec", spawn)
     monkeypatch.setattr(asyncio.get_running_loop(), "add_signal_handler",
                         lambda sig, handler: handlers.append(handler))
@@ -56,3 +58,4 @@ async def test_supervisor_stops_all_children(settings, monkeypatch, shutdown):
     assert await runtime.serve() == (1 if shutdown == "child_failure" else 0)
     assert [p.role for p in children] == ["policy", "seed", "gateway", "edge"]
     assert all(p.returncode is not None for p in children)
+    assert events == ["initialize", "policy", "restored", "initialize", "seed", "gateway", "edge"]

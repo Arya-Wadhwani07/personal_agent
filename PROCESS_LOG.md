@@ -34,3 +34,7 @@ My required personal reflection is still pending my own input; Codex has not inv
 ### November 17 technical checkpoint
 
 With Codex assistance, I added project-scoped cloud provisioning, keyless GitHub trust, pinned Secret Manager versions, persistent request quotas, patched runtime libraries and an evidence-based image gate. Live GCS state/OAuth recovery checks passed. The Tailscale build adapts upstream's version-stamping instructions; SQLite and ACL use checksum-verified upstream sources. ACL tests required Bash and a container-specific device-denial expectation, while retaining their permission assertions. My personal reflection and final-length submission edit remain deferred as requested.
+
+## November 17: federation and first-start recovery
+
+With Codex assistance, I used the non-secret GitHub identity diagnostic to identify the exact rejected subject condition, updated the project-scoped provider and checked the saved policy without broadening its restrictions. I also corrected default-profile initialization after restoring a preflight snapshot. My isolated regression suite passed 165 tests in 21.07 seconds. Cloud publication/deployment and the actual observation window still require their own successful evidence.
