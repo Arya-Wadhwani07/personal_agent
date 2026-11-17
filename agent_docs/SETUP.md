@@ -14,7 +14,7 @@ I keep account secrets in ignored project files and execute application code onl
 - **GCP:** project, billing, scoped identities, bucket, Artifact Registry and ten versioned secrets exist.
 - **GitHub:** successful image publication, restricted OIDC, my required production review and a `main` branch rule.
 
-Cloud deployment and its end-to-end acceptance remain separate. I do not run two Telegram pollers for the same bot.
+The release checklist verifies the deployed Instance independently of these setup probes. I do not run two Telegram pollers for the same bot.
 
 ## Private configuration
 
@@ -34,7 +34,7 @@ I never paste passwords, tokens, callback URLs or credential JSON into chat, Git
 - **Email gate:** `A3_EMAIL_ENABLED` defaults to `false`. I enable it only after preparing dedicated class-only mailboxes with made-up data. A disabled gate prevents reads and sends without consuming an approval.
 - **Current local profile:** after reporting promotional-mail cleanup on November 17, I enabled the gate and started fresh conversation/activity state. Earlier state is privately quarantined under ignored `private/`; it must not enter grader evidence or be restored into the clean profile.
 - **NVIDIA:** the existing authorized key is now present in my ignored local `.env`; no new key is needed. Local paid calls remain disabled. A configured key alone does not enable paid inference.
-- **Cloud release:** the new runtime requires the email gate in a reviewed, versioned runtime environment. The old image/configuration is not the updated release candidate.
+- **Cloud release:** `a3-runtime-env` version 2 contains the reviewed email gate. The release configuration pins this version; image publication and live acceptance are separate gates.
 
 ## Run and test locally
 
@@ -79,28 +79,24 @@ docker run --rm --network none --read-only --cap-drop ALL \
 
 My current published image and workflow links are in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md). `config/release.json` and the manual production approval gate control deployment; I do not bypass a blocked gate.
 
-## Start the 48-hour record
+## Freeze source and start the 48-hour record
 
-Only after all live acceptance checks pass, I run the observation helper inside the approved Cloud CLI container:
+After live acceptance and release approval, I run the helper inside the approved Cloud CLI container. The order matters:
 
-```sh
-python scripts/observation.py --start path/to/live-acceptance.json
-python scripts/observation.py --collect
-```
+1. Run `python scripts/observation.py --freeze`.
+2. Commit and push the frozen release configuration; verify that GitHub's `main` contains it and that production deployment is blocked.
+3. Run `python scripts/observation.py --start path/to/live-acceptance.json`.
+4. Collect operational evidence with `python scripts/observation.py --collect`.
 
-- **Start:** records actual UTC time, freezes deployment and saves the manifest privately to GCS and Cloud Logging.
-- **Collection:** exports structured events and reports elapsed time and heartbeat gaps separately.
-- **Evidence:** 48 elapsed hours alone do not prove continuous coverage, delivery or absence of restarts.
-- **Availability:** planned three-hour restarts stay disabled; access must remain available for grading and regrades within a reviewed budget.
+The start action writes only ignored evidence and cloud records. It does **not** modify tracked source or Markdown. I keep the laptop powered and awake with Ollama and Tailscale for local demonstrations.
 
-## Remaining actions I handle
+- **Start:** actual UTC timestamp, reviewed image, region, models and acceptance checks.
+- **Collection:** structured events, elapsed time and heartbeat gaps reported separately.
+- **Evidence:** 48 elapsed hours alone do not prove continuous coverage or successful delivery.
+- **Availability:** no preventive three-hour restarts; real incidents retain their timestamps.
+- **Submission:** I rehearse password-only account sign-in, check OAuth validity, record the Zoom demonstration and put private access fields in Brightspace Comments. [Account instructions](GRADER_ACCESS.md)
 
-- [ ] Approve the exact deployment after the engineering release review.
-- [ ] Follow [GRADER_ACCESS.md](GRADER_ACCESS.md) to test password-only sign-in to the dedicated accounts in another browser’s private window.
-- [ ] Check Google consent-token age before grading; Testing-mode refresh tokens for these scopes expire after seven days.
-- [ ] Keep the Mac awake and powered with Ollama and my own Tailscale connection during local demonstrations.
-- [ ] Complete the Zoom video and provide my own reflection when the final system is ready.
-- [ ] Put grader credentials only in Brightspace Comments using the supplied template.
+My Instance region is **us-west1**; the existing registry and state bucket remain in **us-central1**. The release cost review includes cross-region traffic and the complete grading availability period.
 
 ## Account setup reference
 

@@ -21,8 +21,10 @@ def command(env, gate):
     image = env.get("A3_IMAGE", "")
     if not re.fullmatch(r"[a-z][a-z0-9-]{4,61}[a-z0-9]", project):
         raise ValueError("Explicit GCP project required")
-    if not re.fullmatch(r"[a-z]+-[a-z]+[0-9]", region):
-        raise ValueError("Supported Instance region must be selected and verified")
+    # Cloud Run Instances exclude us-central1/us-east1/europe-west1.
+    # Pin this assignment to the reviewed supported region, not a syntactically valid name.
+    if region != "us-west1" or region != gate.get("region"):
+        raise ValueError("Reviewed supported Instance region must be us-west1")
     if project != gate.get("project"):
         raise ValueError("Deployment project differs from the reviewed release gate")
     try:

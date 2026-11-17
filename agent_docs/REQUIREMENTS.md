@@ -4,24 +4,6 @@ I use this baseline to track **94 requirement, option and workflow IDs** against
 
 **Read first:** [Current evidence](IMPLEMENTATION_STATUS.md) · [Instructor clarifications](CLARIFICATIONS.md) · [Working agreement](AGENTS.md)
 
-## On this page
-
-- [1. Purpose and scope](#1-purpose-and-scope)
-- [2. Core architecture and hybrid routing](#2-core-architecture-and-hybrid-routing)
-- [3. Skills, messaging, and proactive behavior](#3-skills-messaging-and-proactive-behavior)
-- [4. Memory, deployment, and continuous operation](#4-memory-deployment-and-continuous-operation)
-- [5. Security and data restrictions](#5-security-and-data-restrictions)
-- [6. Advanced integration: choose one for the base 10%](#6-advanced-integration-choose-one-for-the-base-10)
-- [7. Platform-specific grader access](#7-platform-specific-grader-access)
-- [8. Video requirements and exact demonstration sequence](#8-video-requirements-and-exact-demonstration-sequence)
-- [9. Submission, reports, and academic integrity](#9-submission-reports-and-academic-integrity)
-- [10. Rubric coverage](#10-rubric-coverage)
-- [11. Source precedence, ambiguities, and recommendations](#11-source-precedence-ambiguities-and-recommendations)
-- [12. Project workflow and verification plan](#12-project-workflow-and-verification-plan)
-- [13. Source coverage and second-pass review](#13-source-coverage-and-second-pass-review)
-- [14. Decisions and proposed next steps](#14-decisions-and-proposed-next-steps)
-- [Change history](#change-history)
-
 ## 1. Purpose and scope
 
 My project is a proactive personal AI assistant using **Hermes or OpenClaw**, hosted on **Google Cloud Run Instances**, with a cloud LLM and **local Gemma 4 through Ollama on my hardware**, connected through **Tailscale**.
@@ -55,7 +37,7 @@ The assignment-specific platform versions, model examples, and prices remain sou
 
 ## 2. Core architecture and hybrid routing
 
-| ID | Class | Requirement | Planned acceptance evidence | Source |
+| ID | Class | Requirement | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | CORE-01 | Choose | My assistant will use one of OpenClaw or Hermes as the assistant platform. | Selected platform, effective runtime version, configuration, and working gateway. | D pp. 1-2 |
 | CORE-02 | Required | My agent, orchestration, and scheduler will run on a long-running Google Cloud Run **Instance**, not a request-driven Cloud Run Service. My deployment commands will use the `gcloud beta run instances` resource family. | My deployed resource type, image, startup command, port, restart behavior, and health inspection. | D pp. 10-13 |
@@ -72,7 +54,7 @@ The assignment-specific platform versions, model examples, and prices remain sou
 
 ## 3. Skills, messaging, and proactive behavior
 
-| ID | Class | Requirement | Planned acceptance evidence | Source |
+| ID | Class | Requirement | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | FUNC-01 | Required | My messaging interface must integrate at least one of **Telegram or Discord** with working incoming requests and delivered replies. | Live message/reply through the deployed agent and demo video. | D pp. 2, 8, 16; G p. 27 |
 | FUNC-02 | Required | I provide four exercised skills: calendar, email, web search and a meaningful additional skill. Simply enabling bundled skills does not count. I show substantive dedicated-account/credential/scope integration, safety controls, original workflow/code and actual use. Merely wrapping bundled web search is insufficient; my search uses a direct Tavily integration with my own key. | README inventory of what I created, installed/configured and how each skill is used, with deployment/video evidence. | D pp. 2, 20; Q05 |
@@ -86,11 +68,11 @@ The assignment-specific platform versions, model examples, and prices remain sou
 
 ### Six-feature menu
 
-My fourth-skill recommendation is **LinkedIn Content Brief**, specified in DESIGN.md section 3 and USER-14. It adds daily topic selection, source-backed drafting, and review history on top of the separate web-search skill. This proposed custom skill does not replace the requirement to implement four features from the menu below or automatically satisfy the advanced-integration criterion.
+My fourth skill is **LinkedIn Content Brief**, specified in DESIGN.md and USER-14. It adds daily topic selection, source-backed drafting, and review history on top of the separate web-search skill. This custom skill does not replace the requirement to implement four features from the menu below or automatically satisfy the advanced-integration criterion.
 
-Each row applies if I select that feature, except the independent demo obligation in FUNC-05. My selected four are FEAT-01 through FEAT-04; live acceptance remains pending.
+Each row applies if I select that feature, except the independent demo obligation in FUNC-05. My selected four are FEAT-01 through FEAT-04; the release checklist defines their live acceptance.
 
-| ID | Feature | Required behavior when selected | Planned acceptance evidence | Source |
+| ID | Feature | Required behavior when selected | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | FEAT-01 | Morning briefing | My briefing would arrive every morning on a schedule I choose, with today's events and gaps, local weather, and one-line summaries of top unread/flagged emails. The delivery format is my choice. News and assignment-deadline reminders are optional. | Schedule fires and delivers current integrated content; run-now video invokes the scheduled job. | D p. 3; G p. 28 |
 | FEAT-02 | End-of-day recap | My evening recap would summarize actual tasks completed/messages handled, items needing review/decisions, and tomorrow's early meetings or approaching deadlines. | Scheduled recap grounded in activity logs; video can run the scheduled job early. | D p. 3; G p. 28 |
@@ -103,7 +85,7 @@ News, if chosen, needs a documented source/integration; news itself is optional.
 
 ## 4. Memory, deployment, and continuous operation
 
-| ID | Class | Requirement | Planned acceptance evidence | Source |
+| ID | Class | Requirement | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | OPS-01 | Required | My durable storage must use a dedicated Cloud Storage bucket for durable workspace/memory. Container-local state alone is insufficient. My platform must use the actual persistent paths. | Bucket/mount configuration, runtime permissions, and observed writes. | D pp. 11-13, 20 |
 | OPS-02 | Required | My assistant must retain memory across sessions and agent restarts. My initial synthetic personalization belongs in these workspace files: OpenClaw `SOUL.md`, `USER.md`, `IDENTITY.md`; Hermes corresponding personality/context/memory files. | New fact stored durably, instance restart, new conversation recalls it from restored state. | D pp. 2-3, 11, 13, 16, 20 |
@@ -118,7 +100,7 @@ News, if chosen, needs a documented source/integration; news itself is optional.
 
 ## 5. Security and data restrictions
 
-| ID | Class | Requirement | Planned acceptance evidence | Source |
+| ID | Class | Requirement | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | SEC-01 | Required | My deployment must use Docker or equivalent container isolation. My audit must explain its boundaries and remaining agent access. If interactive shell access is unavailable, a timestamped startup runtime-user/capabilities report plus container configuration and audit is accepted. | Container configuration, startup isolation evidence, and audit. | D p. 2; R p. 19 |
 | SEC-02 | Required | My security evidence must demonstrate at least **two security measures**, with container isolation counting as one. Additional menu choices: input validation/prompt-injection defense, permission scoping, credential management. | My mapping of implemented controls to the menu and verification results. | D pp. 2-3, 19 |
@@ -129,13 +111,13 @@ News, if chosen, needs a documented source/integration; news itself is optional.
 | SEC-07 | Required | My submission needs a security audit with a threat model identifying **at least five risks**, implemented mitigations, and unmitigated residual risks with rationale. My audit must cover isolation, additional measures, the send gate, and recipient allowlist. | Audit-to-implementation traceability and reproducible security checks. | D pp. 2-3, 16, 19 |
 | SEC-08 | Conditional | If I claim prompt-injection defense, my evaluation must test **at least three distinct attempted attacks** and document pass/fail. Graders may plant a test email. | Attack fixtures and observed outcomes; include incoming email/calendar/web content and memory risks as appropriate. | D pp. 16, 19; G p. 30 |
 
-My [SECURITY_REGISTER.md](SECURITY_REGISTER.md) tracks design risks and observed findings under USER-13. Initial static/dependency and isolated security checks have run within the scope recorded in IMPLEMENTATION_STATUS.md; latest-source and live release checks remain incomplete. My target is no known unresolved release-blocking vulnerabilities, not an unsupported guarantee of zero vulnerabilities.
+My [SECURITY_REGISTER.md](SECURITY_REGISTER.md) records findings and [SECURITY_AUDIT.md](SECURITY_AUDIT.md) records implemented controls and evaluation scope. Release checks are artifact-specific; a clean scan is not a guarantee of zero vulnerabilities.
 
 ## 6. Advanced integration: choose one for the base 10%
 
 This is separate from the four advanced features and the fourth skill. It is part of the base 100%, not extra credit. Completing more than one option earns no additional credit. [D p. 20]
 
-| ID | Class | Option and obligations | Planned acceptance evidence | Source |
+| ID | Class | Option and obligations | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | ADV-01 | Choose | One option is to publish an original skill I develop: OpenClaw uses ClawHub; Hermes may use a public GitHub skill-tap repository, ClawHub, or skills.sh. My evidence would include the public location and pinned version/commit. For Hermes, my evidence would include a fresh-install installation/execution transcript; installation directly from a `SKILL.md` URL is not accepted. | Public pinned artifact plus clean-install/run evidence; attribute reused material. Publication requires my separate authorization. | D p. 20; S pp. 9-10 |
 | ADV-02 | Choose | Another option is to connect my assistant to another student's independently developed personal assistant through A2A. We would exchange synthetic test messages while each implementing and submitting our own code and evidence. | Demonstrated cross-assistant request/result and independent implementation evidence. | D pp. 17, 20 |
@@ -147,7 +129,7 @@ Only the branch for my chosen platform will apply. I will adapt example ports an
 
 ### Hermes branch
 
-| ID | Class | Requirement | Planned acceptance evidence | Source |
+| ID | Class | Requirement | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | HERMES-01 | Conditional | If I choose Hermes, my deployment must expose browser chat at the Cloud Run URL through the supplied `web_ui.py` reverse-proxy pattern: external `$PORT` (8080 by default), internal Hermes API on `127.0.0.1:$HERMES_PORT` (8081 by default); forward `/v1/*` and `/health`. | Chrome opens chat, health works, authenticated chat produces a complete reply. | G pp. 3-13; Z `Hermes/web_ui.py`, `api_server.env` |
 | HERMES-02 | Conditional | My Hermes image must include the UI, and its startup process must supervise both UI and gateway; shut down both on termination and fail/restart if either dies. My changes must preserve existing state, Tailscale, scheduler, and shutdown behavior. If I use Tailscale Serve, it must point to the UI. | Startup, subprocess failure, graceful termination, and recovery checks. | G pp. 11-13; Z `Hermes/start-agent.sh`, `Dockerfile_snippets.txt`, `tailscale_serve.sh` |
@@ -156,7 +138,7 @@ Only the branch for my chosen platform will apply. I will adapt example ports an
 
 ### OpenClaw branch
 
-| ID | Class | Requirement | Planned acceptance evidence | Source |
+| ID | Class | Requirement | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | OPENCLAW-01 | Conditional | If I choose OpenClaw, my graders need an HTTPS Tailscale Serve dashboard link using MagicDNS/certificates and accepted Tailscale identity, without gateway-token entry or device-pairing intervention. | Chrome opens dashboard directly through the intended shared identity. | G pp. 16-20 |
 | OPENCLAW-02 | Conditional | My access policy must restrict shared graders to agent TCP **443**. Agent-to-laptop Ollama TCP **11434** needs a separate grant. Only my agent machine may be shared, never my laptop; existing broad grants also need review. | Access policy and reachability tests for permitted/forbidden destinations. | G pp. 16-17, 20; Z `OpenClaw/tailscale_acl_example.hujson` |
@@ -166,7 +148,7 @@ Only the branch for my chosen platform will apply. I will adapt example ports an
 
 ### Test-account access for either platform
 
-| ID | Class | Requirement | Planned acceptance evidence | Source |
+| ID | Class | Requirement | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | ACCESS-01 | Required | My private Brightspace submission must provide dedicated test email/calendar account logins, including a separate calendar login if needed, so graders can plant a meeting and, if applicable, injection email. Hermes: Cloud Run URL and API server key. OpenClaw: Tailscale share link and agent URL. | My completed private Brightspace Comments template, with no secret values in project Markdown. | G pp. 29-30; Z `CloudRunSettings.txt` |
 | ACCESS-02 | Conditional | For my disposable class-only accounts, I will follow the guide's access paths: preferred Path 1 uses password-only with 2-Step Verification off when no Google App Password is needed; Path 2 for Gmail App Passwords keeps 2-Step Verification on, removes Authenticator if added, and supplies at least **four unused backup codes**. These instructions are only for disposable assignment accounts. | My grader-style login test in an Incognito window of a different browser, excluding consumed codes and retaining four unused codes for Path 2. | G p. 30; Z `CloudRunSettings.txt` |
@@ -176,7 +158,7 @@ Only the branch for my chosen platform will apply. I will adapt example ports an
 
 Graders do not independently test my local Gemma path; G identifies the video as the evidence of deployed-agent-to-laptop inference, local outage behavior, and the private-task policy. Direct laptop-only inference does not establish this path. [G p. 23]
 
-| ID | Class | Requirement | Planned acceptance evidence | Source |
+| ID | Class | Requirement | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | VIDEO-01 | Required | My demo must be **one MP4**, recorded using a Zoom meeting and full desktop sharing. Audio is optional. My recording must begin with the Windows Product ID or macOS Hardware UUID, followed by the deployed platform's actual version from startup logs or Hermes health; Dockerfile intent alone is insufficient. | My final recording review for identity, runtime version, desktop visibility, and all steps below. | V pp. 1-6; G p. 25 |
 | VIDEO-02 | Required | My complete video must stay within **12 minutes maximum**. G explicitly replaces D's original 5-7 minute requirement; this is not an additional second video. | Media duration and one final recording. | G pp. 23, 28-29 |
@@ -225,7 +207,7 @@ Before recording, I will check that my cloud agent answers in Chrome, my laptop 
 
 ## 9. Submission, reports, and academic integrity
 
-| ID | Class | Required deliverable or rule | Planned acceptance evidence | Source |
+| ID | Class | Required deliverable or rule | Acceptance evidence | Source |
 | --- | --- | --- | --- | --- |
 | SUB-01 | Required | My Brightspace submission must contain a project ZIP named `firstname_lastname_a3.zip`, with standard layout and root `README.md`. The PDFs defer the deadline to the course schedule; I have now confirmed November 17, 2026, at 11:59 PM in chat, with timezone/grace details tracked in USER-12. | Archive inventory and README run/setup/deployment instructions sufficient for TA verification. | D pp. 15-16, 20; U |
 | SUB-02 | Required | My source package must include complete source, platform configuration, created/installed skills, routing logic, scheduling, and container/deployment configuration; use `.env.example` placeholders. | Reproducible sanitized source package and setup review. | D p. 16 |
@@ -237,9 +219,9 @@ Before recording, I will check that my cloud agent answers in Chrome, my laptop 
 | SUB-08 | Required | My submission must include the complete demo and evidence for my selected advanced integration. Submission handling of the MP4 versus ZIP needs confirmation below. | Video checklist plus publication/A2A/multi-platform evidence. | D pp. 16, 20; V p. 6 |
 | INTEGRITY-01 | Required | This is my individual assignment: I cannot share source, configuration, or custom skills with other students. AI assistance is allowed and expected, but I remain responsible for understanding the work. A2A permits independent assistants to exchange test messages, not share implementations. | Honest Process Log, independent source/deliverables, and explanations I have reviewed. | D p. 17 |
 | INTEGRITY-02 | Required | My attribution must identify copied or substantially adapted external code in **code comments and Process Log**, using `Adapted from <source URL> - <one-line rationale>` (comment syntax adapted to language). My README must attribute framework forks, while routing, security, personalization, and custom skills remain my own implementation with disclosed assistance. | Attribution review of starter/framework/external code and process entries. | D p. 17 |
-| POLICY-01 | Required | My submission follows the course-canonical late/regrade policy: two grace days across assignments, **30% penalty** after grace days are exhausted, regrade window closes **two days after the Brightspace form is posted**. My deadline is November 17 at 11:59 PM; its timezone and my remaining grace balance still need confirmation. | My confirmed course schedule, timezone, and remaining grace balance before final submission planning. | D p. 20; U |
+| POLICY-01 | Required | My submission follows the course-canonical late/regrade policy: two grace days across assignments, **30% penalty** after grace days are exhausted, regrade window closes **two days after the Brightspace form is posted**. My deadline is November 17 at 11:59 PM; America/Los_Angeles is my planning timezone, and I check my actual remaining grace balance in the course system before submission. | My confirmed course schedule, timezone, and remaining grace balance before final submission planning. | D p. 20; U |
 
-My root `README.md` provides the repository overview and four-skill inventory; [SETUP.md](SETUP.md) covers private account preparation. Remaining submission artifacts include root `PROCESS_LOG.md` and planned `agent_docs/SECURITY_AUDIT.md`, `PERFORMANCE_REPORT.md`, and `PERSONALIZATION_PROFILE.md`, plus reviewed sanitized evidence. Platform-required workspace/skill files retain their runtime locations.
+My root `README.md` provides the four-skill inventory and run instructions. The submission documents are [PROCESS_LOG.md](../PROCESS_LOG.md), [SECURITY_AUDIT.md](SECURITY_AUDIT.md), [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md) and [PERSONALIZATION_PROFILE.md](PERSONALIZATION_PROFILE.md). Platform workspace snapshots are under `profiles/classroom/`; operational evidence and the video are collected outside the frozen source.
 
 ## 10. Rubric coverage
 
@@ -252,7 +234,7 @@ My root `README.md` provides the repository overview and four-skill inventory; [
 | Memory, personalization, scheduling | 15% | OPS-01/02/03/06/07/08, SUB-06 | Durable bucket memory, restart recall, real scheduling, complete 48-hour evidence. |
 | Code quality, documentation, demo | 10% | SUB-01 through SUB-08, VIDEO-01 through VIDEO-08, INTEGRITY-01/02 | Readable working code, usable README, complete truthful Process Log and demo. |
 | One advanced integration | 10% | ADV-01 or ADV-02 or ADV-03 | One fully evidenced option; no extra credit for multiple options. |
-| **Total** | **100%** | All applicable requirements | Local evidence is tracked separately; deployed acceptance remains incomplete. |
+| **Total** | **100%** | All applicable requirements | Local evidence is tracked separately; deployed acceptance follows the release checklist. |
 
 Source: D pp. 18-20. Consequential grading failures include dead/trivial routing, no completed model evidence, fewer than four features, manual-only proactive behavior, absent isolation/security, exposed keys, unexercised skills, lost restart memory, and an incomplete/poorly evidenced 48-hour run. Q03 requires a valid local result for local points.
 
@@ -270,11 +252,11 @@ Source: D pp. 18-20. Consequential grading failures include dead/trivial routing
 | OpenClaw runtime/configuration | G p. 2 gives Node >=24.22.1 shorthand; S pp. 12-13 gives tested ranges >=24.22.1 and <25, or >=26.12.1, and version-dependent config keys. | My runtime choice needs verification against the exact pinned release; not every Node 24/26 version is compatible. |
 | Scheduled restarts versus grading freeze | Earlier PDFs recommend three-hour restarts; Q11 states a grading penalty. | Resolved for grading: no planned three-hour restarts; address capacity/leaks before freezing and report unplanned restarts honestly. |
 | Four features versus video | D p. 4 allows four of six but separately requires briefing, recap, and alert demonstrations. | My plan needs all three demonstrated behaviors regardless of which four features I select. |
-| Context and model size | Any Gemma 4 size is accepted; platform context requirements and actual available RAM still constrain operation. | E2B is valid, but my model choice still needs a real agent-turn/context measurement; a successful download does not prove it fits. |
+| Context and model size | Any Gemma 4 size is accepted; platform context requirements and actual available RAM still constrain operation. | E2B completed real agent and tool turns with the verified 65,536-token context; PERFORMANCE_REPORT.md records the measurements. |
 | Gemma tags in video instructions | D pp. 6-7 accepts any Gemma 4, including a larger 26B variant; G pp. 24-27 names E2B/E4B in the video steps. | E2B/E4B are unambiguous choices. If I select another permitted Gemma 4 variant, I will confirm the video adaptation without narrowing D's model allowance. |
 | Markdown locations | I want agent documentation under `agent_docs/`; D requires root `PROCESS_LOG.md` and README. | My planning documents belong under `agent_docs/`; submission/runtime files follow assignment or tooling locations. |
 | Recording output path | V p. 6 describes Zoom's default `Documents/Zoom`; my permission limits changes to Assignment 3. | My recording output must stay inside Assignment 3 where supported. Any external write or hardware-UUID inspection needs my separate authorization before the recording step. |
-| Deadline, platform, actual services | Files do not give a calendar due date or choose my integrations/model/platform. I confirmed November 17, 2026, at 11:59 PM in chat. | My timezone/grace balance and implementation choices still need confirmation. Credentials stay out of tracked Markdown. |
+| Deadline, platform, actual services | Files do not give a calendar due date or choose my integrations/model/platform. I confirmed November 17, 2026, at 11:59 PM in chat. | Hermes, Telegram, Gmail, dedicated Calendar and OpenAI OAuth are selected. I check the actual course grace balance before submission; credentials stay out of tracked Markdown. |
 
 ### My clarification precedence
 
@@ -309,18 +291,18 @@ These are recommendations or implementation cautions, not new grading floors. Th
 | --- | --- | --- | --- |
 | USER-01 | User | My project writes stay inside Assignment 3. The one read-only Assignment 2 structure inspection I allowed is complete. | Codex needs my permission for external filesystem access or global installation. My temporary/cache outputs stay inside the project. |
 | USER-02 | User | I review coherent changes and their verification. My latest instruction authorizes full implementation and sandbox testing, with documentation kept current. | Routine implementation and CI configuration can proceed. My GCP project and $4 total ceiling are confirmed; release approval, publication and submission remain separate gates. |
-| USER-03 | User | My project Markdown filenames use uppercase names, alongside standard tooling conventions. | My files use `AGENTS.md`, `REQUIREMENTS.md`, `README.md`, and future `PROCESS_LOG.md`, with lowercase directories such as `agent_docs/`. Original and tooling-required names are preserved. |
+| USER-03 | User | My project Markdown filenames use uppercase names, alongside standard tooling conventions. | My files use `AGENTS.md`, `REQUIREMENTS.md`, `README.md`, and `PROCESS_LOG.md`, with lowercase directories such as `agent_docs/`. Original and tooling-required names are preserved. |
 | USER-04 | User | My Markdown stays current as changes occur. | My affected requirements, plans, status, setup/run instructions, reports, and process history are synchronized within each approved change set, rather than deferred to final cleanup. |
 | USER-05 | User | My review process requires appropriate SDLC testing for every change, including UI, unit, integration, smoke, load, and stress checks where applicable. | My verification record must distinguish results, failures, deferrals, and justified not-applicable checks. I will agree workload/resource/cost limits before load/stress runs. |
 | USER-06 | User | I use Codex as an expert Agentic AI engineering and testing collaborator, targeting 100/100 through complete applicable rubric coverage and continuous data/code review. | My review needs requirement-to-code-to-test-to-evidence traceability, correctness/security checks across synthetic data, outputs, state, and logs, and explicit gaps and grading risks. The role in AGENTS.md supports my understanding; completion needs evidence. The instructor determines the final grade, and my target does not expand authorization. |
 | USER-07 | User | My project Markdown uses a natural first-person voice, with varied phrasing and clear explanations rather than repetitive declarations. | The writing rule in AGENTS.md applies to existing and future Markdown. My plans stay distinct from completed work; actual AI assistance, source attribution, commands, prompts, and technical requirements remain accurate. |
 | USER-08 | User | My application development and runtime tests must run in an approved isolated environment without accessing unrelated local/system data. | A container/VM boundary with project-scoped source, synthetic fixtures, disposable state, controlled network/credentials, and no personal host mounts. A Python virtual environment alone is insufficient. Local Docker host-side writes, remote provisioning, and source transfer need explicit approval. |
 | USER-09 | User | My sandbox tests must include white-box and black-box approaches. | Internal policy/branch/error-path tests plus observable UI/API/messaging behavior checks. Unit, integration, smoke, UI, load, stress, and regression remain applicable categories; mock and live results are distinguished. |
-| USER-10 | User | My project needs GitHub CI/CD and a traceable SDLC process. | Isolated validation, immutable builds, approved Instance deployment, smoke checks and controlled recovery. Workflow validation/publication, restricted cloud credentials and production protections are verified; the latest source image and live deployment remain pending. The grading freeze remains enforced; Q10 distinguishes minor non-model fixes from primary-model changes requiring new evidence. |
+| USER-10 | User | My project needs GitHub CI/CD and a traceable SDLC process. | Isolated validation, immutable builds, approved Instance deployment, smoke checks and controlled recovery. Workflow validation/publication, restricted cloud credentials and production protections are verified; the each new image and deployed system must pass its own release checks. The grading freeze remains enforced; Q10 distinguishes minor non-model fixes from primary-model changes requiring new evidence. |
 | USER-11 | User | My rough design must explain the required interfaces and propose an easy-to-use neumorphic UI. | DESIGN.md includes architecture, a chat wireframe, states, accessibility goals, and Telegram/Discord integration. The required messaging channel and platform-specific browser grader interface are both retained; a custom dashboard and WhatsApp are not assumed requirements. |
 | USER-12 | User | My confirmed deadline is November 17, 2026, at 11:59 PM; remaining grace days are unknown. | I distinguish that deadline from Q07's End Date (deadline + 2) and subsequent 48-hour grader retest. I do not invent grace entitlement, a first-test hour, or a requirement to delay submission solely to repeat a pre-submission soak for a minor fix. |
 | USER-13 | User | My development process must continuously identify, track, remediate, and retest security vulnerabilities before release. | SECURITY_REGISTER.md separates risks from findings and records affected artifacts, severity, evidence, ownership, fixes, and retests. Applicable code/dependency/secret/image/configuration and sandbox behavioral checks gate releases; unresolved Critical/High or behavior-based blockers and incomplete required checks stop release. Permitted lower-severity residual risks need my explicit recorded decision. |
-| USER-14 | User | My proposed fourth skill should support a daily original LinkedIn-oriented content draft that I can review, with the aim of supporting outreach. | LinkedIn Content Brief researches permitted sources, selects relevant nonduplicate topics, preserves provenance, drafts in a configured voice, and delivers to my review channel with persistent history. Assignment data remains synthetic; no direct LinkedIn search, personal-account access, or publishing in the initial scope. Approved API access would be a separate future decision. Outreach improvement is a goal, not a promised result. |
+| USER-14 | User | My fourth skill should support a daily original LinkedIn-oriented content draft that I can review, with the aim of supporting outreach. | LinkedIn Content Brief researches permitted sources, selects relevant nonduplicate topics, preserves provenance, drafts in a configured voice, and delivers to my review channel with persistent history. Assignment data remains synthetic; no direct LinkedIn search, personal-account access, or publishing in the initial scope. Approved API access would be a separate future decision. Outreach improvement is a goal, not a promised result. |
 | USER-15 | User | My reviewed, coherent changes must be committed and pushed to [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent) so I can trace and recover earlier versions. | Project-local Git identity/configuration, explicit staging, appropriate checks, descriptive commits, and verified pushes; synchronize Markdown before each commit. No force-push/history rewrite or deployment is implied. Supplied course materials, secrets and generated/private state are excluded from the initial baseline; repository visibility/protections need verification before application publication. |
 
 ### Alignment with my design proposal
@@ -329,131 +311,41 @@ My [DESIGN.md](DESIGN.md) and [ARCHITECTURE.md](ARCHITECTURE.md) provide the imp
 
 | Requirement coverage | Design location | Evidence needed before I consider it implemented |
 | --- | --- | --- |
-| USER-08: isolated development/testing | Section 7: development and testing sandbox | Verified filesystem, privilege, network, credential, resource, and cleanup boundaries; only approved source and synthetic fixtures exposed. No unrelated host data or unapproved Docker host-side writes. |
-| USER-09: white-box and black-box testing | Section 8: testing plan | Internal policy/branch/error-path results plus observable UI/API/messaging results from the approved sandbox, with mocks and live dependencies identified. |
-| USER-10: CI/CD and SDLC | Sections 9-10: delivery workflow and milestones | Working GitHub checks, trusted immutable build, explicit release authorization, correct Instance deployment, readiness/live smoke results, recovery procedure, and a tested deployment freeze. Current scoped results are recorded in IMPLEMENTATION_STATUS.md; deployed acceptance remains incomplete. |
-| USER-11; FUNC-01; HERMES-01/04 or OPENCLAW-01; VIDEO-03: interfaces | Sections 2, 5-6: required surfaces, UI concept, and messaging | Working Telegram/Discord plus the selected browser grader interface; readable neumorphic styling where approved; keyboard/loading/error checks; no unsupported browser approval controls. WhatsApp alone is insufficient, and the browser does not count as an extra messaging platform. |
-| USER-12; OPS-06/08/10: deadline and evidence | Sections 1, 9, 11: timing, release freeze, and decisions | Confirmed timezone/grace balance, stable-release readiness, genuine 48-hour logs, export/submission buffer, and continued grader access. No shortened or simulated uptime claim. |
+| USER-08: isolated development/testing | DESIGN.md and ARCHITECTURE.md | Verified filesystem, privilege, network, credential, resource, and cleanup boundaries; only approved source and synthetic fixtures exposed. No unrelated host data or unapproved Docker host-side writes. |
+| USER-09: white-box and black-box testing | DESIGN.md and ARCHITECTURE.md | Internal policy/branch/error-path results plus observable UI/API/messaging results from the approved sandbox, with mocks and live dependencies identified. |
+| USER-10: CI/CD and SDLC | DESIGN.md and ARCHITECTURE.md | Working GitHub checks, trusted immutable build, explicit release authorization, correct Instance deployment, readiness/live smoke results, recovery procedure, and a tested deployment freeze. Current scoped results are recorded in IMPLEMENTATION_STATUS.md; deployed acceptance follows the release checklist. |
+| USER-11; FUNC-01; HERMES-01/04 or OPENCLAW-01; VIDEO-03: interfaces | DESIGN.md and ARCHITECTURE.md | Working Telegram/Discord plus the selected browser grader interface; readable neumorphic styling where approved; keyboard/loading/error checks; no unsupported browser approval controls. WhatsApp alone is insufficient, and the browser does not count as an extra messaging platform. |
+| USER-12; OPS-06/08/10: deadline and evidence | DESIGN.md and ARCHITECTURE.md | Confirmed timezone/grace balance, stable-release readiness, genuine 48-hour logs, export/submission buffer, and continued grader access. No shortened or simulated uptime claim. |
 | USER-13; SEC-01 through SEC-08: security tracking | Section 8 security review, section 9 release workflow, and SECURITY_REGISTER.md | Current scoped scans/reviews/tests tied to the candidate artifact, triaged findings, fixes with retests, no unresolved blockers, and documented permitted residual risks. Offline runtime controls and earlier native-image checks are verified; SECURITY_REGISTER.md records their scope and the latest-image/live acceptance gaps. |
 | USER-14; FUNC-02; conditional ADV-01: fourth skill | Section 3 content-skill contract and section 5 draft-card UI | Research/draft/provenance/deduplication and scheduled-delivery checks, source-injection and no-publishing tests, synthetic data, and separate fresh-install/publication evidence only if I select ADV-01. |
 
-Hermes, Telegram and Daylight browser chat are selected, with LinkedIn Content Brief as my fourth skill. Docker and bounded local tests are approved. Private requests use local inference or hold. Exact cloud models, remaining account verification, complete integration and advanced-skill publication remain outstanding.
+Hermes, Telegram and Daylight browser chat are selected, with LinkedIn Content Brief as my fourth skill. Docker and bounded local tests are approved. Private requests use local inference or hold. The verification record identifies actual models, account probes and published-skill installation evidence; the release checklist binds live acceptance to the final artifact.
 
-### Planned test matrix
+### Test matrix
 
-| Test category | Planned coverage | Current status |
+I keep acceptance criteria here and measured results in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md), so older checkpoints do not masquerade as the current result.
+
+| Category | Required coverage | Evidence location |
 | --- | --- | --- |
-| Requirements/document review | Source coverage, mandatory/optional distinctions, exact thresholds, precedence, IDs, links, stale status, and original-file integrity. | Codex review completed for this documentation change; my review pending. |
-| Unit | Routing, local-down/private behavior, reversible 429, send/recipient policies and state transitions. | Covered by the recorded isolated suite; latest additions and provider migration need new checks. |
-| Integration | Models, tools, messaging, bucket recovery, approval and concurrent writes. | Real Hermes with mocked services and a separate real local Gemma tool turn passed. Live cloud/accounts/Tailscale/GCS remain pending. |
-| Smoke | Startup, readiness, reply and inference paths. | Earlier local container startup and Gemma checks passed. Current-image and deployed smoke checks remain pending. |
-| UI review | Browser authentication, chat/error/loading states, approval restrictions, responsiveness and accessibility. | Isolated Chromium interaction and desktop/mobile visual checks passed for the tested image; latest-source and deployed verification remain pending. |
-| Security/adversarial | Auth/session isolation, approval, secrets, fetching, XSS, sandbox and three distinct injection attacks where claimed. | Initial scans and policy/API/UI tests ran; current full scans, complete injection evaluation and live controls remain pending. See SECURITY_REGISTER.md. |
-| Load | Bounded representative concurrency with synthetic services; latency, errors and recovery. | Approved mock API load checks passed; these do not measure real model, messaging or scheduled-work capacity. |
-| Stress | Bounded concurrency/resource pressure, failure and recovery inside the approved synthetic sandbox. | Mock overload/recovery checks passed within 4 CPUs/4 GiB and 60-second limits; deployed disruption is not authorized. |
-| Performance | Local/cloud measurements across at least three task types; quality and cost evidence with full-turn context. | Deferred until both inference paths work. |
-| Soak/reliability | Preliminary soak followed by genuine 48-hour observation with durable interval-wide evidence. | Not started; cannot be replaced by short tests. |
-| Regression/final acceptance | Affected checks after fixes and a final audit against requirements/video/access. | Earlier regressions passed; latest source and final acceptance remain pending. |
-| White-box | Internal policies, branches, state transitions, errors and memory consistency in the approved sandbox. | Recorded isolated suite passed; current provider/network changes remain unverified. |
-| Black-box | Supported UI/API/messaging behavior, denial/success/delivery and recovery with mock/live separation. | Isolated API/UI checks passed; live messaging/cloud/service checks remain pending. |
-| CI/CD validation | Isolated tests, scans, trusted build provenance, approval/freeze, readiness and compatible rollback. | Workflow files exist locally; hosted execution and deployment credentials remain pending. |
-| Content skill | Sourced original draft, topic history, missing/conflicting data, safe rendering/fetching and no publishing. | Basic workflow/storage and mocked checks exist; live usefulness, review controls and publication evidence remain incomplete. |
+| Document review | Source coverage, all 94 IDs, precedence, links, original-file integrity and factual claims. | Requirements map and final release review. |
+| Unit / white-box | Routing, privacy hold, reversible 429, exact approval, quotas, state transitions and error paths. | Isolated regression suite. |
+| Integration | Real Hermes hooks, tool schemas, provider adapters, snapshots, concurrent claims and recovery. | Regression suite and separately scoped live probes. |
+| Smoke / black-box | Startup, readiness, supported interfaces, denial/success and replies. | Local probes and exact-Instance acceptance. |
+| UI | Auth, safe rendering, content review, loading/error states, keyboard and mobile layout. | Chromium probe and live grader rehearsal. |
+| Security / adversarial | Secrets, dependency/image findings, auth isolation, approval and three distinct injection cases. | SECURITY_AUDIT.md and SECURITY_REGISTER.md. |
+| Load / stress | Synthetic bounded concurrency, backpressure and recovery within approved limits. | Mock API probe; no live-model throughput claim. |
+| Performance | Three local/cloud task types, quality, full-turn latency and cost limitations. | PERFORMANCE_REPORT.md and sanitized comparison artifact. |
+| Reliability | Genuine 48-hour timestamps, durable heartbeats, job/delivery events, outages and continued grader access. | Ignored observation exports and submitted operational evidence. |
+| Regression / acceptance | Affected checks after changes and final-image requirement review. | CI and FINAL_REVIEW.md. |
+| CI/CD | Immutable native image, security gate, scoped OIDC, approval, supported region and deployment freeze. | GitHub workflow artifacts and release configuration. |
+| Content skill | Attribution, original draft, topic history, review controls, no publishing and fresh install. | Skill tests, published tap and live demonstration. |
 
 The PDFs specify no universal throughput, latency percentile, stress duration, test-count target, or code-coverage percentage. I will agree useful engineering targets before testing, without inventing grading requirements. Reference test counts (e.g. 45/46 passes), example tool counts, account-specific model IDs, and observed startup/model-load times are not requirements for this implementation.
 
-## 13. Source coverage and second-pass review
+## 13. Source coverage
 
-My source review with Codex covered all **103 PDF pages**, which were text-extracted and read.
+My source inventory covers five original PDFs (**103 pages**) and all **19 extracted starter files**. All 94 requirement IDs are preserved and mapped in ARCHITECTURE.md. The original-file hashes match the reviewed baseline.
 
-- The image-based Zoom/device instructions and rubric table were additionally rendered and visually inspected.
-- All **19 archive files** were read without execution, including the `.env` template and `.hujson` access-policy example. PDF line wrapping was not treated as executable source syntax; Z provides intact script counterparts.
+The description controls the rubric; the Local Gemma guide controls the detailed access/video sequence. Setup/deployment references supply examples rather than extra rubric requirements. Specific instructor clarifications control conflicts, including no planned grading restarts and final-model evidence. Conditional alternatives remain explicitly conditional.
 
-| Source sections | Coverage in this baseline | Review status |
-| --- | --- | --- |
-| D pp. 1-4: objective, platforms, floors, features, restrictions | CORE, FUNC, FEAT, SEC | Read and cross-checked. |
-| D pp. 5-10: model/auth paths, routing, messaging, Google, weather, hardware | CORE, FUNC, ACCESS, recommendations | Read and cross-checked. |
-| D pp. 11-15: deployment, storage, networking, scheduling, operation, concurrency | OPS, SEC, recommendations | Read and cross-checked. |
-| D pp. 16-18: deliverables, integrity, Process Log, weights | SUB, INTEGRITY, rubric | Read and cross-checked; weight table visually checked. |
-| D pp. 19-20: detailed rubric, advanced integration, late/regrade | CORE/FUNC/SEC/OPS, ADV, POLICY | Read and cross-checked. |
-| G pp. 1-2: versions and universal deployment requirements | CORE-08/09/10, SEC-04, version guidance | Read and cross-checked. |
-| G pp. 3-16: Hermes UI, startup, key, approval behavior | HERMES branch | Read and cross-checked against Z. |
-| G pp. 16-20: OpenClaw identity/access and persistence | OPENCLAW branch | Read and cross-checked against Z. |
-| G pp. 21-23: routing log fields/query | CORE-10, VIDEO-04 | Read and cross-checked against Z. |
-| G pp. 23-29: replacement video, exact steps, common mistakes | VIDEO and sequence | Read and cross-checked against V and Z. |
-| G pp. 29-31: private submission/accounts and grading availability | ACCESS, OPS-10; Q11 resolves grading restart conflict | Original pages read and cross-checked against Z; later instructor precedence recorded separately. |
-| V pp. 1-6: identity, Zoom, full desktop, MP4 naming/upload | VIDEO, packaging/output-path questions | Read and visually reviewed. |
-| S pp. 1-9: shared setup, privacy, recovery, identities, tests | Recommendations and test plan | Read and cross-checked; explicitly advisory. |
-| S pp. 10-19: Hermes/OpenClaw version-specific setup | Recommendations, platform branches, version conflicts | Read and cross-checked; examples not treated as project requirements. |
-| S pp. 20-23: pre-run checklist, evidence, troubleshooting/references | OPS, test plan, guidance | Read and cross-checked. |
-| R pp. 1-8: optional architecture, local model, Tailscale | CORE/OPS guidance, ephemeral-identity conflict | Read and cross-checked. |
-| R pp. 9-16: platform paths, context, storage/concurrency | CORE/OPS guidance and storage caution | Read and cross-checked. |
-| R pp. 17-23: deployment, verification, mistakes/references | OPS, test plan, guidance | Read and cross-checked; optional status preserved. |
-| Z: `CloudRunSettings.txt`; Hermes 9 files; OpenClaw 9 files | ACCESS, HERMES, OPENCLAW, VIDEO, source attribution | All 19 read; no scripts executed or installed. |
-
-Second-pass checks retained minimum counts/durations, seven rubric weights, all six feature options, three advanced options, both access branches and exact video requirements. Q01–Q14 now resolve cloud authentication, local-credit, skill, resource, observation and grading-restart issues; packaging remains open.
-
-- The original source review verified SHA-256 integrity.
-- This update uses the supplied Q&A and existing extracted baseline, not a fresh PDF extraction.
-
-## 14. Decisions and proposed next steps
-
-I selected Hermes, Telegram, Gmail, a dedicated Google Calendar, local Gemma 4 E2B and the LinkedIn Content Brief workflow.
-
-- Hermes OpenAI browser OAuth is my primary-cloud choice with NVIDIA fallback; exact model IDs and live migration verification remain open. Briefing, recap, email integration and proactive alerts are my four-feature plan. Skill publication remains the proposed advanced integration and needs separate approval/evidence.
-
-My next steps are to migrate/test the final provider chain, connect class-only accounts/private networking, verify state/security/scheduling/access, and collect final-model logs and video. Q07–Q11 govern observation, changes and restarts. The November 17, 11:59 PM deadline remains confirmed; timezone/grace balance and MP4 packaging still need confirmation.
-
-Implementation, Docker isolation, local Gemma checks and bounded synthetic tests are authorized. My project and $4 total ceiling are confirmed; paid calls remain disabled until bounded configuration, and deployment still needs release approval. Actual verification is maintained in IMPLEMENTATION_STATUS.md rather than inferred from the acceptance plan.
-
-### Extracted-script implementation alignment
-
-My [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md) records per-file evidence and adaptations. All 94 existing IDs remain stable; these are implementation constraints, not new grading floors.
-
-| Existing requirements | Source-specific refinement | Evidence required later |
-| --- | --- | --- |
-| HERMES-01/03; USER-11; CORE-10/11 | Preserve the actual Bearer/non-streaming chat contract; the gateway model label is not serving-model identity. Browser history is not persistent memory and health HTTP success is not authenticated/model readiness. | API/session isolation, complete nonempty reply, truthful status, bounded history and actual-model routing records. |
-| HERMES-01; SEC-05/07; USER-13 | Proxy forwarding exceeds the documented minimum paths; source-level body/response/thread handling is unbounded and log construction unsafe. | Resolve VULN-001/002; route/auth coverage, resource bounds, loopback-only proxy routing and structured redacted errors/logs. |
-| HERMES-04; FUNC-07; SEC-03 | The approval hook has undefined placeholders and no implemented registration/trusted platform mapping. | Verified framework hook, unknown-session denial, prompt browser block and real messaging approval with allowlist/replay protection. |
-| HERMES-02; OPS-01/02/03/04 | Startup is a minimal supervisor, not the full state/Tailscale/readiness lifecycle; its process watch is distinct from proactive scheduling. | Restore-before-work, valid loopback/ports, child-failure and bounded shutdown tests; complete memory/daemon writer inventory. |
-| OPENCLAW-02/03/04 | Config/socket/key/state files are fragments or mutually exclusive alternatives; daemon identity writes are separate from memory writes. | Complete grants, exact origin/user/socket/port, one persistent daemon, secret injection and stable post-restart identity. |
-| CORE-10; VIDEO-01 through VIDEO-07; ACCESS-01/02/03 | Query scripts do not emit routing events; video companions omit PDF steps, including OpenClaw Serve status. | Resource-scoped sufficient log rows, canonical PDF-derived sequence, real replies/deliveries, private account access and no secret exposure. |
-
-Source checks cover the five PDFs, ZIP and 19 extracted files without execution. Runtime, browser, adversarial and performance checks still need the approved sandbox and implementation.
-
-### Repository and coverage review update
-
-My repository destination is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent); routine commits/pushes are authorized under USER-15. The architecture's [technology appendix](ARCHITECTURE.md#a17-appendix--technology-and-development-stack-overview) gives a shorter explanation of the development/runtime stack, while A2 retains the tradeoffs and references.
-
-The current cross-check retains every previously captured assignment requirement, all seven rubric categories, the six-feature menu, three advanced-integration options, both access branches, video/report/account obligations, and the 48-hour window.
-
-- No new missing source obligation was identified against the existing 103-page/19-file baseline.
-- This is a baseline-to-design review, not a new extraction of the PDFs or a claim that implementation is complete.
-
-The remaining work includes publication/security checks for the updated source, versioned cloud email readiness, final deployed integration/recovery acceptance, grader account verification, three-task performance and attack evidence, reports/video and genuine operating evidence. Packaging, timezone/grace balance and the unanswered fallback-only question remain open. Local implementation and tests are recorded in IMPLEMENTATION_STATUS.md.
-
-- The 19-file starter review remains unchanged; originals have not been executed or modified.
-
-## Change history
-
-| Date | Change | Verification |
-| --- | --- | --- |
-| 2026-11-16 | My initial Codex-assisted baseline brought together five PDFs and the starter archive, with source references, conflicts, evidence, rubric coverage, decisions, and the documentation-maintenance rule. | Codex source review and structural checks; application tests not yet applicable. |
-| 2026-11-16 | I requested the engineering/testing role and full-credit target. Codex added USER-06 and synchronized AGENTS.md. | Codex checked the then-current 85 unique IDs, consistency, links, and Markdown structure; runtime tests not applicable. |
-| 2026-11-16 | I requested a natural first-person voice throughout my Markdown. Codex revised both documents and added USER-07 while preserving source obligations, attribution, and pending-work status. | Wording review, 86 unique IDs, preserved source references/technical details, valid links/tables, and unchanged source files; runtime tests not applicable. |
-| 2026-11-16 | I requested a rough design, neumorphic UI, sandbox-only development/testing, white-box/black-box checks, and GitHub CI/CD. Codex created DESIGN.md and added USER-08 through USER-12, including my confirmed deadline. | Document review and cross-file consistency checks; 91 unique IDs. Runtime tests, pipeline execution, and external setup remain unperformed. |
-| 2026-11-16 | I requested synchronization with DESIGN.md. Codex added the design-to-requirement evidence map and clarified that document preparation does not approve implementation choices or external setup. | Existing 91 IDs preserved; design references, tables, links, and pending-work wording reviewed. Runtime testing remains not applicable to this documentation change. |
-| 2026-11-16 | I requested vulnerability tracking and a daily LinkedIn content skill. Codex added USER-13/14, created SECURITY_REGISTER.md, and synchronized the design, UI, testing, and release gates across my Markdown. | 93 unique requirement IDs; documented source/access limits and no-publishing scope; no scans, skill execution, social-account actions, or architecture-file creation. |
-| 2026-11-16 | I requested the complete system architecture, diagrams, references and technology justification. Codex created ARCHITECTURE.md and synchronized all affected Markdown. | All 93 IDs retained and individually mapped; conditional options and evidence gates preserved. Documentation review only; no application code, provisioning, graphical rendering or runtime testing. |
-| 2026-11-16 | I supplied the GitHub repository and requested regular commits/pushes plus a technology overview appendix. Codex added USER-15, updated the architecture map and synchronized the repository documentation. | 94 stable IDs including all previous 93; baseline coverage and staging checks; no new PDF extraction, extracted-script inspection or runtime tests. |
-| 2026-11-16 | I requested the extracted-script review. Codex read all 19 files and recorded source-specific adaptation steps and VULN-001/002, synchronizing the plans and README. | 19 byte-identical ZIP members; 94 IDs retained; original/extracted sources unchanged; static review only, no script execution or automated scan. |
-
-### Instructor clarification update
-
-On November 16, I supplied Q01–Q14 and requested OpenAI/Claude primary with NVIDIA fallback.
-
-- I retained all 94 IDs while revising cloud authentication, local-credit requirements, skill eligibility, resource sizing, final-model evidence and grading restarts.
-- My later instruction selects supported Hermes OpenAI browser OAuth. Offline routing tests and browser sign-in passed; final evidence remains pending. Instructor/endorsed answers were reviewed separately from anecdotes and unresolved questions.
-
-### November 17 presentation and readiness review
-
-I retained all 94 requirement IDs. FEAT-01 now has explicit calculated calendar gaps and a concise Telegram format; FEAT-02 uses activity-grounded recap instructions. FUNC-06/SEC-04 now have a default-off email gate and clean local history after my mailbox cleanup confirmation. The 177-test suite, actual Telegram parsing and isolated browser checks passed. These results do not complete deployed scheduling, final reports/video or OPS-06. My latest release remains blocked pending a new reviewed native image and live acceptance; see FINAL_REVIEW.md.
+My release checklist applies the requirements to the exact image, runtime, accounts and evidence. Reports distinguish scoped local checks from actual cloud observations.

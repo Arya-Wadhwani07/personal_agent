@@ -12,11 +12,19 @@ CHECKS = ("security_gate", "cloud_reply", "gemma_private_link", "google_read", "
 MANIFEST = Path("evidence/observation/manifest.json")
 
 
+def freeze_gate(gate):
+    if gate.get("ready") is not True or gate.get("blockers"):
+        raise ValueError("A ready, approved release is required before freezing")
+    return {**gate, "frozen": True}
+
+
 def create_manifest(gate, acceptance, now=None):
-    if gate.get("ready") is not True or gate.get("blockers") or gate.get("frozen"):
-        raise ValueError("A ready, approved release is required before observation")
+    if gate.get("ready") is not True or gate.get("blockers") or gate.get("frozen") is not True:
+        raise ValueError("A ready, committed and pushed frozen release is required before observation")
     if any(acceptance.get(k) is not True for k in CHECKS):
         raise ValueError("All live acceptance checks must pass first")
+    if gate.get("region") != "us-west1" or acceptance.get("region") != gate["region"]:
+        raise ValueError("Observation region differs from the reviewed supported region")
     image = acceptance.get("image", "")
     expected = r"us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:[a-f0-9]{64}"
     if not re.fullmatch(expected, image):
@@ -25,7 +33,7 @@ def create_manifest(gate, acceptance, now=None):
         raise ValueError("Observation image differs from the reviewed release")
     return {"schema": 1, "started_at": (now or datetime.now(UTC)).isoformat(),
             "required_hours": 48, "project": gate["project"], "instance": gate["instance"],
-            "region": "us-central1", "image": image, "cloud_model": "gpt-6.1-sol",
+            "region": gate["region"], "image": image, "cloud_model": "gpt-6.1-sol",
             "local_model": "gemma4:e2b", "acceptance": {k: True for k in CHECKS}}
 
 
@@ -65,19 +73,24 @@ def command(args):
 def main():
     parser = argparse.ArgumentParser()
     actions = parser.add_mutually_exclusive_group(required=True)
+    actions.add_argument("--freeze", action="store_true")
     actions.add_argument("--start", type=Path, metavar="LIVE_ACCEPTANCE_JSON")
     actions.add_argument("--collect", action="store_true")
     args = parser.parse_args()
-    if args.start:
+    if args.freeze:
+        gate_path = Path("config/release.json")
+        gate = freeze_gate(json.loads(gate_path.read_text()))
+        gate_path.write_text(json.dumps(gate, indent=2) + "\n")
+        print("Release frozen locally. Commit and push this configuration, verify remote production is frozen, then start observation.")
+    elif args.start:
         gate_path = Path("config/release.json")
         gate = json.loads(gate_path.read_text())
         manifest = create_manifest(gate, json.loads(args.start.read_text()))
         MANIFEST.parent.mkdir(parents=True, exist_ok=True)
         with MANIFEST.open("x") as stream:
             json.dump(manifest, stream, indent=2)
-        # Freeze before any asynchronous export; failure remains visibly frozen for recovery.
-        gate["frozen"] = True
-        gate_path.write_text(json.dumps(gate, indent=2) + "\n")
+        # The tracked configuration was frozen, committed and pushed before this start.
+        # Only ignored operational evidence is written during the observation interval.
         stamp = manifest["started_at"].replace(":", "-")
         command(["storage", "cp", str(MANIFEST), "gs://assignment3-515003-a3-state/evidence/" + stamp + "/manifest.json"])
         command(["logging", "write", "a3-observation", json.dumps(manifest), "--payload-type=json"])

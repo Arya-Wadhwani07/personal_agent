@@ -1,0 +1,250 @@
+{
+  "scope": "local deployed container; full Hermes gateway; synthetic prompts; live OAuth and Ollama",
+  "results": [
+    {
+      "task_type": "arithmetic",
+      "intended_route": "local",
+      "started_at": "2026-11-17T21:40:21.028268+00:00",
+      "ended_at": "2026-11-17T21:40:49.011921+00:00",
+      "latency_seconds": 28.009,
+      "http_status": 200,
+      "prompt": "This is confidential synthetic test data. What is 17 times 6? Answer with the number and one short explanation.",
+      "answer": "102. Explanation: 17 multiplied by 6 equals 102.",
+      "response_model": null,
+      "success": true,
+      "task_quality_pass": true
+    },
+    {
+      "task_type": "arithmetic",
+      "intended_route": "cloud",
+      "started_at": "2026-11-17T21:40:49.014434+00:00",
+      "ended_at": "2026-11-17T21:40:57.050588+00:00",
+      "latency_seconds": 8.036,
+      "http_status": 200,
+      "prompt": "Analyze the following synthetic task carefully. What is 17 times 6? Answer with the number and one short explanation.",
+      "answer": "102. Multiplying 17 by 6 gives 60 + 42 = 102.",
+      "response_model": null,
+      "success": true,
+      "task_quality_pass": true
+    },
+    {
+      "task_type": "structured_extraction",
+      "intended_route": "local",
+      "started_at": "2026-11-17T21:40:57.051734+00:00",
+      "ended_at": "2026-11-17T21:40:59.852284+00:00",
+      "latency_seconds": 2.801,
+      "http_status": 200,
+      "prompt": "This is confidential synthetic test data. Extract the project and due day from this fictional note into JSON only: Project Bluebird is due Friday.",
+      "answer": "{\n\"project\": \"Bluebird\",\n\"due_day\": \"Friday\"\n}",
+      "response_model": null,
+      "success": true,
+      "task_quality_pass": true
+    },
+    {
+      "task_type": "structured_extraction",
+      "intended_route": "cloud",
+      "started_at": "2026-11-17T21:40:59.853536+00:00",
+      "ended_at": "2026-11-17T21:41:01.957409+00:00",
+      "latency_seconds": 2.104,
+      "http_status": 200,
+      "prompt": "Analyze the following synthetic task carefully. Extract the project and due day from this fictional note into JSON only: Project Bluebird is due Friday.",
+      "answer": "{\"project\":\"Bluebird\",\"due_day\":\"Friday\"}",
+      "response_model": null,
+      "success": true,
+      "task_quality_pass": true
+    },
+    {
+      "task_type": "tool_provenance",
+      "intended_route": "local",
+      "started_at": "2026-11-17T21:41:01.959672+00:00",
+      "ended_at": "2026-11-17T21:41:04.216896+00:00",
+      "latency_seconds": 2.257,
+      "http_status": 200,
+      "prompt": "This is confidential synthetic test data. Use a3_review_content exactly once to validate this synthetic ledger, then report its returned status and publishing flag. Do not fetch URLs or save a draft. Ledger: {\"topic\": \"A fictional team tests approval gates\", \"body\": \"My fictional team tests an approval gate before every email send. That small check makes the review process easier to explain.\", \"sources\": [{\"url\": \"https://example.org/synthetic-study\", \"title\": \"Synthetic fixture\", \"note\": \"Made-up test data: the fictional team verifies its approval gate.\"}], \"claims\": [{\"text\": \"tests an approval gate before every email send\", \"source\": 1}]}",
+      "answer": "The review returned an error: Policy/service rejected the request; no action confirmed. The publishing flag is not available.",
+      "response_model": null,
+      "success": true,
+      "task_quality_pass": false
+    },
+    {
+      "task_type": "tool_provenance",
+      "intended_route": "cloud",
+      "started_at": "2026-11-17T21:41:04.218019+00:00",
+      "ended_at": "2026-11-17T21:41:11.565776+00:00",
+      "latency_seconds": 7.324,
+      "http_status": 200,
+      "prompt": "Analyze the following synthetic task carefully. Use a3_review_content exactly once to validate this synthetic ledger, then report its returned status and publishing flag. Do not fetch URLs or save a draft. Ledger: {\"topic\": \"A fictional team tests approval gates\", \"body\": \"My fictional team tests an approval gate before every email send. That small check makes the review process easier to explain.\", \"sources\": [{\"url\": \"https://example.org/synthetic-study\", \"title\": \"Synthetic fixture\", \"note\": \"Made-up test data: the fictional team verifies its approval gate.\"}], \"claims\": [{\"text\": \"tests an approval gate before every email send\", \"source\": 1}]}",
+      "answer": "Returned status: ready_for_human_review\nPublishing flag: false\n\nNo URLs were fetched and no draft was saved.",
+      "response_model": null,
+      "success": true,
+      "task_quality_pass": true
+    }
+  ],
+  "retests": [
+    {
+      "task_type": "tool_provenance",
+      "intended_route": "local",
+      "started_at": "2026-11-17T22:09:02.133071+00:00",
+      "ended_at": "2026-11-17T22:09:28.830810+00:00",
+      "latency_seconds": 27.223,
+      "http_status": 200,
+      "answer": "The review status is ready for human review, and the publishing flag is false.",
+      "change": "explicit required nested tool schema",
+      "task_quality_pass": true
+    }
+  ],
+  "ollama_loaded_models": [
+    {
+      "name": "gemma4:e2b",
+      "model": "gemma4:e2b",
+      "size": 7428940802,
+      "details": {
+        "parent_model": "",
+        "format": "safetensors",
+        "family": "",
+        "families": null,
+        "parameter_size": "",
+        "quantization_level": "nvfp4"
+      },
+      "size_vram": 7428940802,
+      "context_length": 65536
+    }
+  ],
+  "routing_evidence": [
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T21:40:48.687298+00:00",
+      "request_id": "0d6777e9a2984ea3b31f51384b03b40c",
+      "route": "local",
+      "provider": "ollama",
+      "reason": "private_session",
+      "model": "gemma4:e2b",
+      "outcome": "success",
+      "task_type": "private",
+      "latency_ms": 25955
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T21:40:56.966772+00:00",
+      "request_id": "195d4330d8da408e90e1c3792e298c6b",
+      "route": "cloud",
+      "provider": "openai-oauth",
+      "reason": "reasoning_depth",
+      "model": "gpt-6.1-sol",
+      "outcome": "success",
+      "task_type": "reasoning",
+      "latency_ms": 7819
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T21:40:59.778964+00:00",
+      "request_id": "a75834049e364c47b273d91e56515029",
+      "route": "local",
+      "provider": "ollama",
+      "reason": "private_session",
+      "model": "gemma4:e2b",
+      "outcome": "success",
+      "task_type": "private",
+      "latency_ms": 2646
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T21:41:01.907877+00:00",
+      "request_id": "12b384aa3e5a48399785aa6f7d566891",
+      "route": "cloud",
+      "provider": "openai-oauth",
+      "reason": "reasoning_depth",
+      "model": "gpt-6.1-sol",
+      "outcome": "success",
+      "task_type": "reasoning",
+      "latency_ms": 1990
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T21:41:03.280275+00:00",
+      "request_id": "eec9ee6eac7e441c9bf4ab4215c5332f",
+      "route": "local",
+      "provider": "ollama",
+      "reason": "private_session",
+      "model": "gemma4:e2b",
+      "outcome": "success",
+      "task_type": "private",
+      "latency_ms": 1264
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T21:41:04.087219+00:00",
+      "request_id": "6cde6c6df9c2480dbfb9221b5e4e8697",
+      "route": "local",
+      "provider": "ollama",
+      "reason": "private_session",
+      "model": "gemma4:e2b",
+      "outcome": "success",
+      "task_type": "private",
+      "latency_ms": 643
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T21:41:08.230093+00:00",
+      "request_id": "4aa48554b8db4d9ea4e96ba2a7d52405",
+      "route": "cloud",
+      "provider": "openai-oauth",
+      "reason": "reasoning_depth",
+      "model": "gpt-6.1-sol",
+      "outcome": "success",
+      "task_type": "reasoning",
+      "latency_ms": 3946
+    },
+    {
+      "event": "tool",
+      "timestamp": "2026-11-17T21:41:08.276361+00:00",
+      "component": "a3_review_content",
+      "outcome": "success"
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T21:41:11.428034+00:00",
+      "request_id": "cdc72f93d20b4b0480f75337d585a44c",
+      "route": "cloud",
+      "provider": "openai-oauth",
+      "reason": "reasoning_depth",
+      "model": "gpt-6.1-sol",
+      "outcome": "success",
+      "task_type": "reasoning",
+      "latency_ms": 3114
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T22:09:27.255155+00:00",
+      "request_id": "755ec78f5a9040fb8416cefbc5aaa8db",
+      "route": "local",
+      "provider": "ollama",
+      "reason": "private_session",
+      "model": "gemma4:e2b",
+      "outcome": "success",
+      "task_type": "private",
+      "latency_ms": 24387
+    },
+    {
+      "event": "tool",
+      "timestamp": "2026-11-17T22:09:27.811459+00:00",
+      "component": "a3_review_content",
+      "outcome": "success"
+    },
+    {
+      "event": "routing",
+      "timestamp": "2026-11-17T22:09:28.482330+00:00",
+      "request_id": "99b042e12c5a4f6c8f26318784d4be2f",
+      "route": "local",
+      "provider": "ollama",
+      "reason": "private_session",
+      "model": "gemma4:e2b",
+      "outcome": "success",
+      "task_type": "private",
+      "latency_ms": 624
+    }
+  ],
+  "baseline_source_commit": "32edd98d759622922bbf48acae5538b9ec5c5f62",
+  "retest_broker_sha256": "7965a5e405f9b06905b5f125e013a28089e6ba0549e1f4a059c2d248c9c7038b",
+  "retest_local_image": "sha256:119b7d84490a826641e1630b2822b47d2833af0068faa1e94e18387880c5d308"
+}

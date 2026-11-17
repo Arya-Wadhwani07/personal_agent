@@ -32,7 +32,7 @@ jobs:
         env:
           A3_IMAGE: ${{ inputs.image_digest }}
           A3_GCP_PROJECT: assignment3-515003
-          A3_REGION: us-central1
+          A3_REGION: us-west1
           A3_BUDGET_USD: "4"
         run: python scripts/deploy.py --plan
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
@@ -50,7 +50,7 @@ jobs:
         env:
           A3_IMAGE: ${{ inputs.image_digest }}
           A3_GCP_PROJECT: assignment3-515003
-          A3_REGION: us-central1
+          A3_REGION: us-west1
           A3_BUDGET_USD: "4"
         run: python scripts/deploy.py --execute
 

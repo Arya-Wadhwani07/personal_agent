@@ -1,236 +1,60 @@
 # Monday — Security Register
 
-I track design risks, observed findings and verified fixes separately. **The earlier native image gate passed; the updated source needs a fresh image gate and live deployed security acceptance.** A passing scoped gate is not a guarantee that no vulnerabilities exist.
+I track findings, fixes and residual limits by artifact. A passing scoped check is **not** a guarantee that no vulnerabilities exist. I own release decisions, with Codex assisting investigation, implementation and retesting.
 
-**Current baseline:** patched SQLite/ACL/Tailscale dependencies, non-root execution, no effective capabilities, no-new-privileges and exact-version dispositions expiring November 24. [Current evidence](IMPLEMENTATION_STATUS.md) · [Disposition file](../config/image-dispositions.json)
+[Threat model and attacks](SECURITY_AUDIT.md) · [Verification record](IMPLEMENTATION_STATUS.md) · [Exact image dispositions](../config/image-dispositions.json)
 
-Earlier finding narratives below retain their discovery context. The latest disposition/retest record controls their present status.
+## Findings and verified responses
 
-## On this page
+| ID | Finding and discovery | Implemented response / evidence | Scope and residual limit |
+| --- | --- | --- | --- |
+| VULN-001 | Medium: supplied proxy lacks bounded body/response size and application concurrency limits; manual review November 16. | Replacement ASGI edge caps input/output, body wait and in-flight work. API tests cover slow/oversized traffic, overload and recovery. | Course original unchanged. Final-Instance acceptance checks effective deployed limits. |
+| VULN-002 | Medium: supplied proxy interpolates log strings and returns raw exception text; manual review November 16. | JSON serialization, allowlisted audit fields and sanitized errors; `test_audit.py` and private-error sentinel tests. | Native/cloud logs are reviewed separately from custom logger tests. No actual credential disclosure was observed. |
+| VULN-003 | SQLite baseline and durable-state compatibility require image-level review. | Hardened runtime uses SQLite 3.54.1; state, snapshots and recovery tests exercise application/native state. | Controlled actual Instance recovery belongs before observation. A version number alone does not establish security. |
+| VULN-004 | Project/budget validation could accept an unreviewed deployment target or invalid limit. | Exact project, approved finite budget and reviewed-region validation; release negative tests. | Billing tracking is not a hard spending cap. |
+| VULN-005 | High/Critical OS entries in earlier Trivy runtime inventories, November 17. | SQLite/ACL/zlib patched; unused mount, nsenter and infocmp removed. Remaining findings receive exact-version, profile-specific applicability dispositions. | Raw scan entries are retained. Unknown High/Critical findings, changed profile or expired review block the gate. |
+| VULN-006 | High: container Tailscale x/net dependency flagged CVE-2026-78661. | Verified v1.104.7 source build with patched x/net/x/crypto; hardened image scan and profile gate. | Mac installation is outside this container patch. |
+| VULN-007 | Medium: delayed content response could render after sign-out. | Active key/session check before rendering; delayed-response Chromium regression confirms no draft reappears. | Final browser rehearsal exercises the deployed artifact. |
+| VULN-008 | High: klauspost/compress affected symbols in original Tailscale binaries, GO-2026-6865 / CVE-2026-116591. | Verified-source container build updates compress; hardened scan no longer reports the earlier Go findings. | Symbol presence was not claimed as an executed exploit; no crash payload was run. |
 
-- [Current finding summary](#current-finding-summary)
-- [My security standard](#my-security-standard)
-- [What I track](#what-i-track)
-- [My initial risk backlog](#my-initial-risk-backlog)
-- [Alignment with my architecture](#alignment-with-my-architecture)
-- [Repository boundary and history](#repository-boundary-and-history)
-- [Original starter findings — discovery record](#original-starter-findings--discovery-record)
-- [My security check record](#my-security-check-record)
-- [How I keep the record current](#how-i-keep-the-record-current)
-- [Review history](#review-history)
-- [My clarification-driven controls](#my-clarification-driven-controls)
-- [Earlier November 17 findings — before the hardened image](#earlier-november-17-findings--before-the-hardened-image)
-- [My reviewed image dispositions](#my-reviewed-image-dispositions)
+The original proxy is identified by SHA-256 `5730d4e2e6152ce276b16c2b98f8a3fda48019a8b594fc016618645d8e068e2b`. Its source locations and exact observations are in [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md). Earlier discovery snapshots remain in Git history; superseded versions are not presented as the current runtime.
 
-## Current finding summary
+## Image applicability and release gate
 
-| Finding | Current outcome | Remaining limit |
-| --- | --- | --- |
-| VULN-001: proxy resource bounds | Replacement API limits and overload/recovery tests passed. | Actual deployed limits still need acceptance. |
-| VULN-002: unsafe logs/errors | Structured allowlisted audit fields and sanitized-error tests passed. | Inspect native/cloud logs after deployment. |
-| VULN-003: old SQLite baseline | Hardened image uses SQLite 3.54.1; state/recovery tests passed. | Complete real Instance restart acceptance. |
-| VULN-004: project/budget authorization | Exact project and finite approved-budget checks passed. | Billing tracking is not a hard spending cap. |
-| VULN-005: OS image findings | SQLite/ACL patched; remaining exact-version findings have tested profile-specific dispositions. | Dispositions expire November 24; raw findings remain visible. |
-| VULN-006/008: container Go dependencies | Verified-source Tailscale build updates x/net, x/crypto and compress; image gate passed. | Mac Tailscale installation is unchanged. |
-| VULN-007: late UI response after sign-out | Session/key check and delayed-response browser regression passed. | Deployed browser acceptance remains. |
+The native `ecb61d2` image passed its [published gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44166861878). This result applies to that digest. Every later publish reruns the gate against its own image.
 
-[Native release gate evidence](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44166861878) · [Earlier discovery records](HISTORY.md)
+- **Runtime profile:** non-root UID, zero effective capabilities, no-new-privileges and userspace-only Tailscale.
+- **Component evidence:** systemd-homed and Perl Archive::Tar are absent; removed utility entrypoints constrain the recorded util-linux/ncurses findings.
+- **Hermes metadata:** upstream reports package version `0.0.0`; pinned verified source is v0.22.7. The specific CVE-2026-53869 disposition uses source identity and Host/Origin behavior, not a blanket version suppression.
+- **Expiry:** exact package dispositions expire **November 24, 2026**. `image_profile.py` and `image_gate.py` reject profile drift, unknown findings and expired reviews.
+- **Evidence:** raw Trivy JSON, runtime profile proof and decisions are retained in CI artifacts. Package-entry counts are not exploit counts or a zero-vulnerability statement.
 
-## My security standard
+References: [SQLite releases](https://www.sqlite.org/changes.html), [Debian ACL advisory](https://security-tracker.debian.org/tracker/CVE-2026-54369), [Tailscale build source](https://github.com/tailscale/tailscale/blob/v1.104.7/build_docker.sh). Individual applicability references and exact versions are in the disposition file.
 
-I want to prevent vulnerabilities throughout development and catch problems before anyone uses the agent. My release target is **no known unresolved release-blocking vulnerabilities**, supported by current review, scans, and behavioral tests. A clean scanner result cannot guarantee that every vulnerability has been found.
+## Threat register
 
-My release gate blocks unresolved Critical/High findings, exposed live credentials, authentication or authorization bypass, uncontrolled email/social publishing, unintended public inference access, and violations of my sandbox boundary.
+These are failure scenarios, not eleven discovered vulnerabilities. Each control is exercised through the security audit and relevant tests.
 
-- These behavior-based blockers apply even if a scanner rates them lower.
-- An untriaged scanner result is not a pass; failed, unavailable, stale, or incomplete required checks also block the security gate until resolved.
-
-Any lower-severity residual risk needs my explicit documented decision, rationale, compensating control, owner, and review/expiry date. It remains visible in the final audit. This process must never waive an assignment requirement or relabel an unfixed release blocker as safe. The deadline does not change this standard.
-
-## What I track
-
-I keep **design risks** separate from **observed findings**. A risk describes a failure I need to prevent; a finding requires evidence from my code, dependency/image inventory, configuration, or test. A proposed mitigation is not a verified control.
-
-For every actual finding, my entry will contain:
-
-| Field | My record |
-| --- | --- |
-| ID and discovery | Stable `VULN-###` ID, discovery time, reporter/tool, and affected requirement/risk. |
-| Affected artifact | File/component and exact commit, dependency version, image digest, or configuration revision. |
-| Evidence | Sanitized reproduction, expected/actual behavior, scanner rule/advisory/CVE when one exists, tool/version/database date, and report location. |
-| Assessment | Severity and rationale, exposure, exploitability, affected users/data, and triage decision. A CVE label alone does not establish reachability in my build. |
-| Ownership | My assigned remediation owner, target date, and current status. |
-| Fix | Proposed control, actual fix commit/configuration, and regression test. |
-| Verification | Retest environment, exact artifact, result, date, reviewer, and evidence link. A fix is not closed until retested. |
-| Residual decision | Any permitted lower-severity acceptance, compensating control, my approval, expiry, and final-audit reference. |
-
-My finding lifecycle is **New → Triaged → In progress → Fixed, awaiting retest → Verified closed**. A false positive needs a recorded reason and supporting evidence. Permitted residual risks use **Accepted temporarily**, with expiry; they are not silently closed. A changed dependency, configuration, or failing regression can reopen a finding.
-
-Secrets, personal data, exploit payloads containing live credentials, and private service URLs stay out of this Markdown. Sanitized summaries point to appropriately protected evidence where needed.
-
-## My initial risk backlog
-
-These are prospective risks, not discovered vulnerabilities or completed mitigations. This is my original design backlog; current scoped verification appears in the update and finding records. I own the review and release decision, with Codex assisting implementation and testing within approved scope.
-
-| Risk ID | Potential failure and impact | Planned control | Required verification |
+| Risk ID | Potential failure and impact | Control contract | Verification contract |
 | --- | --- | --- | --- |
 | RISK-01 | Gateway/session authorization failure exposes chat, drafts, or tools to another identity. | Authentication before operations, session ownership, minimal authorized identities, and reviewed grader access. | Missing/wrong credentials, cross-session access, unapproved messaging identity, and privilege-boundary tests. |
 | RISK-02 | Credentials leak through Git, builds, logs, browser output, reports, or backups. | Runtime secret injection, redaction, excluded build paths, minimal UI exposure, and scoped retention. | Secret scans of source/history where available and image/artifact review; synthetic sentinel checks in output/logs. |
-| RISK-03 | An approval bypass or replay sends email or publishes content without consent. | Code-enforced email approval/recipient restrictions; no LinkedIn publishing capability in the proposed fourth skill; noninteractive jobs only draft/notify. | Denial, changed-recipient/content, expired/replayed approval, scheduled-job, and unsupported-browser-action tests. |
+| RISK-03 | An approval bypass or replay sends email or publishes content without consent. | Code-enforced email approval/recipient restrictions; no LinkedIn publishing capability in the fourth skill; noninteractive jobs only draft/notify. | Denial, changed-recipient/content, expired/replayed approval, scheduled-job, and unsupported-browser-action tests. |
 | RISK-04 | Untrusted URLs reach metadata services, loopback, private networks, or local files. | Restricted fetch destinations/protocols, redirect and resolved-address checks, request/size limits, and no file-loading capability from external input. | SSRF, DNS/redirect changes, private-address/metadata/file URL cases using sandbox mocks. Only the authorized model adapter may reach its configured private Ollama endpoint. |
 | RISK-05 | External text or model output executes script in browser chat. | Safe rendering/escaping, reviewed Markdown/link handling, and appropriate browser security controls. | Stored/reflected XSS fixtures in chat, source cards, error messages, and copy/export flows. |
-| RISK-06 | Email, web, or imported content overrides instructions, steals data, or poisons persistent memory. | Treat retrieved content as untrusted data; isolate tool authority; validate arguments; control memory writes and provenance. | At least three distinct attacks if claiming injection defense; proposed cases target tool misuse, secret exfiltration, and persistent memory poisoning. |
+| RISK-06 | Email, web, or imported content overrides instructions, steals data, or poisons persistent memory. | Treat retrieved content as untrusted data; isolate tool authority; validate arguments; control memory writes and provenance. | At least three distinct attacks if claiming injection defense; cases target tool misuse, secret exfiltration, and persistent memory poisoning. |
 | RISK-07 | Vulnerable dependencies/images or a compromised workflow reach a release. | Pinned dependency/action versions, vulnerability checks, minimal CI permissions, trusted publishing, scoped OIDC, and immutable image promotion. | Dependency/image inventory scans, workflow review, untrusted-PR isolation, and exact released digest evidence. |
 | RISK-08 | Sandbox or network configuration exposes host data or unauthenticated Ollama. | No unrelated host mounts, non-root restricted processes, controlled network access, private inference, and explicit authorized setup. | Effective mount/privilege/network inspection and authorized-versus-unauthorized access tests. |
 | RISK-09 | Concurrent state updates or unsafe snapshots corrupt memory, lose drafts, or mix sessions. | Controlled writer, session scoping, consistent snapshots, and verified restore. | Concurrent operations, interruption/restart, session isolation, and durable recall tests. |
 | RISK-10 | Unbounded input, retries, requests, or scheduled work exhaust resources or provider budget. | Input/time/resource limits, bounded retries, concurrency control, and idempotent jobs. | Bounded sandbox load/stress, oversized payloads, timeout/retry, duplicate-job, and recovery tests. |
 | RISK-11 | Content research exposes personal profiles, copies others' posts, or produces unsupported claims. | Permitted sources, synthetic assignment profile, provenance, short supported synthesis, duplicate checks, and draft-only export. | Personal-data fixtures, source/claim checks, prompt injection, stale/duplicate topics, and no-publishing assertions. |
 
-## Alignment with my architecture
+## My release standard
 
-My architecture's sections A4-A11 place controls at explicit trust boundaries: authenticated entry, per-turn routing/privacy, the shared send gate, restricted provider adapters, single-writer state commits, and trusted build/release identities. Figures 3 and 4 define approval consumption/uncertain-send handling and durable memory acknowledgement. These are planned contracts, not verified controls.
+Unresolved Critical/High findings, live-secret exposure, authentication bypass, uncontrolled sends, public inference exposure and sandbox failures block release. Unavailable or stale required checks cannot be silently counted as passing.
 
-The architecture review highlights implementation gates within existing risks: RISK-03 needs proof that alternate shell/tool paths cannot use send authority and that ambiguous sends are not blindly retried; RISK-09 needs an inventory of every framework/background writer, consistent snapshot hooks, and prevention of overlapping active writers. Generation-matched storage commits detect conflicts but do not by themselves fence an external side effect. RISK-04 must preserve the fixed local-model and trusted cloud-identity exceptions without exposing them to general URL fetching. RISK-06 must preserve private-task policy across subsequent model calls and tool results. Failure to establish these boundaries blocks the relevant release claim.
+A finding records its ID, discovery, exact artifact, sanitized evidence, severity, owner, fix, retest and residual decision. Any temporary disposition is explicit, scoped and expiring. Changed dependencies or failing regressions reopen review.
 
-## Repository boundary and history
+Credentials stay out of tracked files, images, reports and ordinary backups. Exact-value scans cover configured secrets, while pattern scans and artifact review cover other exposure paths; neither guarantees every possible secret format was detected. Exposure requires authorized revocation/rotation, not merely deletion of a file.
 
-My approved repository destination is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent). Routine commits/pushes do not relax secret handling or the release gate.
-
-- For the initial baseline, only project-authored documentation and .gitignore are staged; course PDFs, archives, extracted starter files, credentials, private state and generated outputs stay out of Git. Repository visibility/protections must be verified before application-source publication.
-
-My pre-commit review checks explicit paths, content/diff and applicable verification results.
-
-- This manual documentation/staging review is not an automated secret scan or a passing application-security assessment. Future scanners need to cover the actual source/history and exact candidate artifacts.
-- A leaked secret already committed would require authorized revocation/rotation and a coordinated remediation decision; ignoring or deleting the file alone would not erase history.
-
-## Original starter findings — discovery record
-
-I recorded two statically observed findings in the unmodified Hermes starter, not a deployed application. Both were identified in the starter; my replacement application now has scoped mitigation and regression evidence, while deployed acceptance remains pending.
-
-- I own remediation decisions with Codex assisting; the target is resolution/review before adopting this proxy in an exposed application.
-- No CVE is asserted, no automated scanner/database version applies, and neither finding has a fix commit, regression result or closure evidence yet.
-
-The common source artifact is `docs/Assignment3_local_Gemma_scripts/Hermes/web_ui.py`, SHA-256 `5730d4e2e6152ce276b16c2b98f8a3fda48019a8b594fc016618645d8e068e2b`, byte-identical to the ZIP member on November 16, 2026. [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md) records archive identity and the scope. Sources remain local and unchanged.
-
-### VULN-001 — unbounded proxy resource handling
-
-- **Discovered:** November 16, 2026, Codex-assisted manual source review; affected RISK-10, SEC-07 and USER-13.
-- **Evidence:** Lines 288-290 read supplied Content-Length without an application size bound; lines 299-300 buffer the upstream response in full; lines 327-332 create a thread per request without a source-level concurrency cap. Body parsing is outside the proxy error-handling block. The upstream 120-second timeout does not establish client-body, total-request or concurrency limits.
-- **Severity/exposure:** Provisional Medium for availability risk if adopted as an exposed gateway. Effective platform limits, reachable load and impact remain unmeasured; this is not a demonstrated outage.
-- **Remediation plan:** Validate framing and nonnegative bounded lengths, restrict body/response sizes and concurrent work, add client-read and total-operation deadlines, and return safe errors/backpressure. Verify deployment limits too.
-- **Retest required:** Invalid/negative/oversized lengths, slow/incomplete bodies, oversized responses and bounded concurrency/stress against an authorized disposable target, with resource/recovery evidence.
-- **Current outcome:** Unfixed source finding; no execution, exploit, mitigation claim or residual-risk acceptance. Required checks must pass before adopting the proxy.
-
-### VULN-002 — unsafe access-log construction and error disclosure
-
-- **Discovered:** November 16, 2026, Codex-assisted manual source review; affected RISK-02, SEC-05/07, CORE-10 and USER-13.
-- **Evidence:** Lines 322-324 interpolate access-log text into JSON after replacing double quotes only, without JSON-escaping backslashes or applying a field/query redaction policy. Lines 314-320 return raw exception text to the client. This differs from the required sanitized, structured evidence design.
-- **Severity/exposure:** Provisional Medium for log integrity and potential information disclosure if sensitive request/error data reaches these paths. No real credential leakage, attacker-controlled log entry or deployed exploit was observed. Normal chat uses an Authorization header, so this observation does not establish that the normal chat request logs its API key.
-- **Remediation plan:** Use a JSON serializer with allowlisted metadata, omit query strings/message text/secrets, and return sanitized error categories with correlation IDs. Keep detailed diagnostics restricted and redacted.
-- **Retest required:** Synthetic query/exception sentinels, backslash/control-character cases, parseable log records and absence of sensitive sentinels from responses/logs, inside the approved sandbox.
-- **Current outcome:** Unfixed source finding; no execution, fix commit, retest or residual-risk acceptance.
-
-Broad proxy routing, incomplete approval hooks, default-green health and daemon state snippets are additional review gates in SCRIPT_REVIEW.md. I have not labeled these as proven authentication bypass, XSS, or deployed vulnerabilities. Existing escape-before-format logic is a control to preserve and test.
-
-## My security check record
-
-| Check | Scope and observed checkpoint | Remaining limit |
-| --- | --- | --- |
-| Threat model | Trust boundaries, grader access, tools, memory and content research reviewed. | Deployed controls and residual-risk decisions remain pending. |
-| Static analysis | Original 19-file manual review and initial application Ruff/Bandit checks. Three scoped alerts were reviewed. | Latest source needs renewed checks; VULN-001/002 need adaptation closure records. |
-| Dependencies | Initial installed-package advisory scan reported no known advisories. Lockfile exists. | Subsequent dependency additions require a new scan; no zero-vulnerability guarantee. |
-| Secrets | Ignored private configuration and explicit staging boundaries. | Current full source/history/image and artifact scan still required. |
-| Container/configuration | Non-root, project-scoped sandbox and an earlier runtime image exercised. | Latest image, OS advisories, cloud IAM and deployed configuration remain unverified. |
-| White-box | Approval, replay, concurrent claims, routing, bounded work and state tests passed within the recorded 68-test suite. | New provider chain, latest network code and broader injection defenses remain unverified. |
-| Black-box | Isolated API and Chromium auth/plain-text rendering/overload checks passed; model replies mocked. | Live cloud/messaging/account and complete injection evaluation remain pending. |
-| Release gate | Not eligible for release. | Required live checks, open findings and exact final artifact evidence remain incomplete. |
-
-My tool selection will match the platform and repository plan. GitHub can surface code-scanning results from CodeQL or compatible third-party tools, but feature availability and licensing must be checked for my repository.
-
-- If a hosted feature is unavailable, I need an approved equivalent scanner/reporting path rather than silently skipping the check. [GitHub code scanning](https://docs.github.com/en/code-security/concepts/code-scanning/code-scanning), [GitHub security availability](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security)
-
-## How I keep the record current
-
-Each approved implementation change includes a security review of affected paths and updates this register when risks, findings, controls, or evidence change. Before merge/release, applicable checks must cover the candidate artifact. A periodic advisory recheck can produce new findings even without code changes; its schedule and network access need approval during implementation.
-
-If a live credential is exposed, my first remediation decision is revocation/rotation through an authorized account operation, followed by removing the exposure and retesting; deleting a string alone does not invalidate it.
-
-- An incident during the observation/grading freeze comes back to me for a documented containment/fix decision.
-- The freeze must not be used to hide a vulnerability, and any interruption remains part of the uptime evidence.
-
-## Review history
-
-| Date | Change | Evidence/status |
-| --- | --- | --- |
-| 2026-11-16 | I requested ongoing vulnerability tracking. Codex created this register, defined the release gate, and connected security review to the proposed content skill and CI/CD. | Documentation review only; no scan, penetration test, or remediation claim. |
-| 2026-11-16 | I requested the detailed architecture. Codex linked its trust boundaries and storage/send failure contracts to the existing risk backlog. | Design review only; no new confirmed vulnerability, implemented mitigation, scan or retest. |
-| 2026-11-16 | I supplied the repository and authorized coherent commits/pushes. Codex documented staged-content controls and local-only source/secret/state exclusions. | Documentation/staging review only; repository visibility and automated scans remain unverified. |
-| 2026-11-16 | I authorized extracted-script review. Codex recorded VULN-001/002 from the unchanged Hermes proxy, with source identity, provisional severity and adaptation/retest gates. | Manual static evidence only; no exploit, scan, runtime test, fix or closure claimed. |
-
-## My clarification-driven controls
-
-I keep the instructor rulings in [CLARIFICATIONS.md](CLARIFICATIONS.md) separate from vulnerability findings. No new exploit is established by those posts.
-
-- **Provider boundaries:** Hermes OpenAI browser OAuth is my selected primary, NVIDIA my fallback, with Claude an accepted alternative. Separate credentials and fixed provider endpoints, bounded attempts and per-provider audit outcomes must accompany migration. Private context must remain local through fallback. NIM reliability remains a risk even as fallback; bounded usage and my $4 total ceiling gate paid calls.
-- **Synthetic account safety:** Two temporary fictional-role mailboxes and a dedicated temporary Calendar are allowed. Every send still needs explicit payload-bound human approval. Own credentials/scopes and restrictions support meaningful skill integration.
-- **Availability:** Planned three-hour grading restarts stay disabled. I address measured memory pressure before freezing; 1 vCPU/4 GiB is allowed if justified and affordable. Unexpected restarts remain reported incidents with potential penalty.
-- **Evidence integrity:** Final primary-model changes require new logs/video. Minor non-model fixes retain Q10's observation exemption but still require affected security/regression checks and an honest change/outage record. Unanswered fallback-only questions do not create a waiver.
-- **Topology:** One Instance with an internal broker preserves the documented deployment path. I do not copy separate-Service IAM recipes into Instance configuration without verifying the actual architecture.
-
-## Earlier November 17 findings — before the hardened image
-
-- **VULN-001 (application mitigation verified; deployed bounds pending):** My replacement ASGI boundary caps request/response sizes, in-flight requests and body-read time. tests/test_api.py now checks oversized chunked requests, oversized upstream responses, a slow body releasing its slot, overload and recovery. My bounded load probe requires every recovery request to succeed. I preserve the original starter unchanged.
-- **VULN-002 (application mitigation verified; live logging pending):** My replacement emits JSON-serialized allowlisted audit fields and sanitized service errors. tests/test_audit.py rejects prompt fields and verifies escaped control characters; tests/test_api.py proves a synthetic private upstream error is absent from the public response. Routing tests check prompt/credential exclusion. Native/cloud log review remains a separate acceptance check.
-- **VULN-003 (mitigated, not fully closed):** The new runtime links SQLite 3.46.1, replacing 3.40.1; custom state still uses DELETE journaling. The native framework fallback and actual image recovery need final verification. A newer SQLite version alone is not proof that all SQLite advisories are fixed.
-- **VULN-005 (High, release blocking, open):** Trivy 0.76.0 scanned my exported runtime, without a Docker socket mount, on November 17. The original Debian 12.15 image reported 2 Critical and 43 High OS entries, plus other component findings. I moved to pinned Debian 13.7, removed the unused system installer and installed zlib1g 1:1.3.dfsg+really1.3.1-1+deb13u1. The updated inventory has 0 Critical and 47 High OS entries, including util-linux, SQLite, ncurses and other packages with no fixed Debian version listed. The count can increase across distributions; it is not an exploit count or a clean security verdict. I own remaining applicability review/remediation before release; no exception is approved. Reports: .cache/audit/image-before.json and image-final.json.
-- **VULN-006 (High, release blocking pending applicability review):** Both pinned Tailscale 1.104.7 binaries contain golang.org/x/net v0.60.0. CVE-2026-78661 concerns HTML parser resource exhaustion; the scanner lists v0.62.0 as fixed. Whether the affected parser is reachable in my userspace-only configuration remains unverified. I have not silently rebuilt/forked Tailscale or changed my Mac installation.
-- **VULN-007 (Medium, UI fix verified):** An in-flight content refresh could render drafts after sign-out. I now verify the active key before rendering the response. The offline Chromium probe delays the response until after sign-out and confirms no draft is restored. Failed chat input is preserved for deliberate retry and cleared on new-chat/sign-out.
-- **Scanner metadata review (not a waiver):** Hermes source is pinned and archive-verified at v0.22.7, while its upstream distribution metadata intentionally says 0.0.0. The scanner consequently reports older Hermes advisories, including duplicate CVE-2026-53869 entries with fixed version 0.16.0. These need source-version applicability records; I have not blanket-ignored future Hermes findings.
-- **Secret check:** An exact-value comparison against configured credentials found zero matches across 69 source/Markdown/skill files and all Git history. My first scanner attempt misclassified Google's public token_uri endpoint as a secret; excluding public OAuth endpoint metadata removed that false positive. This is a scoped check, not proof about every possible secret format or final submission artifact.
-
-At that earlier checkpoint, VULN-005/006 and incomplete deployed checks blocked release.
-
-- The current outcomes are summarized above.
-- The current gate retains raw findings and fails on unknown findings, profile drift or expired exact-version dispositions.
-- The dependency scan's clean result cannot override the image result. [Trivy image scanning](https://trivy.dev/docs/latest/guide/references/configuration/cli/trivy_image/), [Debian SQLite advisory](https://security-tracker.debian.org/tracker/CVE-2025-7458), [Debian MiniZip applicability notes](https://security-tracker.debian.org/tracker/CVE-2023-45853).
-
-
-### My image applicability investigation
-
-I inspected the scanned runtime without a network, as UID 10001 with effective capabilities zero and no-new-privileges enabled.
-
-- The image has no systemd-homed binary and no Archive/Tar.pm under the installed Perl library tree.
-- The systemd and Perl package findings therefore need component-level applicability records; these observations do not waive the other package findings. Debian identifies the Perl issue as Archive::Tar allocation from an untrusted tar size. [Debian Perl advisory](https://security-tracker.debian.org/tracker/CVE-2026-9538)
-
-The image still contains mount/nsenter and SQLite 3.46.1. Lack of mount privileges limits the local mount attack paths in the inspected sandbox, but I have not treated that as proof for a future cloud configuration.
-
-- The SQLite FTS5 advisory concerns a corrupted database index; native Hermes also uses SQLite, so I cannot dismiss it merely because my custom queries are parameterized.
-- No CVE suppression or release exception was added. [Debian SQLite advisory](https://security-tracker.debian.org/tracker/CVE-2026-119374)
-
-
-### My symbol-level Tailscale follow-up
-
-On November 17 I used pinned govulncheck v1.9.0 in a disposable Go 1.27 container to inspect the exact Linux arm64 Tailscale 1.104.7 binaries from my pinned image.
-
-- The scanner reported its database last modified November 11.
-- For GO-2026-6860 / CVE-2026-78661 it reported the module version but no affected HTML-parser package/function.
-- This narrows VULN-006 for these artifacts; it does not establish the status of the future amd64 deployment or the Mac app.
-- I added no blanket CVE suppression. [Go advisory](https://pkg.go.dev/vuln/GO-2026-6860), [scanner scope](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)
-
-**VULN-008 (High, open, release blocking):** The same scan found affected fse/huff0 functions from github.com/klauspost/compress v1.20.0 in both binaries. GO-2026-6865 / CVE-2026-116591 describes crafted compressed input causing a decoder panic; upstream lists v1.20.2 as patched and classifies it High. Symbol presence is not proof that the untrusted-input path is reachable in my deployment, but I cannot mark this component clean.
-
-- I own upstream-version or reachability review and retesting before release. Reports remain private under .cache/audit/go/.
-- I did not execute a crash payload, modify the installed Mac app, or deploy these binaries. [Upstream advisory](https://github.com/klauspost/compress/security/advisories/GHSA-fpmh-frq8-7rj8)
-
-## My reviewed image dispositions
-
-`config/image-dispositions.json` records the exact package versions, source references, rationale and November 24 review expiry. `scripts/image_profile.py` checks the actual image; `scripts/image_gate.py` refuses profile drift, unknown findings and expired reviews.
-
-- The full Trivy JSON remains available alongside the gate result.
-- My local evidence is under `.cache/audit/`; the CI workflow uploads raw findings, profile proof and gate decisions.
-
-- VULN-005: SQLite/ACL patched; remaining util-linux findings have no mount/nsenter entrypoints or privileged caller in the enforced runtime. infocmp was removed; systemd-homed and Archive::Tar are absent. Native amd64 verification passed in the published release; deployed runtime acceptance remains pending.
-- VULN-006/008: container Tailscale is built from verified v1.104.7 source with updated x/net, x/crypto and klauspost/compress. The hardened arm64 Trivy scan no longer reports the earlier Go findings. My Mac installation is unchanged.
-- Hermes metadata remains honestly recorded as upstream's `0.0.0`; the verified v0.22.7 source and behavioral Host/Origin checks support the specific CVE-2026-53869 disposition.
-
-My upstream references are the [SQLite release history](https://www.sqlite.org/changes.html), [Debian ACL advisory](https://security-tracker.debian.org/tracker/CVE-2026-54369), individual Debian links in the disposition register, and [Tailscale's container build](https://github.com/tailscale/tailscale/blob/v1.104.7/build_docker.sh). Pricing references are [Cloud Run Instances](https://cloud.google.com/run/pricing), [Tavily credits](https://docs.tavily.com/documentation/api-credits) and [NVIDIA developer access](https://docs.api.nvidia.com/nim/docs/run-anywhere).
+Operational incidents retain actual timestamps. The source freeze does not hide failures; any containment or deployment change requires the relevant authorization and an honest outage record. Scheduled three-hour restarts remain disabled.

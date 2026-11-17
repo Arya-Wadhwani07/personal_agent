@@ -38,7 +38,51 @@ TOOLS = {
     ),
     "a3_review_content": (
         "Check a draft claim-to-source ledger and previous topics before saving; no publishing.",
-        {"draft": {"type": "object"}},
+        {
+            "draft": {
+                "type": "object",
+                "properties": {
+                    "topic": {"type": "string", "minLength": 1, "maxLength": 200},
+                    "body": {"type": "string", "minLength": 1, "maxLength": 3000},
+                    "sources": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 5,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "url": {"type": "string"},
+                                "title": {"type": "string"},
+                                "note": {"type": "string"},
+                            },
+                            "required": ["url", "title", "note"],
+                            "additionalProperties": False,
+                        },
+                    },
+                    "claims": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 20,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "text": {"type": "string"},
+                                "source": {"type": "integer", "minimum": 1},
+                            },
+                            "required": ["text", "source"],
+                            "additionalProperties": False,
+                        },
+                    },
+                    "previous_topics": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "maxItems": 1000,
+                    },
+                },
+                "required": ["topic", "body", "sources", "claims"],
+                "additionalProperties": False,
+            }
+        },
     ),
     "a3_content_history": ("Read saved content drafts and their review states.", {}),
     "a3_weather": ("Read current weather and today's range for the fictional profile city.", {}),
@@ -156,11 +200,12 @@ class Broker:
             # One unavailable source must not suppress alerts from the other source.
             unavailable = []
             collected = {}
+
             async def collect(source, fetch):
                 try:
                     async with asyncio.timeout(ALERT_SOURCE_SECONDS):
                         collected[source] = await fetch()
-                except (PolicyError, httpx.HTTPError, TimeoutError):
+                except PolicyError, httpx.HTTPError, TimeoutError:
                     collected[source] = {"untrusted_data": []}
                     unavailable.append(source)
                     emit("alert_source", component=source, outcome="unavailable")

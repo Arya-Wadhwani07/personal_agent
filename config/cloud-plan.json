@@ -1,6 +1,6 @@
 {
   "project": "assignment3-515003",
-  "region": "us-central1",
+  "region": "us-west1",
   "runtime_service_account": "a3-runtime@assignment3-515003.iam.gserviceaccount.com",
   "deploy_service_account": "a3-deploy@assignment3-515003.iam.gserviceaccount.com",
   "wif_provider": "projects/1043695272988/locations/global/workloadIdentityPools/a3-github/providers/github",
@@ -16,5 +16,8 @@
   "other_services_reserve_usd": "1.00",
   "unallocated_usd": "1.529504",
   "cost_rate_checked": "2026-11-17",
-  "note": "Estimate, not a cloud billing hard cap. Recheck total usage before extending the availability window. NVIDIA developer catalog is a free, rate-limited trial endpoint; at most 20 attempts, with no paid deployment or subscription. Search reserves 50 basic calls at the current $0.008 PAYG rate."
+  "note": "Estimate, not a cloud billing hard cap. Recheck total usage before extending the availability window. NVIDIA developer catalog is a free, rate-limited trial endpoint; at most 20 attempts, with no paid deployment or subscription. Search reserves 50 basic calls at the current $0.008 PAYG rate. Instance region corrected to us-west1; existing storage/registry remain in us-central1. Recheck regional compute and cross-region transfer costs before release; earlier numeric estimates are provisional.",
+  "artifact_registry_region": "us-central1",
+  "state_bucket_region": "us-central1",
+  "cost_review_required": true
 }

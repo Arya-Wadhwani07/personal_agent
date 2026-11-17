@@ -1,68 +1,42 @@
-# Monday — Final Readiness Review
+# Monday — Release and Submission Checklist
 
-**Reviewed November 17, 2026. My project is not ready to claim full rubric completion or begin the cloud observation window.** The implementation has substantial local evidence; final deployment, measured evaluation and submission evidence still matter.
+This is my repeatable acceptance procedure, not an assertion that a future run has already passed. I record actual results, immutable artifact identities and timestamps in ignored evidence storage and submit the required evidence separately from the frozen source.
 
-## My source check
+## 1. Review the candidate
 
-I refreshed the extracted text of all five PDFs, covering **103 pages**, and rechecked the mandatory feature, security, report, video and grading-access sections against the existing requirements baseline. The earlier source review also covers all **19 extracted starter files**. Original materials remain unchanged under `docs/`.
+1. Preserve all 94 requirement IDs and compare the selected branches with the PDFs and instructor clarifications.
+2. Run source regression/static checks and the native image/profile vulnerability gate. Inspect the raw report and time-limited dispositions.
+3. Bind the reviewed image digest, **us-west1** Instance region, pinned secret versions and the $4 cost review in the release configuration.
+4. Verify synthetic-only account data, Google authorization lifetime, the separate cloud OAuth login and a usable private Gemma connection.
+5. Review the three-task comparison, attack evaluation, personalization profile and my Process Log, retaining limitations and any failed/retested cases.
 
-- **Assignment description:** controls the features, rubric, security audit, three-task comparison and Process Log.
-- **Local Gemma guide:** controls the detailed access and final video sequence, including the 12-minute maximum and cloud-hosted chat demonstrations.
-- **Video instructions:** retain Zoom, full-desktop recording, hardware identification and MP4 naming.
-- **Setup/deployment references:** provide guidance; their examples do not replace the description or newer instructor answers.
-- **Clarifications:** no planned grading restarts; final-model evidence must match; minor pre-grading non-model fixes retain the stated exception.
+## 2. Deploy and accept
 
-My [94-ID baseline](REQUIREMENTS.md) and [individual architecture map](ARCHITECTURE.md#a15-requirement-by-requirement-architecture-coverage) remain intact. This review distinguishes implemented controls from completed grading evidence.
+1. Approve the concrete release through the required production review; stop the local Telegram poller before the cloud poller starts.
+2. Deploy one **Cloud Run Instance**, then verify its actual image, runtime version, isolation, health and authenticated browser chat.
+3. Exercise actual cloud and private local inference, cloud-eligible laptop-off behavior, private hold/recovery and reversible rate-limit fallback.
+4. Exercise all four skills and actual scheduled briefing/recap delivery. Trigger an unsolicited alert with a new synthetic event.
+5. Verify unapproved/disallowed email attempts are blocked. For a real synthetic send, review and approve that exact payload through Telegram.
+6. Perform a controlled pre-observation restart and verify durable memory recall, schedules, messaging, private network identity and OAuth recovery.
+7. Inspect routing/lifecycle/job evidence, export filters and actual cost/resource use. A model response, tool result and delivered notification are separate outcomes.
 
-## Rubric readiness
+## 3. Freeze before starting the clock
 
-| Criterion | Verified work | Still needed |
-| --- | --- | --- |
-| Hybrid routing — 20% | Task-aware router, local privacy hold, OAuth primary, bounded NVIDIA fallback, real direct cloud/local checks. | Final deployed routes/failure cases and a measured comparison of at least three task types. |
-| Proactive quality — 15% | Native schedules, explicit calendar gaps, activity-grounded recap instructions, safe alerts and cleaner Telegram delivery. | Actual scheduled briefing/recap and unsolicited alert from synthetic fixtures on the final Instance. |
-| Security — 15% | Non-root isolation, scoped tools, exact human send approval, allowlist, safe rendering, offline negative tests and earlier image gate. | Updated native-image gate, deployed control checks and final audit with at least five risks and three distinct injection attempts. |
-| Skills — 15% | Own calendar/email integrations, direct Tavily integration and original Content Brief; real integration preflights. | Complete research-to-draft and all four skill demonstrations on the final release. |
-| Memory/scheduling — 15% | GCS generation fencing, quota/OAuth recovery, native cron and synthetic workspace. | Controlled deployed restart/recall before observation, genuine 48-hour evidence and final personalization artifact. |
-| Code/docs/demo — 10% | Reviewed source, 177 offline tests, browser tests, readable docs and MIT license. | My reflection and final Process Log format, reports, Zoom video, grader login rehearsal and sanitized submission package. |
-| Advanced integration — 10% | Authorized original skill publication, fresh tap installation and execution. | Include the pinned artifact and clean-install evidence in the final submission/video. |
+1. Finish all source, Markdown and configuration changes. The actual acceptance record must identify the reviewed image and region.
+2. Run `scripts/observation.py --freeze` in the approved tooling container. It changes the tracked release flag only before observation.
+3. Commit and push the frozen configuration. Verify the remote production workflow reads `frozen=true`; verify a clean tracked working tree.
+4. Run `scripts/observation.py --start LIVE_ACCEPTANCE_JSON`. This creates a genuine start timestamp and writes only ignored operational evidence; it does not edit tracked release configuration.
+5. Keep the deployed artifact and source repository unchanged through the run and grading. Logs, video and evidence are generated separately. Record outages and restarts honestly; do not reconstruct an earlier start time.
 
-## Requirement disposition
+## 4. Collect and submit evidence
 
-| IDs | My current disposition |
-| --- | --- |
-| CORE-01–11 | Implemented and locally/preflight exercised within recorded scopes; deployed acceptance remains. |
-| CORE-12 | Conditional accommodation; not selected because local inference works. |
-| FUNC-01–09, FEAT-01–04 | Selected implementation exists; final useful live workflow evidence remains. |
-| FEAT-05–06 | Not selected toward my required four features. Explicit gaps and basic memory do not establish the full optional feature criteria. |
-| OPS-01–10 | Storage, lifecycle, freeze and observation helpers exist; real deployed recovery, capacity and availability evidence remain. |
-| SEC-01–08 | Controls and scoped tests exist; final artifact/live audit and three-attack evaluation remain incomplete. |
-| ADV-01 | Selected and published; final evidence packaging remains. |
-| ADV-02–03, OPENCLAW-01–05 | Unselected alternatives; not counted as completed requirements. |
-| HERMES-01–04 | Browser edge, supervision, secure key and messaging approval path implemented; deployed URL acceptance remains. |
-| ACCESS-01–03 | Private account setup exists; grader-style login, credential submission and token-lifetime checks remain. |
-| VIDEO-01–08 | Checklist exists; final recording and review have not happened. |
-| SUB-01–08 | Source/docs exist; final reports, measured evidence, reflection, package and upload remain. |
-| INTEGRITY-01–02, POLICY-01 | Attribution and source boundaries retained; my final process account and grace balance remain unfinished. |
-| USER-01–15 | Working boundaries, Docker testing, Git workflow and documentation are applied; the overall completion request remains open. |
+- Retain interval-wide heartbeat, lifecycle, model, job, delivery and backup evidence for the actual 48 hours; elapsed time alone is insufficient.
+- Use the exact Local Gemma PDF video sequence through the deployed web interface: local task, cloud reasoning, Ollama off/private hold, Ollama restored/private reply, newest-first 30-minute logs, loaded model, messaging and proactive features.
+- Record one Zoom desktop MP4 of at most 12 minutes, with device identity first and no secrets on screen.
+- Package source, configuration, skill, reports, profile and sanitized evidence as `arya_wadhwani_a3.zip`; name the video `Assignment3-CSCI599-aryajayw.mp4`.
+- Supply the final URL/API key and dedicated email/calendar logins **only in Brightspace Comments** using the provided template. Rehearse grader-style sign-in in a different browser's Incognito window.
+- Keep the agent accessible for grading/regrades. Monitor cost and authorization lifetime without pretending the billing budget is a hard cap.
 
-## This change set's evidence
+## Source precedence
 
-- **177 tests passed in 22.50 seconds:** offline Docker, disposable state, 4 CPUs/4 GiB, no paid calls.
-- **Static review:** Ruff and Bandit passed; native image scanning must be repeated on the new published artifact.
-- **Browser:** isolated Chromium passed chat, content review, XSS text handling, mobile layout, error recovery and sign-out checks.
-- **Telegram:** the real API accepted a clearly labeled synthetic preview with six bold entities using the native MarkdownV2 formatter. This proves parsing/delivery, not the quality of every future model-generated message.
-- **Local startup:** updated image is running, health is HTTP 200, native cron wrapping is disabled and Google reads work.
-- **Data:** I reported removing promotional mail. Earlier history is privately quarantined; my clean profile contains no restored old conversations. The read check returned ten selected messages, without publishing their contents. A count alone cannot certify synthetic content.
-- **License:** my original project code now has the standard MIT license. Third-party and course-material terms remain unchanged.
-
-Load/stress tests were not repeated for this presentation change: request concurrency and overload controls did not change, and regression covers them. Earlier bounded load/stress evidence remains labeled as mocked in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
-
-## Before I start the 48-hour record
-
-1. Publish the updated native image, pass its security/profile gate and bind the reviewed digest and private environment version.
-2. Finish the reports, attack/performance evidence and my Process Log input; prepare synthetic demonstration fixtures.
-3. Approve the concrete release, stop the local Telegram poller and deploy one Cloud Run Instance.
-4. Complete live health, chat, both model paths, skills, scheduled delivery, isolated runtime and controlled restore checks.
-5. Record the actual acceptance time, freeze the reviewed deployment and start real observation. I will not backdate it or count local testing as cloud uptime.
-
-The live video and 48-hour results cannot truthfully be completed before their real execution. No production deployment or observation start has occurred.
+The five PDFs cover 103 pages; all 19 starter files and all 94 requirements are retained in the source inventory. The assignment description controls the rubric, the Local Gemma guide controls the detailed access/video sequence, and specific instructor answers resolve conflicts. The live system is evaluated against those requirements, not against this checklist's existence.

@@ -2,11 +2,11 @@
 
 I use dedicated class-only accounts with made-up data. **Passwords, backup codes and the browser access key belong only in the prescribed private Brightspace comments.** They never belong in this repository, the ZIP or the video.
 
-**Still to verify:** password-only account sign-in, final cloud URL, token validity through grading and the Zoom local-model demonstration. [Current evidence](IMPLEMENTATION_STATUS.md)
+[Verification record](IMPLEMENTATION_STATUS.md) · [Release checklist](FINAL_REVIEW.md)
 
 ## My selected account path
 
-I confirmed that both configured email accounts are dedicated class-only accounts containing made-up data. My agent uses Gmail API OAuth and a dedicated Google Calendar. It does not use an IMAP/SMTP App Password, so **Path 1 is my selected grader-login path**.
+Both configured email accounts are dedicated class-only accounts. I removed real promotional mail before using the clean assignment profile and keep all demonstration conversations and calendar events synthetic. My agent uses Gmail API OAuth and a dedicated Google Calendar. It does not use an IMAP/SMTP App Password, so **Path 1 is my selected grader-login path**.
 
 Before submission, I personally verify that the dedicated test account permits password-only sign-in with 2-Step Verification off. This change is limited to the disposable assignment account. No personal or USC email/calendar login belongs in my submission. Using USC ChatGPT Edu for the separate OpenAI model login remains distinct from the prohibited use of a USC mailbox as the test mailbox.
 
@@ -36,7 +36,18 @@ I open an Incognito window in a different browser and sign in to every required 
 
 ## My private submission fields
 
-For Hermes, I fill the supplied template directly in **Brightspace Comments** with my Cloud Run URL, API Server Key, test email login/password, calendar login/password and selected 2-Step Verification path. Path 2 additionally needs at least four unused backup codes. These values never go into the ZIP, README, Git history, screenshots or video, and I do not send them in this chat.
+I open **Brightspace → Assignment 3 → submission Comments** and fill in the supplied `CloudRunSettings.txt` template there. I do not save a completed copy in my submission ZIP.
+
+| Private field | What I enter in Brightspace |
+| --- | --- |
+| Hermes access | The final Cloud Run HTTPS URL and API Server Key. |
+| Assistant test mailbox | Its email address and password. |
+| Second test mailbox | Its email address and password, labeled as the synthetic recipient account. |
+| Calendar account | The login that owns or can edit the monitored calendar. If it is the assistant mailbox, I write **same as the assistant test email account**. The Calendar ID is not a password or login. |
+| Sign-in path | **Path 1 — OAuth integration, password-only test-account login** for my selected configuration. |
+| Conditional backup codes | Only for Path 2: at least four unused codes, excluding any consumed during rehearsal. |
+
+Passwords and access keys never go into chat, GitHub, Markdown, the ZIP, screenshots or the video. I verify the saved Brightspace comments before submitting and retain the submitted passwords through grading.
 
 The OpenClaw alternative uses its Tailscale share link and agent URL instead of the Hermes access fields; it does not change my selected Hermes architecture. I review every submitted field using the original template. Failed grader account access can lose the corresponding component's points.
 
@@ -46,7 +57,3 @@ The OpenClaw alternative uses its Tailscale share link and agent URL instead of 
 - My local Gemma behavior is assessed from the **Zoom video**.
 
 I still follow Assignment3_Video_Instructions.pdf and Assignment3_local_Gemma.pdf, including the prescribed deployed-browser requests, local availability changes, routing logs, messaging and proactive evidence. The companion Video_Steps.txt files help order the demonstration but do not replace the PDFs. Genuine availability, final-model evidence and the grading freeze remain required.
-
-## My current evidence
-
-Google browser consent, token refresh, expected Gmail identity and a read of three dedicated-calendar events passed. I confirmed a live Telegram reply. These checks do not prove password-only grader login, alert injection, final cloud access, seven-day/regrade coverage or video completion. Those items remain open.

@@ -10,9 +10,9 @@ I reviewed all **19 supplied files** without running them and checked that the e
 - [My review scope and source identity](#my-review-scope-and-source-identity)
 - [File-by-file inventory](#file-by-file-inventory)
 - [Hermes browser and proxy contract](#hermes-browser-and-proxy-contract)
-- [Source findings and incomplete integration points](#source-findings-and-incomplete-integration-points)
-- [My revised implementation order](#my-revised-implementation-order)
-- [Planned verification matrix](#planned-verification-matrix)
+- [Starter findings and integration contracts](#starter-findings-and-integration-contracts)
+- [My adaptation map](#my-adaptation-map)
+- [Verification map](#verification-map)
 
 ## Instructor clarification overrides for my adaptation
 
@@ -20,7 +20,7 @@ My original 19-file source observations remain unchanged. [CLARIFICATIONS.md](CL
 
 Q01 permits scoped local context/tools while retaining required instructions and the verified Hermes context setting. Q03 requires real local evidence for local credit. Q05 requires substantive skills and rejects a bundled-search wrapper, so I use my direct Tavily adapter and own scoped Google integrations.
 
-Q11 supersedes preventive three-hour restarts during grading. Q06 permits justified 1 vCPU/4 GiB. Q09 requires final-model logs/video; Q10 allows minor non-model fixes without another full run. Q12 is unanswered. The verification table below records the original source-review milestone; current runtime results and remaining gaps are in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+Q11 supersedes preventive three-hour restarts during grading. Q06 permits justified 1 vCPU/4 GiB. Q09 requires final-model logs/video; Q10 allows minor non-model fixes without another full run. Q12 is unanswered. The verification table links the source contracts to implementation checks; scoped runtime results are in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## My review scope and source identity
 
@@ -71,7 +71,7 @@ The existing Markdown formatter escapes HTML special characters before inserting
 
 - I did **not** establish an XSS vulnerability merely from its use of innerHTML.
 - My adaptation must preserve escaping, test hostile text, and treat any added links/rich cards as new rendering surfaces.
-- The current UI also lacks sign-out/key clearing, approval buttons, content-draft controls, associated input labels, an accessible label on the icon-only send button and reduced-motion handling. Those are planned changes, not existing features. [web_ui.py, lines 130-143, 177-207; USER-11]
+- The supplied UI lacks sign-out/key clearing, approval buttons, content-draft controls, associated input labels, an accessible label on the icon-only send button and reduced-motion handling. These are omissions in the supplied starter; my separate browser implementation supplies sign-out, content review, labels and reduced-motion support, while sends remain restricted to trusted Telegram approval. [web_ui.py, lines 130-143, 177-207; USER-11]
 
 On failure, the composer has already been cleared and the user message remains in history. Chat fetch has no explicit client deadline/cancellation; successful empty content is displayed and stored as `(empty response)`.
 
@@ -87,9 +87,9 @@ The supplied code uses Python's basic HTTP server. Official documentation notes 
 
 - My adaptation must keep UI-to-gateway calls on the fixed loopback destination without inheriting the Tailscale model proxy, constrain redirects, and audit headers/errors.
 - Only the local-model adapter receives the private model-network privilege.
-- This is a proposed hardening plan, not a demonstrated redirect exploit. [Python HTTP server](https://docs.python.org/3/library/http.server.html), [urllib.request](https://docs.python.org/3/library/urllib.request.html)
+- These are hardening requirements, not evidence of a demonstrated redirect exploit in the starter. [Python HTTP server](https://docs.python.org/3/library/http.server.html), [urllib.request](https://docs.python.org/3/library/urllib.request.html)
 
-## Source findings and incomplete integration points
+## Starter findings and integration contracts
 
 Two source-level security findings are recorded in [SECURITY_REGISTER.md](SECURITY_REGISTER.md). Their code evidence is observed; their deployed exploitability and impact are not tested because no application is deployed.
 
@@ -102,32 +102,22 @@ Two source-level security findings are recorded in [SECURITY_REGISTER.md](SECURI
 | Routing evidence | The query scripts read existing logs; they do not implement routing or emit model-call outcomes. Filters are example project-wide schemas. | Implement/verify the router's event schema, scope the query to the actual Instance and correlate all demonstration calls without truncation. Keep login/config changes outside recording and outside unapproved host paths. |
 | Storage and identity | The OpenClaw example changes the Tailscale state path but does not implement workspace serialization or transactional snapshots. | Keep daemon-managed identity state in its prescribed persistent location with its own consistency/restart checks; do not silently assume the application coordinator controls Tailscale's writes. |
 
-## My revised implementation order
+## My adaptation map
 
-Each step remains subject to platform/sandbox and implementation approval. This is the next plan, not work performed by this review.
-
-1. **Pin and inspect framework interfaces.** Choose the allowed platform/runtime, verify gateway startup, API payload/response, session identity, pre-LLM/pre-tool hooks, scheduler, memory writers and supported backup methods against the chosen release. The example hook is not a plug-in ready to register unchanged.
-2. **Adapt a safe browser gateway in the sandbox.** Retain the specified external/internal ports and API paths; resolve VULN-001/002, backend-auth coverage, loopback-only proxying, error/history/deadline behavior and accessible neumorphic states. Test static page versus authenticated operations separately.
-3. **Integrate lifecycle and state.** Restore before admitting work, start the correct private network path and platform processes, establish meaningful readiness, preserve daemon identity, and test bounded shutdown/child failure/restart. Keep lifecycle supervision separate from proactive scheduling.
-4. **Implement routing and policy boundaries.** Prove task-aware real local/cloud calls, private hold, reversible 429 handling, completed-call logs and code-enforced sends; test unknown sessions and alternate tool routes. No model call or log query substitutes for the full deployed path.
-5. **Add synthetic integrations and proactive jobs.** Exercise the four skills plus weather and the chosen four advanced features, with actual trigger/completion/delivery, durable state and bounded retry evidence.
-6. **Build CI and deployment from verified contracts.** Keep approved source/secret handling, test the exact candidate image and Instance lifecycle, and validate the chosen access branch. The starter bundle has no complete project CI/CD pipeline.
-7. **Rehearse full grading and capture real operation.** Use the PDFs plus companion text, correct any missing companion steps, verify private grader account access and fresh job delivery, run the complete 48-hour observation and export truthful evidence. The snippet's word “simulated” recap refers to running the real scheduled job early, not fabricating activity or uptime.
-
-## Planned verification matrix
-
-| Area | Checks I need after implementation | Current result |
+| Starter concern | My implementation | Verification |
 | --- | --- | --- |
-| API/UI contract | Bearer-key denial/success, session separation, complete nonempty reply, permitted routes/methods, health versus model status, error/history recovery, safe rendering, labels/keyboard/mobile/reduced motion. | Source review only; no browser/runtime test. |
-| Resource/security findings | Invalid/negative/oversized body length, slow body, large response, capped concurrent work, bounded waits; query/exception sentinels and valid structured logs. | VULN-001/002 open, fixes and retests pending. |
-| Approval hooks | Registered real hook, trusted session provenance, unknown-session denial, API send block without hanging, messaging approval/recipient/replay checks, scheduled draft-only path. | Placeholder integration identified; no hook executed. |
-| Lifecycle/private path | UI/gateway child failure, SIGTERM with a hung child, restore/backup and identity persistence, cloud service with laptop off, real proxied Ollama call and unauthorized rejection. | Pending approved sandbox and deployment. |
-| OpenClaw branch | Exact origin, correct user/socket/Serve port, complete grant review, one persistent daemon, latest secret injection, grader dashboard after restart. | Conditional source review only; no account/network changes. |
-| Evidence/video | Correct resource/schema query, enough rows for four complete requests, exact local-off/on sequence, applicable Serve status, real messaging/briefing/alert/recap and secret-free recording. | Planned; no recording or operational evidence. |
-| Source/document integrity | 19 ZIP-to-extracted comparisons; 25 source-file hashes before/after; stable requirement coverage, links/tables and Git diff/staging review. | Read-only comparisons passed; final documentation/source integrity checks recorded with the change. |
+| API contract and browser | `api.py` and `static/` preserve authenticated chat and the health contract with bounded requests and truthful UI states. | API regression and Chromium interaction probe. |
+| Resource/log findings | ASGI limits, concurrency backpressure, JSON serialization, allowlisted audit fields and safe public errors. | `test_api.py`, `test_audit.py` and bounded overload/recovery probe. |
+| Placeholder approval hook | Native registered hook, trusted session provenance, payload-bound approval and recipient allowlist. | `test_broker.py`, approval and unknown-session denial cases. |
+| Lifecycle and state | Supervised internal components, restore before readiness, generation-fenced snapshots and separate OAuth recovery. | Runtime/state tests and GCS/OAuth recovery probes. |
+| Routing and private inference | Native Hermes OAuth proxy, task-aware route metadata, local privacy hold and private Tailscale model transport. | Routing/provider tests and real local/cloud tool turns. |
+| Proactive work | Native Hermes cron jobs using the four substantive integrations and delivery deduplication. | Schedule tests and actual final-Instance job/delivery acceptance. |
+| CI and release | Pinned builds, scoped federation, image/profile gate, explicit release approval and committed freeze before observation. | Release/observation regression and GitHub artifacts. |
+| OpenClaw examples | Retained as source references for the alternative branch. | Not part of my selected Hermes runtime. |
+| Video and operating evidence | Exact PDF sequence plus the companion messages and log query contract. | FINAL_REVIEW.md and separately submitted real evidence. |
 
-No new assignment requirement was discovered that needs a new requirement ID: the existing **94 IDs** already cover the supplied obligations.
+## Verification map
 
-- The important changes are concrete adapter behavior, source-level findings, missing implementation hooks and stronger acceptance tests.
-- The PDFs remain authoritative where these short companion files omit steps.
-- I have not run unit, integration, smoke, load, stress, penetration or browser tests, nor an automated vulnerability scanner.
+The current test record is [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md). The original **19-file comparison** and five-PDF inventory identify the course sources; those originals remain unchanged. The source review found no requirement needing a 95th ID: the existing **94 IDs** cover the obligations.
+
+I distinguish original source observations from fixes in my own implementation. A supplied placeholder does not become a complete policy merely because it appears in a course archive, and a passing mock test does not prove live deployment behavior. The detailed PDFs control where a short companion file omits a step.

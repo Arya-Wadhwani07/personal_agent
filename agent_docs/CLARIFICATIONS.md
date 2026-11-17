@@ -27,9 +27,9 @@ I use **Q01–Q14** to resolve conflicts between older assignment guidance and t
 
 I asked to keep NVIDIA as fallback and use OpenAI or Claude as primary. My current selection is **Hermes OpenAI browser OAuth with gpt-6.1-sol as primary**, **NVIDIA NIM as cloud fallback**, and **Gemma 4 E2B through local Ollama as the local route**. Claude remains an acceptable alternative if I select it before final evidence collection.
 
-The OpenAI account, gpt-6.1-sol inference and $4 total budget are verified/recorded; NVIDIA fallback still needs live verification. The existing NVIDIA model setting is a candidate, not a validated fallback. NIM's reliability warning still matters in fallback use. Q09 mentions a NIM fallback example for OpenClaw; Q12 does not establish a universal exemption for fallback changes.
+The OpenAI account, gpt-6.1-sol inference and $4 total budget are recorded. A bounded live NVIDIA preflight passed; it does not guarantee future provider availability. NIM's reliability warning still matters in fallback use. Q09 mentions a NIM fallback example for OpenClaw; Q12 does not establish a universal exemption for fallback changes.
 
-My later instruction selects supported Hermes OpenAI browser OAuth as primary, retaining NVIDIA fallback. D pp. 6–7 require browser sign-in for USC and platform-owned OAuth inference. The new proxy forwards Hermes-authenticated requests; the optional paid API path remains separate. Offline tests passed, while final-model observation/video evidence remains pending. I supplied a $4 total budget.
+My later instruction selects supported Hermes OpenAI browser OAuth as primary, retaining NVIDIA fallback. D pp. 6–7 require browser sign-in for USC and platform-owned OAuth inference. The new proxy forwards Hermes-authenticated requests; the optional paid API path remains separate. Final-model observation and video evidence follow the release checklist. I supplied a $4 total budget.
 
 ## My evidence and restart policy
 
@@ -39,14 +39,14 @@ My later instruction selects supported Hermes OpenAI browser OAuth as primary, r
 - I prepare for the grader's initial test and repeat test 48 hours later after End Date, retaining access through regrades. These excerpts do not specify the first test's exact hour/timezone or authorize fabricated uptime.
 - Planned three-hour restarts stay disabled for grading. Unplanned restarts remain reported incidents with potential penalty even if state recovers. Controlled recovery tests happen before grading.
 
-## My four-skill evidence plan
+## My four-skill evidence contract
 
-| Skill | My substantive work | Remaining evidence |
+| Skill | My substantive work | Demonstration contract |
 | --- | --- | --- |
 | Calendar | My own OAuth client, dedicated synthetic Google Calendar, read-only scope, custom bounded adapter, briefing/reminder use. | Live account/scope review, calendar reads, scheduled use and demonstration. |
 | Email | Temporary Gmail accounts, custom drafts, recipient allowlist, payload-bound human approval, replay/expiry protection and uncertain-send handling. | Synthetic read/draft flow and an explicitly approved test send. |
 | Web search | My own Tavily key, direct custom adapter, bounded results, attribution and LinkedIn exclusion. | Live authenticated search used in a content brief. I do not count a bundled-search wrapper. |
-| LinkedIn Content Brief | Original research-to-draft workflow, references, topic deduplication and stored review history; no publishing capability. | Useful exercised draft/review workflow; standalone publication/fresh-install evidence remains a separate advanced-integration requirement if selected. |
+| LinkedIn Content Brief | Original research-to-draft workflow, references, topic deduplication and stored review history; no publishing capability. | Useful exercised draft/review workflow; the published package and fresh installation have separate advanced-integration evidence. |
 
 ## My implementation boundaries
 
@@ -58,9 +58,6 @@ My machine has 16 GiB and has completed a real local Gemma tool turn. Scoped pro
 
 No forum answer authorizes closing unrelated host applications, increasing my budget, changing repository visibility, contacting real recipients or exposing credentials. My working agreement remains in force.
 
-## My documentation review
+## Source and evidence scope
 
-This update preserves all 94 requirement IDs and their architecture mappings. Review covered all 14 clarification entries, precedence, pending-versus-completed wording, Markdown tables/fences and local links. SHA-256 comparison confirmed that all 25 original PDF/archive/extracted files remain unchanged.
-
-- Runtime unit/integration/load/stress tests are not applicable to this Markdown-only change; prior runtime evidence remains separately scoped in IMPLEMENTATION_STATUS.md.
-- The primary OAuth path is verified; live fallback and deployed acceptance remain unfinished.
+These are the instructor excerpts I supplied, not independently dated forum exports. Relative timestamps retain their original wording. All 94 requirement IDs and the architecture map remain intact. Current scoped test results are recorded in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md); the release checklist applies them to the final image and actual operating interval.

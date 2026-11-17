@@ -50,7 +50,7 @@ async def test_memory_injection_and_content_dedup(settings, store):
 
 
 def test_real_hermes_plugin_registration():
-    # Use the real framework registry and verify all ten narrow tools are discoverable.
+    # Use the real framework registry and verify all registered narrow tools are discoverable.
     from tools.registry import registry
 
     class Context:
@@ -70,3 +70,15 @@ def test_real_hermes_plugin_registration():
     register(Context())
     definitions = registry.get_definitions(set(TOOLS), quiet=True)
     assert {d["function"]["name"] for d in definitions} == set(TOOLS)
+
+    # The native registration must expose the nested fields Gemma previously omitted.
+
+    tool = next(
+        x
+        for x in registry.get_definitions(set(TOOLS), quiet=True)
+        if x["function"]["name"] == "a3_review_content"
+    )
+    draft = tool["function"]["parameters"]["properties"]["draft"]
+    assert set(draft["required"]) == {"topic", "body", "sources", "claims"}
+    assert set(draft["properties"]["sources"]["items"]["required"]) == {"url", "title", "note"}
+    assert set(draft["properties"]["claims"]["items"]["required"]) == {"text", "source"}

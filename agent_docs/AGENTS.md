@@ -60,13 +60,13 @@ My project Markdown uses uppercase filenames, including `AGENTS.md`, `REQUIREMEN
 | --- | --- |
 | `agent_docs/AGENTS.md` | My working agreement, current status, and approved workflow. |
 | `agent_docs/REQUIREMENTS.md` | My assignment requirements, source references, coverage review, and open questions. |
-| `agent_docs/DESIGN.md` | My rough architecture, UI, sandbox, testing, and CI/CD proposal, pending review. |
+| `agent_docs/DESIGN.md` | My selected architecture, UI, sandbox, testing and CI/CD design. |
 | `agent_docs/ARCHITECTURE.md` | My detailed component/technology rationale, diagrams, interfaces, failure policies, and map of all 94 requirement IDs and a technology overview appendix. |
 | `agent_docs/SECURITY_REGISTER.md` | My prospective security risks, observed findings, remediation/retest evidence, and release gate. |
 | `agent_docs/SCRIPT_REVIEW.md` | My 19-file extracted starter review, exact source observations, adaptation order and planned verification. |
 | `agent_docs/` | My other agent planning and tracking Markdown files. |
-| `README.md` | My repository overview, documentation index, current status and version-control workflow; runnable setup instructions will follow implementation. |
-| `PROCESS_LOG.md` | My assignment-required development and AI-assistance history at the root, created as a factual development record, with my personal reflection still pending. |
+| `README.md` | My repository overview, documentation index, current status and version-control workflow; runnable setup and testing instructions. |
+| `PROCESS_LOG.md` | My assignment-required development and AI-assistance history at the root, including my dictated reflection, 200–300-word narrative and truthful AI attribution. |
 | `docs/` | My original assignment PDFs, documentation, and starter archive, preserved unchanged. |
 
 Assignment-required submission files and platform-required workspace/skill files are exceptions to keeping planning Markdown under `agent_docs/`. I will add folders such as `src/`, `tests/`, `scripts/`, and `static/` only when the assignment and an approved implementation plan support them. The sibling project confirmed the folder conventions; its implementation does not define my Assignment 3 requirements.
@@ -113,12 +113,12 @@ My application source authoring, dependency installation, execution, and runtime
 My [design proposal](DESIGN.md), [system architecture](ARCHITECTURE.md), and [requirements baseline](REQUIREMENTS.md) need to stay consistent as I make decisions:
 
 - My assistant needs both a Telegram/Discord integration and the selected platform's browser interface for grading. WhatsApp alone or a browser-only implementation would leave requirements unmet. My browser interface does not count as a third messaging platform.
-- Hermes, Telegram, and Monday’s browser chat with the Daylight neumorphic theme are selected and locally implemented. A real Telegram reply is verified; deployed grader access still needs verification.
+- Hermes, Telegram, and Monday’s browser chat with the Daylight neumorphic theme are selected and locally implemented. A real Telegram reply is verified; the release checklist verifies deployed grader access.
 - My UI should use soft raised panels and recessed inputs while preserving readable contrast, keyboard access, clear status, and honest loading/error states. The supplied Hermes browser UI must block approval-gated sends and direct me to drafts or a supported messaging approval flow.
 - My sandbox review must verify effective filesystem, privilege, network, credential, resource, and cleanup boundaries before application execution. White-box and black-box results must identify whether dependencies were mocked or real.
-- My delivery workflow should validate changes in isolated CI, build a reviewed immutable image, deploy only an approved release to a Cloud Run Instance, and verify readiness and live behavior afterward. Any rollback needs compatible state and explicit authorization. The GitHub destination and routine commit/push workflow are authorized. Native CI and publication passed; cloud OIDC, versioned secrets and production review/main-branch protection are verified. Deployment and live acceptance remain pending.
-- My remaining inputs include release approval, grader-style account sign-in, my Process Log reflection and grace balance. Routine implementation and review continue without repeated approval requests; I asked to dictate the reflection when ready. Private networking setup and production protections are verified; the deployed private path still needs acceptance. The repository is public; Docker is approved; this Mac has 16 GiB RAM. Hermes OpenAI browser OAuth is my primary choice, NVIDIA my fallback, and Claude an allowed alternative. OAuth routing has offline coverage and a real account-supported inference check.
-- LinkedIn Content Brief is my fourth skill: permitted-source research, an original source-backed draft and review history. Its research/draft workflow and browser revision/copy/dismiss controls exist; deployed evidence remains unfinished. It has no direct LinkedIn search, account access or publishing capability. Each of my four skills must demonstrate substantive integration; merely wrapping bundled search does not count.
+- My delivery workflow should validate changes in isolated CI, build a reviewed immutable image, deploy only an approved release to a Cloud Run Instance, and verify readiness and live behavior afterward. Any rollback needs compatible state and explicit authorization. The GitHub destination and routine commit/push workflow are authorized. Native CI and publication passed; cloud OIDC, versioned secrets and production review/main-branch protection are verified. Deployment requires the exact-image release approval and live acceptance checklist.
+- My release procedure includes explicit approval, grader-style account sign-in and a check of the course grace balance. Routine implementation and review continue without repeated approval requests; I supplied my reflection on November 17. Private networking setup and production protections are verified; the deployed private path has its own acceptance check. The repository is public; Docker is approved; this Mac has 16 GiB RAM. Hermes OpenAI browser OAuth is my primary choice, NVIDIA my fallback, and Claude an allowed alternative. OAuth routing has offline coverage and a real account-supported inference check.
+- LinkedIn Content Brief is my fourth skill: permitted-source research, an original source-backed draft and review history. Its research/draft workflow and browser revision/copy/dismiss controls exist; the release checklist exercises their deployed behavior. It has no direct LinkedIn search, account access or publishing capability. Each of my four skills must demonstrate substantive integration; merely wrapping bundled search does not count.
 
 ## My instructor clarification policy
 
@@ -188,11 +188,11 @@ Before load or stress testing, I will agree on the target, workload, duration, r
 - **Structure:** short introductions, descriptive headings, concise bullets and tables for comparisons.
 - **Emphasis:** bold labels for important decisions and inline code for paths, commands and identifiers.
 - **Typography:** standard GitHub Markdown heading sizes and fonts; no custom HTML font styling.
-- **Status:** current results live in IMPLEMENTATION_STATUS.md. Other documents link there; superseded checkpoints live in HISTORY.md.
-- **Integrity:** formatting must preserve requirement IDs, source references, diagrams, safeguards and incomplete-work labels.
+- **Status:** current results live in IMPLEMENTATION_STATUS.md. Other documents link there; superseded checkpoints remain in Git history.
+- **Integrity:** formatting must preserve requirement IDs, source references, diagrams, safeguards and truthful evidence scope.
 
-## My November 17 data and presentation update
+## My documentation freeze
 
-I reported removing real promotional emails from the class-only mailbox. Earlier local conversation/activity state is privately quarantined and excluded from evidence; the clean profile retains only the native OAuth login. My email-readiness flag defaults off and is enabled locally after my cleanup confirmation. This does not certify unseen account contents or authorize any email send.
+I keep source documentation descriptive and reproducible. I remove stale setup notes and check actual behavior before stating that work is complete. My runbooks describe verification steps; measured results retain their real dates and scope. Operational logs, the video, private grader fields and the 48-hour record are collected separately from the frozen source repository. Future outcomes are not backdated or recorded as passing before execution.
 
-I requested an MIT license for my original project code. Third-party dependencies and supplied course materials retain their own terms. The presentation changes pass 177 offline tests plus Telegram parsing and browser checks; the new native cloud image, final live acceptance and actual 48-hour evidence remain unfinished.
+My stated readiness target is 98–99/100 under the rubric. A readiness assessment is an estimate, not a grade guarantee, and does not replace any actual acceptance check or authorize deployment by itself.

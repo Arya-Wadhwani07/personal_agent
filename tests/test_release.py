@@ -17,6 +17,7 @@ ENV = {
     "A3_IMAGE": "us-west1-docker.pkg.dev/synthetic-project/a3/agent@sha256:" + "a" * 64,
 }
 GATE = {
+    "region": "us-west1",
     "reviewed_image": ENV["A3_IMAGE"],
     "secret_versions": {
         name: "1"
@@ -118,3 +119,14 @@ def test_another_valid_registry_digest_cannot_replace_the_reviewed_image():
         deploy.command({**ENV, "A3_IMAGE": substitute}, GATE)
     with pytest.raises(ValueError, match="exact reviewed digest"):
         deploy.command(ENV, {**GATE, "reviewed_image": None})
+
+
+@pytest.mark.parametrize("region", ["us-central1", "us-east1", "europe-west1", "us-west2", "invalid-region9", ""])
+def test_unreviewed_or_unsupported_instance_region_is_rejected(region):
+    with pytest.raises(ValueError, match="supported Instance region"):
+        deploy.command({**ENV, "A3_REGION": region}, {**GATE, "region": region})
+
+
+def test_region_must_match_reviewed_gate_even_when_target_is_supported():
+    with pytest.raises(ValueError, match="supported Instance region"):
+        deploy.command(ENV, {**GATE, "region": "us-west2"})
