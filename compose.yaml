@@ -1,0 +1,24 @@
+services:
+  assistant:
+    image: assignment3-agent:local
+    build:
+      context: .
+      target: runtime
+    ports:
+      - "127.0.0.1:18080:8080"
+    env_file:
+      - .env
+    # Match the project owner for the private local state bind mount.
+    user: "${A3_LOCAL_UID:-501}:${A3_LOCAL_GID:-20}"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 256
+    mem_limit: 4g
+    cpus: 4
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=512m
+    volumes:
+      - ./state:/state
+    # Local-only. Production needs approved durable restore and a separate OAuth login.
+    restart: "no"

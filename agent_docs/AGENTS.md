@@ -1,5 +1,9 @@
 # Assignment 3: My Working Agreement
 
+## My November 16 integration checkpoint
+
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+
 ## My role and engineering support
 
 I am responsible for implementing, understanding, and submitting this personal assistant. I use Codex as an expert Agentic AI engineering and testing collaborator to help interpret the assignment, develop the system, review its data and code, and verify the results. My target is **100/100**, with evidence for every applicable full-credit rubric criterion. The instructor determines the final grade, so this target is not a guaranteed score.
@@ -24,8 +28,9 @@ My writing must stay accurate about who did the work and what has happened. Plan
 - My project root is `/Users/arya/Personal/Code/Projects/CSCI 599/Assignment 3`. All project changes stay inside it; creating, editing, deleting, moving, or installing anything outside it requires my explicit permission.
 - Temporary files, caches, environments, logs, and test outputs also stay inside my project. Commands need a side-effect check before execution.
 - I allowed one read-only inspection of the sibling `Assignment 2` directory to learn its structure. That inspection is complete. Further inspection outside Assignment 3 requires fresh permission, including any return to Assignment 2.
-- I subsequently authorized inspecting and reusing relevant Assignment 2 API configuration, including the OpenAI/Claude, NVIDIA and search credentials needed for this assignment. This does not cover unrelated application code or personal data. Credentials must never be printed or committed. Paid calls remain blocked until I provide a budget.
+- I subsequently authorized inspecting and reusing relevant Assignment 2 API configuration, including the OpenAI/Claude, NVIDIA and search credentials needed for this assignment. This does not cover unrelated application code or personal data. Credentials must never be printed or committed. I supplied a $4 total budget for project assignment3-515003; paid calls remain disabled until bounded usage is configured.
 - I have approved Docker Desktop runtime/cache files outside Assignment 3, with only this project mounted into containers. I have also approved synthetic checks against my installed Ollama/Gemma, including Ollama runtime/log files. These exceptions do not permit unrelated host-file access.
+- I also approved a targeted Tailscale installation/status inspection, followed by installation and sign-in using the verified Tailscale 1.104.7 macOS package. This exception covers the app, network extension and its runtime files. I handle administrator approval and sign-in myself; unrelated host inspection remains prohibited.
 - If a necessary tool requires access beyond these boundaries, I need a specific explanation and a permission request before it proceeds. The restriction must not be silently bypassed.
 
 ## My project structure
@@ -42,14 +47,14 @@ My project Markdown uses uppercase filenames, including `AGENTS.md`, `REQUIREMEN
 | `agent_docs/SCRIPT_REVIEW.md` | My 19-file extracted starter review, exact source observations, adaptation order and planned verification. |
 | `agent_docs/` | My other agent planning and tracking Markdown files. |
 | `README.md` | My repository overview, documentation index, current status and version-control workflow; runnable setup instructions will follow implementation. |
-| `PROCESS_LOG.md` | My assignment-required development and AI-assistance history at the root, to be created in an approved change set. |
+| `PROCESS_LOG.md` | My assignment-required development and AI-assistance history at the root, created as a factual development record, with my personal reflection still pending. |
 | `docs/` | My original assignment PDFs, documentation, and starter archive, preserved unchanged. |
 
 Assignment-required submission files and platform-required workspace/skill files are exceptions to keeping planning Markdown under `agent_docs/`. I will add folders such as `src/`, `tests/`, `scripts/`, and `static/` only when the assignment and an approved implementation plan support them. The sibling project confirmed the folder conventions; its implementation does not define my Assignment 3 requirements.
 
 ## My approval and review workflow
 
-I have approved the documentation baseline and now authorized implementation of the full assignment, its sandbox tests, CI/CD configuration, and routine reviewed commits/pushes to my named repository. Hermes, Telegram, Gmail, and a dedicated Google Calendar are the selected implementation baseline. I will provide the GCP project and spending limit later; provisioning, paid calls, and production deployment remain pending those inputs and release approval.
+I have approved the documentation baseline and now authorized implementation of the full assignment, its sandbox tests, CI/CD configuration, and routine reviewed commits/pushes to my named repository. Hermes, Telegram, Gmail, and a dedicated Google Calendar are the selected implementation baseline. I supplied GCP project assignment3-515003 and a $4 total spending ceiling. Paid calls remain disabled until bounded usage is configured; production deployment still needs release approval.
 
 - Before each new coherent change set, I expect a concrete description of the proposed work so I can approve its scope. Actions already covered by that approval do not need repeated permission requests.
 - Each change set ends with a review of the files or diff, applicable checks, and a clear account of changes, results, limitations, and decisions. I review that checkpoint before the next scope begins.
@@ -89,12 +94,12 @@ My [design proposal](DESIGN.md), [system architecture](ARCHITECTURE.md), and [re
 - My UI should use soft raised panels and recessed inputs while preserving readable contrast, keyboard access, clear status, and honest loading/error states. The supplied Hermes browser UI must block approval-gated sends and direct me to drafts or a supported messaging approval flow.
 - My sandbox review must verify effective filesystem, privilege, network, credential, resource, and cleanup boundaries before application execution. White-box and black-box results must identify whether dependencies were mocked or real.
 - My delivery workflow should validate changes in isolated CI, build a reviewed immutable image, deploy only an approved release to a Cloud Run Instance, and verify readiness and live behavior afterward. Any rollback needs compatible state and explicit authorization. The GitHub destination and routine commit/push workflow are authorized; Actions, OIDC, secrets, protections, and deployment configuration remain pending.
-- My remaining inputs include exact cloud model IDs, GCP project/budget, class-only credentials, private networking, repository protections, deadline timezone and grace balance. The repository is public; Docker is approved; this Mac has 16 GiB RAM. OpenAI API is my working primary choice, NVIDIA my fallback, and Claude an allowed alternative. Provider migration is not implemented yet.
+- My remaining inputs include exact cloud model IDs, remaining class-only account verification, private networking, repository protections, deadline timezone and grace balance. The repository is public; Docker is approved; this Mac has 16 GiB RAM. Hermes OpenAI browser OAuth is my primary choice, NVIDIA my fallback, and Claude an allowed alternative. OAuth routing has offline coverage; actual account-supported inference remains pending.
 - LinkedIn Content Brief is my fourth skill: permitted-source research, an original source-backed draft and review history. Its basic workflow exists; full review controls and live evidence remain unfinished. It has no direct LinkedIn search, account access or publishing capability. Each of my four skills must demonstrate substantive integration; merely wrapping bundled search does not count.
 
 ## My instructor clarification policy
 
-My [clarification register](CLARIFICATIONS.md) records Q01–Q12, including unanswered questions. Specific instructor answers supersede older conflicting recommendations: no planned three-hour restarts during grading; valid local inference is required for local credit; final-model logs/video must match my deployment. Minor non-model fixes retain the Q10 observation exemption. I keep the verified single-Instance architecture, synthetic accounts, explicit approval for every email send, and substantive four-skill evidence. OpenAI API is the planned primary with NVIDIA fallback; paid calls and provisioning still await my budget. Scoped local prompts retain safety instructions and the verified context configuration.
+My [clarification register](CLARIFICATIONS.md) records Q01–Q14, including unanswered questions. Specific instructor answers supersede older conflicting recommendations: no planned three-hour restarts during grading; valid local inference is required for local credit; final-model logs/video must match my deployment. Minor non-model fixes retain the Q10 observation exemption. I keep the verified single-Instance architecture, synthetic accounts, explicit approval for every email send, and substantive four-skill evidence. Hermes OpenAI browser OAuth is the selected primary with NVIDIA fallback; paid calls remain disabled and deployment still needs its release gate. Scoped local prompts retain safety instructions and the verified context configuration.
 
 ## My starter-code adaptation rules
 
@@ -148,7 +153,7 @@ Before load or stress testing, I will agree on the target, workload, duration, r
 
 ## My current status and next steps
 
-**Current implementation checkpoint (November 16):** Full implementation is authorized. My latest completed source suite passed 37 tests; subsequent private-network additions still need verification. A real Hermes/Gemma memory-tool turn, isolated browser checks and bounded mock load/recovery checks passed. No paid cloud calls, live service setup, deployment or 48-hour run has occurred. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) separates tested source, the older running local image and remaining release blockers.
+**Current implementation checkpoint (November 16):** Full implementation is authorized. My latest completed source suite passed 68 tests in 23.57 seconds, including mocked native Hermes OAuth tool use, delivery recovery, native/network restore and persistent private sessions. A real Hermes/Gemma memory-tool turn, isolated browser checks and bounded mock load/recovery checks passed. Google consent/refresh and dedicated-calendar access are verified. No paid inference, deployment or 48-hour run has occurred. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) separates tested source, the older running local image and remaining release blockers.
 
 The following numbered entries preserve my preceding documentation milestone; their implementation-authorization statements are superseded by the checkpoint above.
 
@@ -176,4 +181,8 @@ For the completed PDF review, Codex used installed macOS PDFKit through Swift wi
 
 - **2026-11-16:** I authorized reading the extracted local Gemma scripts. Codex read all 19 files, verified byte identity with the ZIP, recorded SCRIPT_REVIEW.md and two source-level findings, and updated my architecture/design/test order without changing requirement IDs. Original files remain unchanged; no supplied script or runtime test was executed.
 
-- **2026-11-16 clarification update:** I supplied instructor Q&A and selected OpenAI or Claude primary with NVIDIA fallback. Codex synchronized the active plan with Q01–Q12; older numbered milestones above remain historical. Documentation review does not prove provider migration or cloud availability.
+- **2026-11-16 clarification update:** I supplied instructor Q&A and selected OpenAI or Claude primary with NVIDIA fallback. Codex synchronized the active plan with Q01–Q14; older numbered milestones above remain historical. Documentation review does not prove provider migration or cloud availability.
+
+## My November 17 grader-access update
+
+I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.

@@ -1,0 +1,4 @@
+# Hermes v0.22.7 tool.uv security overrides; see upstream pyproject.toml.
+Pillow==13.0.0
+cryptography==50.0.2
+pynacl>=1.6,<1.7

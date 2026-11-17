@@ -1,5 +1,9 @@
 # My Assignment 3 Design
 
+## My November 16 integration checkpoint
+
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+
 Status: implementation is underway in my approved Docker sandbox. I selected Hermes, Telegram, Gmail, and a dedicated Google Calendar. The Daylight browser interface implements the proposed soft neumorphic styling, plain-text chat, visible connection/error states, and Telegram-only email approval. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) distinguishes implemented behavior from pending live evidence. Cloud deployment and the 48-hour run have not started.
 
 Last updated: November 16, 2026.
@@ -376,19 +380,19 @@ For the separate advanced-integration criterion, my architecture recommends publ
 | --- | --- |
 | Platform and interfaces | Hermes v0.22.7, Telegram and Daylight browser chat. Local browser checks passed; live Telegram/grader access remains pending. |
 | Sandbox and Git | Approved project-only Docker; public named repository and routine reviewed commits/pushes. CI execution and repository protections remain pending. |
-| Models | OpenAI API primary is my working choice, NVIDIA cloud fallback, local Gemma 4 E2B. Claude is an accepted primary alternative. Exact cloud IDs/budget and adapter migration remain pending. |
+| Models | Hermes OpenAI browser OAuth primary is my working choice, NVIDIA cloud fallback, local Gemma 4 E2B. Claude is an accepted primary alternative. Exact cloud IDs and live OAuth verification remain pending; the adapter has offline coverage. |
 | Local evidence | This 16 GiB Mac served 65,536 context and completed a real tool turn. Scoped prompts retain required instructions/history. Local failure forfeits local credit; cloud-only does not earn it. |
 | Skills and features | Calendar, email, direct Tavily search and original Content Brief; briefing, recap, email integration and alerts. Own credentials/scopes, safety controls and demonstrated use must support the four-skill claim. |
-| Accounts | Temporary synthetic Gmail roles, dedicated read-only Google Calendar and Telegram bot. Every send needs payload-specific human approval. Credentials and live verification remain pending. |
-| Capacity and availability | One Cloud Run Instance; measured 1 vCPU/4 GiB is allowed if needed. No planned three-hour restart during grading. Budget and deployed sizing remain undecided. |
+| Accounts | Temporary synthetic Gmail roles, dedicated read-only Google Calendar and Telegram bot. Every send needs payload-specific human approval. Google credentials and calendar access are verified; Telegram ownership and real-message evidence remain pending. |
+| Capacity and availability | One Cloud Run Instance; measured 1 vCPU/4 GiB is allowed if needed. No planned three-hour restart during grading. My $4 total ceiling is confirmed; deployed sizing remains unverified. |
 | Evidence | Final cloud/local selections determine logs/video. Minor non-model fixes do not restart the full 48-hour run. Graders test after End Date and again 48 hours later; exact schedule remains unknown. |
-| Remaining inputs | GCP project/budget, cloud model IDs, accounts, Tailscale, content preferences, grace balance and packaging clarification. |
+| Remaining inputs | Cloud model IDs, Telegram ownership, Tailscale, content preferences, grace balance and packaging clarification. |
 
 I preserve G's detailed browser access procedure; Q01's older provisional GUI/Tailscale answer does not remove it. Q12's fallback-only evidence question is unanswered. [My source and decision register](CLARIFICATIONS.md)
 
 ### My provider and skill design refinement
 
-For eligible cloud work, I plan OpenAI first and NVIDIA only as bounded fallback. If the cloud chain is unavailable or deliberately rate-limited for the required demonstration, an eligible request can use local Gemma; private requests remain local or held. Each attempt records the actual model, routing reason and outcome. The current code still has NVIDIA-only cloud routing, so this is pending implementation.
+For eligible cloud work, I plan OpenAI first and NVIDIA only as bounded fallback. If the cloud chain is unavailable or deliberately rate-limited for the required demonstration, an eligible request can use local Gemma; private requests remain local or held. Each attempt records the actual model, routing reason and outcome. My OAuth proxy and optional API adapter implement this chain; live provider checks remain pending.
 
 My web-search skill calls Tavily directly with my own key; merely adding attribution around bundled search would not qualify under Q05. My README lists the integration and intended use of all four skills. I retain explicit approval for every synthetic email send and no social publishing capability.
 
@@ -404,4 +408,8 @@ My repository follow-up adds a concise technology overview in ARCHITECTURE.md A1
 
 On November 16, 2026, I authorized the extracted-script review. Codex read all 19 unchanged files, verified archive identity and updated the UI, lifecycle, approval, storage and evidence plan. SCRIPT_REVIEW.md contains the adaptation order and planned tests; neither a browser nor a supplied script was run.
 
-The instructor clarification update applies Q01–Q12 to the active plan. Earlier review entries describe their original documentation milestone, not current implementation status.
+The instructor clarification update applies Q01–Q14 to the active plan. Earlier review entries describe their original documentation milestone, not current implementation status.
+
+## My November 17 grader-access update
+
+I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.

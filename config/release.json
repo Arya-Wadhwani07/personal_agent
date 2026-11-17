@@ -1,0 +1,15 @@
+{
+  "ready": false,
+  "frozen": false,
+  "project": "assignment3-515003",
+  "budget_usd": 4,
+  "instance": "assignment3-personal-agent",
+  "cpu": "1",
+  "memory": "2Gi",
+  "blockers": [
+    "Cloud IAM, cost monitoring and final deployment approval pending",
+    "Live GCS recovery and durable OAuth refresh-state recovery unverified",
+    "Tailscale private inference and deployed integrations unverified",
+    "Image checks, advanced skill publication and final evidence incomplete"
+  ]
+}

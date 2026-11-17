@@ -1,5 +1,9 @@
 # My Instructor Clarifications and Decisions
 
+## My November 16 integration checkpoint
+
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+
 Recorded November 16, 2026, from the forum excerpts I pasted into this chat. No forum URLs or absolute posting dates were supplied. Labels such as “two weeks ago” describe the pasted snapshot, not independently verified dates. I distinguish instructor/endorsed answers from student reports and unanswered questions. Original PDFs remain unchanged; the existing 94 requirement IDs are retained.
 
 ## My clarification register
@@ -18,14 +22,16 @@ Recorded November 16, 2026, from the forum excerpts I pasted into this chat. No 
 | Q10 | Minor bug/harness fix and 48-hour evidence; Marco Papa, 14 hours ago | A minor fix without a model change does not require a new full 48-hour run. I still preserve the build/change timeline, affected test results and actual outages. The later three-part question about known defects and point deductions is unanswered. |
 | Q11 | Three-hour restarts during grading; Marco Papa, updated one minute ago, plus endorsed resource discussion | Restarts during grading incur a penalty. I will disable planned three-hour restarts and address memory/capacity before grading. The student's $3/40-hour figure is an anecdote, not my cost estimate or approved budget. |
 | Q12 | Adding Edu OAuth fallback after a NIM-primary run; question one hour ago, no answer supplied | This is unresolved. I do not infer blanket permission to reuse old evidence after a fallback-only change. |
+| Q13 | Grader test-account access; additional professor excerpt supplied November 17 | I use dedicated class-only accounts with fictional data. OAuth uses preferred Path 1: password-only grader login, with 2-Step Verification off on the dedicated test account. Testing refresh tokens need renewal before grading or an approved Production transition. App Password integrations instead retain 2-Step Verification and at least four unused backup codes. I test a grader-style sign-in in another browser’s Incognito window and submit credentials only in Brightspace Comments. |
+| Q14 | Two grading phases and added source files; additional professor excerpt supplied November 17 | Cloud behavior is tested on my live Cloud Run Instance; local Gemma is graded through the Zoom video. The video PDFs and platform-specific scripts remain the detailed checklist. CloudRunSettings.txt supplies the private Brightspace Comments format. |
 
 ## My provider decision
 
-I asked to keep NVIDIA as fallback and use OpenAI or Claude as primary. My working selection is **OpenAI through a paid API key as primary**, **NVIDIA NIM as cloud fallback**, and **Gemma 4 E2B through local Ollama as the local route**. Claude remains an acceptable alternative if I select it before final evidence collection.
+I asked to keep NVIDIA as fallback and use OpenAI or Claude as primary. My current selection is **Hermes OpenAI browser OAuth with gpt-6.1-sol as primary**, **NVIDIA NIM as cloud fallback**, and **Gemma 4 E2B through local Ollama as the local route**. Claude remains an acceptable alternative if I select it before final evidence collection.
 
-Exact model IDs, account availability, spending limit and live verification remain pending. The existing NVIDIA model setting is a candidate, not a validated fallback. NIM's reliability warning still matters in fallback use. Q09 mentions a NIM fallback example for OpenClaw; Q12 does not establish a universal exemption for fallback changes.
+The OpenAI account, gpt-6.1-sol inference and $4 total budget are verified/recorded; NVIDIA fallback still needs live verification. The existing NVIDIA model setting is a candidate, not a validated fallback. NIM's reliability warning still matters in fallback use. Q09 mentions a NIM fallback example for OpenClaw; Q12 does not establish a universal exemption for fallback changes.
 
-The implementation currently has a NVIDIA-only cloud adapter. This is a requirements/design update, **not a completed provider migration**. Endpoint validation, credentials, provider translation, routing, simulation, deployment configuration and tests must change together. Paid calls remain blocked until I supply the budget.
+My later instruction selects supported Hermes OpenAI browser OAuth as primary, retaining NVIDIA fallback. D pp. 6–7 require browser sign-in for USC and platform-owned OAuth inference. The new proxy forwards Hermes-authenticated requests; the optional paid API path remains separate. Offline tests passed, while final-model observation/video evidence remains pending. I supplied a $4 total budget.
 
 ## My evidence and restart policy
 
@@ -56,4 +62,8 @@ No forum answer authorizes closing unrelated host applications, increasing my bu
 
 ## My documentation review
 
-This update preserves all 94 requirement IDs and their architecture mappings. Review covered all 12 clarification entries, precedence, pending-versus-completed wording, Markdown tables/fences and local links. SHA-256 comparison confirmed that all 25 original PDF/archive/extracted files remain unchanged. Runtime unit/integration/load/stress tests are not applicable to this Markdown-only change; prior runtime evidence remains separately scoped in IMPLEMENTATION_STATUS.md. Provider migration is still unfinished.
+This update preserves all 94 requirement IDs and their architecture mappings. Review covered all 14 clarification entries, precedence, pending-versus-completed wording, Markdown tables/fences and local links. SHA-256 comparison confirmed that all 25 original PDF/archive/extracted files remain unchanged. Runtime unit/integration/load/stress tests are not applicable to this Markdown-only change; prior runtime evidence remains separately scoped in IMPLEMENTATION_STATUS.md. The primary OAuth path is verified; live fallback and deployed acceptance remain unfinished.
+
+## My November 17 grader-access update
+
+I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.

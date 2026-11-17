@@ -55,3 +55,6 @@ temp/
 .DS_Store
 .idea/
 .vscode/
+
+# Python editable-package metadata.
+*.egg-info/

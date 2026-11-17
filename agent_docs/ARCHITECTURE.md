@@ -1,5 +1,9 @@
 # My Assignment 3 System Architecture
 
+## My November 16 integration checkpoint
+
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+
 Status: my approved implementation is underway. Hermes v0.22.7 is installed from a verified source archive in a Python 3.14 container. The public browser edge uses port 8080, the native Hermes API stays on loopback 8081, and the policy/router/tool broker uses loopback 8090. Telegram, Gmail, and a dedicated Google Calendar are selected. Architecture coverage below remains a target, not completion evidence; [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) records actual verification and gaps.
 
 My custom database uses SQLite rollback journaling because the base image links SQLite 3.40.1, affected by the upstream WAL-reset issue. Immutable GCS objects and generation-conditional manifests protect custom checkpoints. Native workspace capture/restore code and mocked tests now exist, but complete live recovery and Tailscale identity persistence remain release blockers. No cloud resources have been provisioned.
@@ -39,7 +43,7 @@ I distinguish assignment-mandated technologies from recommendations. Every selec
 | Google Cloud Run Instance | It is the required long-running host for the gateway and scheduler. | I need a supported region, quotas, resource allocation, stable URL, and actual Instance configuration. The documented command family is `gcloud beta run instances`; a Service-only workflow would be wrong. [Instance lifecycle](https://docs.cloud.google.com/run/docs/instances/create-and-manage-instances) |
 | Docker-compatible image and isolated development VM/container | One reproducible image packages the runtime and gives me a reviewed execution boundary. A separate disposable development environment satisfies my sandbox rule. | Containers still need restricted mounts, identities, capabilities, network access, and resource limits. A virtual environment only manages packages. No local Docker startup or host installation is authorized. [Docker execution controls](https://docs.docker.com/engine/containers/run/) |
 | Gemma 4 through Ollama on my hardware | This is the required local inference route. E2B is a reasonable first candidate to evaluate against available RAM, without changing the assignment's accepted model choices. | Tag, quantization, context, thinking/output budget, and full-turn performance remain unmeasured. Larger context needs more memory; actual served context/offload can be inspected with `ollama ps`. [Ollama context](https://docs.ollama.com/context-length) |
-| OpenAI API primary; NVIDIA NIM fallback | OpenAI is my working primary choice under Q02 and my provider instruction; NVIDIA remains a secondary cloud path. Claude API is an allowed primary alternative. | Exact models, budget and live checks remain pending. The current adapter is NVIDIA-only and must be migrated. Edu OAuth is a distinct supported entitlement, not an API key. NIM reliability remains a fallback risk. [CORE-03; CLARIFICATIONS.md Q02/Q09] |
+| Hermes OpenAI browser OAuth primary; NVIDIA NIM fallback | OpenAI is my working primary choice under Q02 and my provider instruction; NVIDIA remains a secondary cloud path. Claude API is an allowed primary alternative. | OpenAI gpt-6.1-sol OAuth is verified; live NVIDIA and deployment checks remain pending. Both OAuth routing and the optional paid adapter now have isolated coverage. Edu OAuth is a distinct supported entitlement, not an API key. NIM reliability remains a fallback risk. [CORE-03; CLARIFICATIONS.md Q02/Q09] |
 | Tailscale userspace proxy and private Serve path | This supplies the required cloud-to-laptop link without publicly exposing Ollama. Userspace networking offers SOCKS5/HTTP proxy access where a TUN device is unavailable. | The local inference client must explicitly use the proxy; having an online Tailscale node is insufficient. Generic ephemeral-node advice does not override G's OpenClaw persistence rules. [Tailscale userspace networking](https://tailscale.com/docs/concepts/userspace-networking) |
 | Dedicated Cloud Storage bucket | It is the required durable home for workspace/memory, snapshots, and retained evidence under separate access/retention policies. | Object storage is not a transactional shared filesystem. Active lock-dependent state stays on container disk, with the consistency protocol in A8. [Cloud Storage FUSE limitations](https://docs.cloud.google.com/storage/docs/cloud-storage-fuse/overview) |
 | Platform-native state plus a small local journal, proposed | Existing workspace files retain platform compatibility; a coordinator records job, approval, content, and durability state. A local SQLite journal is a candidate if the chosen runtime supports it. | No additional database dependency is selected yet. Any SQLite use stays off FUSE and needs consistent backup, migrations, integrity checks, and restore tests. Otherwise I need an equivalent transactional local journal. [OPS-01/02/03; S pp. 8-9, 16-19] |
@@ -47,7 +51,7 @@ I distinguish assignment-mandated technologies from recommendations. Every selec
 | Cloud Logging plus durable sanitized exports | Routing, lifecycle, and job evidence can be correlated without recording message text. Exports preserve the actual observation interval for submission. | Retention, export permissions, sensitive fields, and gaps need review before the window starts. Logs alone do not prove successful external delivery. [CORE-10; OPS-06/07/08] |
 | GitHub Actions, Artifact Registry, and GCP OIDC | Isolated checks and immutable image promotion support repeatable releases; OIDC avoids storing a long-lived GCP key in GitHub. | Repository plan/access, restricted trust claims, separate identities, release approval, and freeze enforcement need implementation. [GitHub OIDC for GCP](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-google-cloud-platform) |
 | Platform scheduler/cron and bounded event polling | It supports proactive work without adding another scheduling service. | Jobs need timezone, deduplication, catch-up policy, completion/delivery records, and a single active scheduler. A continuous `sleep()` loop is not my trigger mechanism. [FUNC-04; OPS-03] |
-| My calendar, email, direct search and weather adapters | Own Google OAuth/scopes, dedicated accounts, Tavily key and bounded custom workflows provide meaningful integration and testable safety boundaries. | Live credentials/demonstrations remain pending. Enabling bundled capabilities or merely wrapping bundled search does not qualify. [FUNC-02/06/07/08/09; Q05] |
+| My calendar, email, direct search and weather adapters | Own Google OAuth/scopes, dedicated accounts, Tavily key and bounded custom workflows provide meaningful integration and testable safety boundaries. | Google refresh and calendar access are verified; remaining integration demonstrations are pending. Enabling bundled capabilities or merely wrapping bundled search does not qualify. [FUNC-02/06/07/08/09; Q05] |
 
 I would omit Kubernetes, Redis, a vector database, a second agent framework, and a separate UI hosting service from the initial build because no current requirement needs their operational overhead. This is a scope decision, not a claim that those tools are generally unsuitable. If a measured limitation requires one, I will document its benefit, cost, and new failure modes before adding it.
 
@@ -146,7 +150,7 @@ These boundaries let white-box tests exercise policies and black-box tests asser
 
 **Provider migration plan:** My cloud adapter will try the chosen OpenAI model, then the configured NVIDIA model only on eligible transient/rate-limit failures within a shared deadline/attempt budget. Authentication/configuration errors surface clearly; no request can cycle indefinitely between providers. Private/local-only context never enters either cloud provider. Logs distinguish selection, each attempted provider/model, fallback reason and final outcome without message bodies or credentials. Claude is an accepted alternative, not an automatically enabled third paid provider.
 
-My reversible 429 controls must support both primary-failure → NVIDIA verification and whole-cloud-chain rate limiting → local Gemma demonstration. Mock tests must verify both, plus private hold and exhausted fallback. The current NVIDIA-only implementation has not satisfied this migration. Exact model IDs and paid-call budget remain pending. [Q02/Q09/Q12]
+My reversible 429 controls must support both primary-failure → NVIDIA verification and whole-cloud-chain rate limiting → local Gemma demonstration. Mock tests must verify both, plus private hold and exhausted fallback. My OAuth proxy and optional API adapter have isolated migration tests; exact cloud models and live inference remain pending. [Q02/Q09/Q12]
 
 
 My proposed private-task policy is **hold** when an eligible local call cannot complete; cloud fallback for private content is not enabled. Privacy classification must occur before any cloud classifier or logging of content. I would use explicit trusted privacy flags plus conservative local rules for supported requests, with ambiguity defaulting to hold or clarification. Privacy promises cover the full turn, including tool results and history; a local-only label does not authorize sending its content to an external search/email provider.
@@ -481,7 +485,7 @@ Each row points to the architecture response and its evidence gate. All entries 
 | --- | --- | --- |
 | CORE-01 | [A1](#a1-scope-assumptions-and-decision-status), [A13](#a13-conditional-branches-and-alternatives) | Hermes v0.22.7 selected and locally exercised; deployed gateway evidence remains pending. |
 | CORE-02 | [A3](#a3-whole-system-topology-and-responsibility-boundaries), [A11](#a11-isolated-development-and-github-delivery) | Cloud Run Instance hosts gateway/scheduler; verify deployed resource and command family. |
-| CORE-03 | [A2](#a2-technology-choices-and-their-justification), [A5](#a5-hybrid-routing-privacy-and-model-failure) | Planned OpenAI API primary/NVIDIA fallback; accepted Claude alternative. Exact IDs, migration, budget and deployed inference remain pending. |
+| CORE-03 | [A2](#a2-technology-choices-and-their-justification), [A5](#a5-hybrid-routing-privacy-and-model-failure) | Planned Hermes OpenAI browser OAuth primary/NVIDIA fallback; accepted Claude alternative. Exact cloud IDs and live/deployed inference remain pending. |
 | CORE-04 | [A5](#a5-hybrid-routing-privacy-and-model-failure) | Gemma 4 through local Ollama; actual installed/loaded model and remote inference. |
 | CORE-05 | [A3](#a3-whole-system-topology-and-responsibility-boundaries), [A5](#a5-hybrid-routing-privacy-and-model-failure) | Explicit adapter proxy path through private Tailscale; verify real call. |
 | CORE-06 | [A5](#a5-hybrid-routing-privacy-and-model-failure), [A14](#a14-validation-strategy-and-unresolved-implementation-gates) | Task-property routing, paraphrase tests and completed calls on both routes. |
@@ -576,7 +580,7 @@ Each row points to the architecture response and its evidence gate. All entries 
 
 ## A16. References and document review
 
-My original source keys are D, G, V, S, R and Z, with physical-page references in [REQUIREMENTS.md](REQUIREMENTS.md#source-register). [CLARIFICATIONS.md](CLARIFICATIONS.md) adds Q01–Q12 from the user-supplied instructor excerpts and records authority/unanswered questions. Specific answers resolve cloud authentication, local-credit, skill-counting, capacity, evidence and restart conflicts. Packaging, course timezone and grace balance remain open. Original sources remain unchanged.
+My original source keys are D, G, V, S, R and Z, with physical-page references in [REQUIREMENTS.md](REQUIREMENTS.md#source-register). [CLARIFICATIONS.md](CLARIFICATIONS.md) adds Q01–Q14 from the user-supplied instructor excerpts and records authority/unanswered questions. Specific answers resolve cloud authentication, local-credit, skill-counting, capacity, evidence and restart conflicts. Packaging, course timezone and grace balance remain open. Original sources remain unchanged.
 
 Official implementation references were consulted on November 16, 2026 and linked beside the claims they support: Cloud Run Instance lifecycle, Tailscale userspace networking, Ollama context/model listing, Cloud Storage FUSE/preconditions, Docker controls, Secret Manager, Telegram Bot API, GitHub OIDC, Hermes upstream, and the previously reviewed LinkedIn policy/API references. Current web documentation does not override assignment requirements or establish that the chosen release/account supports every planned hook. I will recheck the pinned stack during authorized implementation.
 
@@ -613,7 +617,7 @@ This appendix is my short explanation of what each technology does and where it 
 | Cloud Run Instance | The continuously running cloud host for the assistant, gateway and scheduler. | Required resource type; a Cloud Run Service is not interchangeable for this assignment. A3/A10. |
 | Router and model adapters | Choose and execute a permitted local/cloud route based on task properties, privacy, context and availability. | The hybrid-routing requirement needs policy enforcement and actual inference evidence. A5. |
 | Gemma 4 E2B and Ollama | Local inference on my approved 16 GiB Mac. | Served context 65,536 and a real tool turn verified; deployed Tailscale path remains pending. A5. |
-| Cloud model provider | OpenAI API is my planned primary; NVIDIA is fallback. Claude API and supported Edu OAuth are accepted alternatives with different authentication/billing. | Exact IDs, budget and migration pending; current code is NVIDIA-only. A2/A5 and Q02/Q09. |
+| Cloud model provider | Hermes OpenAI browser OAuth is my selected primary; NVIDIA is fallback. Claude API and supported Edu OAuth are accepted alternatives with different authentication/billing. | Exact cloud IDs and live OAuth checks remain pending; isolated routing tests passed. A2/A5 and Q02/Q09. |
 | Tailscale userspace proxy and Serve | Connect the cloud model adapter to private loopback Ollama on my hardware. | Required private networking without public inference exposure. A3/A5. |
 | Tool policy and approval gate | Checks authorized operations, recipients and exact human approval before a send. | Prevents models, scheduled work and alternate tools from granting themselves send authority. A6/A9. |
 | Calendar, email, web and weather adapters | Normalize bounded data from dedicated class accounts and permitted sources. | Support the required skills, briefing and alerts; provider/auth decisions remain open. A6. |
@@ -652,3 +656,32 @@ My [SCRIPT_REVIEW.md](SCRIPT_REVIEW.md) documents all 19 files, ZIP identity, ob
 Query scripts do not emit telemetry or implement routing. The starter supervisor does not implement restore/private-network setup or proactive scheduling. The example approval hook does not implement a complete human send gate. These are explicit release prerequisites, not completed features.
 
 No new requirement ID is needed: all 94 IDs remain mapped in A15. This review found adaptation/security gaps, not a missing captured assignment obligation. Runtime tests, rendered UI/diagrams, exploitability, authentication and cloud operation are still unverified.
+
+## A20. My implemented OAuth boundary
+
+D pp. 6–7 require USC browser login and platform-owned OAuth inference. I use the pinned Hermes browser PKCE flow and its own refresh logic. The model provider remains `openai-codex`; the local endpoint receives Hermes's authenticated Responses request. A registered request middleware adds an independent internal key and trusted session identity. Missing middleware metadata is rejected at the proxy, so Hermes's fail-open middleware behavior cannot bypass this boundary.
+
+```mermaid
+sequenceDiagram
+    participant H as Hermes native OAuth provider
+    participant P as Loopback policy proxy
+    participant S as Private-session ledger
+    participant L as Local Gemma
+    participant O as OpenAI Codex backend
+    H->>P: Authenticated Responses request plus internal session headers
+    P->>S: Persist/check sticky privacy before inference
+    alt Private or simple local task
+        P->>L: Relevant chat context and assignment tools
+        L-->>P: Reply or tool call
+    else Eligible cloud reasoning
+        P->>O: Forward platform credential to fixed backend
+        O-->>P: Bounded completed Responses stream
+    end
+    P-->>H: Completed Responses result with preserved tool call IDs
+```
+
+The proxy does not read OAuth files, exchange codes or refresh tokens. It preserves necessary account/residency headers, strips internal credentials from outbound requests and reconstructs bounded completed results for Hermes. Private sessions remain local after context compaction and process restart. Transient cloud failures can enter the NVIDIA/local chain; authentication failures stay visible. NVIDIA paid calls remain gated. General workspace snapshots exclude OAuth tokens, so cloud refresh-state durability remains an explicit release blocker. Browser and Telegram cannot reach the OAuth proxy directly.
+
+## My November 17 grader-access update
+
+I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.

@@ -1,12 +1,16 @@
 # My Local Gemma Starter-Script Review
 
+## My November 16 integration checkpoint
+
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+
 Status: the original read-only source review remains complete and supplied files remain unchanged. My separately authored implementation and Docker sandbox now exist. I preserved the browser chat protocol while replacing the broad starter proxy with bounded, allowlisted routes and structured errors. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) records implementation tests; the source findings below remain the historical review of the supplied files.
 
 I requested a careful review of the extracted local Gemma bundle and updates to my plans. The bundle contains shell scripts, Python, configuration and text instructions; the browser JavaScript is embedded in Hermes/web_ui.py. It is not a separate JavaScript application.
 
 ## Instructor clarification overrides for my adaptation
 
-My original 19-file source observations remain unchanged. [CLARIFICATIONS.md](CLARIFICATIONS.md) governs how I adapt them: OpenAI API is my planned primary with NVIDIA fallback; old NIM examples do not define the final selection. I retain one Cloud Run Instance and its internal components. Q04's separate-Service IAM example is not a replacement deployment recipe.
+My original 19-file source observations remain unchanged. [CLARIFICATIONS.md](CLARIFICATIONS.md) governs how I adapt them: Hermes OpenAI browser OAuth is my selected primary with NVIDIA fallback; old NIM examples do not define the final selection. I retain one Cloud Run Instance and its internal components. Q04's separate-Service IAM example is not a replacement deployment recipe.
 
 Q01 permits scoped local context/tools while retaining required instructions and the verified Hermes context setting. Q03 requires real local evidence for local credit. Q05 requires substantive skills and rejects a bundled-search wrapper, so I use my direct Tavily adapter and own scoped Google integrations.
 
@@ -98,3 +102,7 @@ Each step remains subject to platform/sandbox and implementation approval. This 
 | Source/document integrity | 19 ZIP-to-extracted comparisons; 25 source-file hashes before/after; stable requirement coverage, links/tables and Git diff/staging review. | Read-only comparisons passed; final documentation/source integrity checks recorded with the change. |
 
 No new assignment requirement was discovered that needs a new requirement ID: the existing **94 IDs** already cover the supplied obligations. The important changes are concrete adapter behavior, source-level findings, missing implementation hooks and stronger acceptance tests. The PDFs remain authoritative where these short companion files omit steps. I have not run unit, integration, smoke, load, stress, penetration or browser tests, nor an automated vulnerability scanner.
+
+## My November 17 grader-access update
+
+I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
