@@ -1,12 +1,12 @@
 # My Assignment 3 Requirements
 
-## My November 16 integration checkpoint
+## My November 17 integration checkpoint
 
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private inference access is not yet configured. Both published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
-Status: implementation is underway. [CLARIFICATIONS.md](CLARIFICATIONS.md) records the instructor excerpts as Q01–Q14; their interpretations are incorporated into my existing 94 requirement IDs. My cloud plan is Hermes OpenAI browser OAuth primary with NVIDIA NIM fallback, alongside local Gemma. Provider migration and deployed acceptance remain pending; actual evidence is tracked in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+Status: implementation is underway. [CLARIFICATIONS.md](CLARIFICATIONS.md) records the instructor excerpts as Q01–Q14; their interpretations are incorporated into my existing 94 requirement IDs. My cloud plan is Hermes OpenAI browser OAuth primary with NVIDIA NIM fallback, alongside local Gemma. Local OAuth integration is verified; deployed acceptance remains pending; actual evidence is tracked in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
-Last updated: November 16, 2026.
+Last updated: November 17, 2026.
 
 ## 1. Purpose and scope
 

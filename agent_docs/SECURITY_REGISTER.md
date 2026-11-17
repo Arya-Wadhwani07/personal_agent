@@ -1,14 +1,14 @@
 # My Security Risk and Finding Register
 
-## My November 16 integration checkpoint
+## My November 17 integration checkpoint
 
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private inference access is not yet configured. Both published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
 Status: implementation review is underway. My application source and dependency lock now exist; isolated policy/API tests and initial static/dependency scans have run. The initial dependency scan found no known advisories in its resolved scope; subsequent dependency changes require a fresh scan. Three initial static alerts were reviewed: fixed HTTPS bootstrap URL, empty OAuth cache value, and intentional container ingress binding. These are scoped configurations, not evidence that all vulnerabilities are absent. Current verification is in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 **VULN-003 — SQLite WAL-reset risk (mitigated in code; closure review pending):** The container links SQLite 3.40.1. Hermes warned that WAL mode is affected by the [SQLite WAL-reset issue](https://sqlite.org/wal.html#walresetbug). I changed my custom database to rollback journaling, matching Hermes's own fallback. No corruption was observed. Concurrent-write, snapshot and restart-related tests passed in the recorded suite. Final image/version/mode verification and closure evidence remain required; the finding is not marked closed.
 
-Last updated: November 16, 2026.
+Last updated: November 17, 2026.
 
 My register supports [REQUIREMENTS.md](REQUIREMENTS.md), especially SEC-01 through SEC-08 and USER-13, and the controls proposed in [DESIGN.md](DESIGN.md) and [ARCHITECTURE.md](ARCHITECTURE.md). It will supply evidence for my final security audit rather than replace that deliverable. My working boundaries remain in [AGENTS.md](AGENTS.md).
 
@@ -140,3 +140,15 @@ I keep the instructor rulings in [CLARIFICATIONS.md](CLARIFICATIONS.md) separate
 ## My November 17 grader-access update
 
 I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
+
+### VULN-004 — release authorization did not bind project and budget
+
+- **Discovery/owner:** November 17, 2026, Codex-assisted review of `scripts/deploy.py`; I own the release decision. Related risks: RISK-07/10.
+- **Affected artifact:** Published checkpoint `7006869`. The script accepted any syntactically valid project and any float greater than zero, without matching `config/release.json`'s approved project or $4 ceiling. NaN/infinite values could bypass the intended numeric check.
+- **Severity/exposure:** Medium authorization/control defect in a manually invoked release workflow. The separate readiness gate was false; no deployment or unauthorized spending occurred.
+- **Remediation:** Exact project match, finite decimal budget within the reviewed ceiling, and literal boolean readiness. These checks do not impose a provider-side billing cap.
+- **Verification:** All 19 release tests passed, including a different valid project/image, excessive/invalid/non-finite budgets and invalid readiness. Ruff and Bandit passed for the modified code. Source remediation is verified; final commit and CI evidence follow the reviewed checkpoint.
+
+### My owned-tailnet setup boundary
+
+I confirmed the Mac is online in my own tailnet, with administrator capability. The university tailnet policy is untouched. A prepared restrictive policy and temporary administration-token workflow are not yet deployed controls: inspection, validation and positive/negative live connection checks remain pending. The temporary token stays out of application configuration and requires revocation after setup. My Google Cloud login is isolated in project-local configuration; read-only project/billing checks passed without provisioning.

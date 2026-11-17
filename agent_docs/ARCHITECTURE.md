@@ -1,14 +1,14 @@
 # My Assignment 3 System Architecture
 
-## My November 16 integration checkpoint
+## My November 17 integration checkpoint
 
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private inference access is not yet configured. Both published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
 Status: my approved implementation is underway. Hermes v0.22.7 is installed from a verified source archive in a Python 3.14 container. The public browser edge uses port 8080, the native Hermes API stays on loopback 8081, and the policy/router/tool broker uses loopback 8090. Telegram, Gmail, and a dedicated Google Calendar are selected. Architecture coverage below remains a target, not completion evidence; [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) records actual verification and gaps.
 
 My custom database uses SQLite rollback journaling because the base image links SQLite 3.40.1, affected by the upstream WAL-reset issue. Immutable GCS objects and generation-conditional manifests protect custom checkpoints. Native workspace capture/restore code and mocked tests now exist, but complete live recovery and Tailscale identity persistence remain release blockers. No cloud resources have been provisioned.
 
-Last updated: November 16, 2026.
+Last updated: November 17, 2026.
 
 My architecture translates [REQUIREMENTS.md](REQUIREMENTS.md) into components, interfaces, failure policies, and verification evidence. [DESIGN.md](DESIGN.md) remains my experience and UI proposal; [AGENTS.md](AGENTS.md) defines my working boundaries; [SECURITY_REGISTER.md](SECURITY_REGISTER.md) tracks risks and eventual findings. Section A15 maps all **94 requirement IDs** individually, including alternatives and non-runtime deliverables. Coverage means that I have an architectural response, not that I have satisfied the requirement.
 
@@ -685,3 +685,9 @@ The proxy does not read OAuth files, exchange codes or refresh tokens. It preser
 ## My November 17 grader-access update
 
 I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
+
+## A21. My verified setup boundary and release authorization
+
+My Mac now uses a tailnet I control. The private-network design grants only the cloud-agent tag access to the laptop's Gemma TCP port, with policy assertions for allowed and denied traffic. Own-tailnet policy inspection, conditional update, restricted enrollment and a real connection test precede exposure through private Serve; no public Funnel is part of this design. Endpoint identifiers, setup administration credentials and enrollment keys remain private.
+
+My Google Cloud CLI is containerized with project-local credential storage. Read-only checks verified the active project and enabled billing. The release command is now bound to the project and budget in the reviewed release gate; different projects, budgets above $4 and non-finite values are rejected. This prevents unauthorized release parameters, but cloud billing still requires usage monitoring and an affordable availability period. The release gate remains closed while those controls, durable OAuth recovery and live integration checks are unfinished.

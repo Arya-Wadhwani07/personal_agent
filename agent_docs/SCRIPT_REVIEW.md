@@ -1,8 +1,8 @@
 # My Local Gemma Starter-Script Review
 
-## My November 16 integration checkpoint
+## My November 17 integration checkpoint
 
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private inference access is not yet configured. Both published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
 Status: the original read-only source review remains complete and supplied files remain unchanged. My separately authored implementation and Docker sandbox now exist. I preserved the browser chat protocol while replacing the broad starter proxy with bounded, allowlisted routes and structured errors. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) records implementation tests; the source findings below remain the historical review of the supplied files.
 

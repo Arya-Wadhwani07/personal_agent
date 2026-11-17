@@ -1,8 +1,8 @@
 # Assignment 3: My Working Agreement
 
-## My November 16 integration checkpoint
+## My November 17 integration checkpoint
 
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private inference access is not yet configured. Both published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
 ## My role and engineering support
 
@@ -90,12 +90,12 @@ My application source authoring, dependency installation, execution, and runtime
 My [design proposal](DESIGN.md), [system architecture](ARCHITECTURE.md), and [requirements baseline](REQUIREMENTS.md) need to stay consistent as I make decisions:
 
 - My assistant needs both a Telegram/Discord integration and the selected platform's browser interface for grading. WhatsApp alone or a browser-only implementation would leave requirements unmet. My browser interface does not count as a third messaging platform.
-- Hermes, Telegram, and the Daylight neumorphic browser chat are selected and locally implemented. Live Telegram and deployed grader access still need verification.
+- Hermes, Telegram, and the Daylight neumorphic browser chat are selected and locally implemented. A real Telegram reply is verified; deployed grader access still needs verification.
 - My UI should use soft raised panels and recessed inputs while preserving readable contrast, keyboard access, clear status, and honest loading/error states. The supplied Hermes browser UI must block approval-gated sends and direct me to drafts or a supported messaging approval flow.
 - My sandbox review must verify effective filesystem, privilege, network, credential, resource, and cleanup boundaries before application execution. White-box and black-box results must identify whether dependencies were mocked or real.
-- My delivery workflow should validate changes in isolated CI, build a reviewed immutable image, deploy only an approved release to a Cloud Run Instance, and verify readiness and live behavior afterward. Any rollback needs compatible state and explicit authorization. The GitHub destination and routine commit/push workflow are authorized; Actions, OIDC, secrets, protections, and deployment configuration remain pending.
-- My remaining inputs include exact cloud model IDs, remaining class-only account verification, private networking, repository protections, deadline timezone and grace balance. The repository is public; Docker is approved; this Mac has 16 GiB RAM. Hermes OpenAI browser OAuth is my primary choice, NVIDIA my fallback, and Claude an allowed alternative. OAuth routing has offline coverage; actual account-supported inference remains pending.
-- LinkedIn Content Brief is my fourth skill: permitted-source research, an original source-backed draft and review history. Its basic workflow exists; full review controls and live evidence remain unfinished. It has no direct LinkedIn search, account access or publishing capability. Each of my four skills must demonstrate substantive integration; merely wrapping bundled search does not count.
+- My delivery workflow should validate changes in isolated CI, build a reviewed immutable image, deploy only an approved release to a Cloud Run Instance, and verify readiness and live behavior afterward. Any rollback needs compatible state and explicit authorization. The GitHub destination and routine commit/push workflow are authorized; Actions CI passed; cloud OIDC, secrets, repository protections and deployment configuration remain pending.
+- My remaining inputs include private networking setup, grader-style account sign-in, repository protections and grace balance. The repository is public; Docker is approved; this Mac has 16 GiB RAM. Hermes OpenAI browser OAuth is my primary choice, NVIDIA my fallback, and Claude an allowed alternative. OAuth routing has offline coverage and a real account-supported inference check.
+- LinkedIn Content Brief is my fourth skill: permitted-source research, an original source-backed draft and review history. Its research/draft workflow and browser revision/copy/dismiss controls exist; deployed evidence remains unfinished. It has no direct LinkedIn search, account access or publishing capability. Each of my four skills must demonstrate substantive integration; merely wrapping bundled search does not count.
 
 ## My instructor clarification policy
 
@@ -153,7 +153,7 @@ Before load or stress testing, I will agree on the target, workload, duration, r
 
 ## My current status and next steps
 
-**Current implementation checkpoint (November 16):** Full implementation is authorized. My latest completed source suite passed 68 tests in 23.57 seconds, including mocked native Hermes OAuth tool use, delivery recovery, native/network restore and persistent private sessions. A real Hermes/Gemma memory-tool turn, isolated browser checks and bounded mock load/recovery checks passed. Google consent/refresh and dedicated-calendar access are verified. No paid inference, deployment or 48-hour run has occurred. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) separates tested source, the older running local image and remaining release blockers.
+**Current implementation checkpoint (November 17):** Full implementation is authorized. My latest completed source suite passed 82 tests in 21.98 seconds, including mocked native Hermes OAuth tool use, delivery recovery, native/network restore and persistent private sessions. A real Hermes/Gemma memory-tool turn, isolated browser checks and bounded mock load/recovery checks passed. Google consent/refresh and dedicated-calendar access are verified. No paid inference, deployment or 48-hour run has occurred. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) separates tested source, the older running local image and remaining release blockers.
 
 The following numbered entries preserve my preceding documentation milestone; their implementation-authorization statements are superseded by the checkpoint above.
 

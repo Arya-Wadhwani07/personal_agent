@@ -1,12 +1,12 @@
 # My Assignment 3 Design
 
-## My November 16 integration checkpoint
+## My November 17 integration checkpoint
 
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private inference access is not yet configured. Both published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
 Status: implementation is underway in my approved Docker sandbox. I selected Hermes, Telegram, Gmail, and a dedicated Google Calendar. The Daylight browser interface implements the proposed soft neumorphic styling, plain-text chat, visible connection/error states, and Telegram-only email approval. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) distinguishes implemented behavior from pending live evidence. Cloud deployment and the 48-hour run have not started.
 
-Last updated: November 16, 2026.
+Last updated: November 17, 2026.
 
 My design follows [REQUIREMENTS.md](REQUIREMENTS.md) and the boundaries in [AGENTS.md](AGENTS.md). My [detailed architecture](ARCHITECTURE.md) expands the topology into component/technology rationale, routing and approval policies, state recovery, deployment, evidence, and a map of all 94 requirement IDs. Source keys D, G, S, R, V, and Z refer to the assignment-source register in REQUIREMENTS.md. Choices labeled proposed are not final selections.
 

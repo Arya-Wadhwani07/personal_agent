@@ -1,10 +1,10 @@
 # My Implementation and Evidence Status
 
-## My November 16 integration checkpoint
+## My November 17 integration checkpoint
 
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private inference access is not yet configured. Both published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
-Last updated: November 16, 2026. My assignment is **not ready for submission or deployment**. I authorized full implementation, Docker runtime files, local Ollama checks, and synthetic tests limited to 4 CPUs/4 GiB and 60 seconds per load/stress run.
+Last updated: November 17, 2026. My assignment is **not ready for submission or deployment**. I authorized full implementation, Docker runtime files, local Ollama checks, and synthetic tests limited to 4 CPUs/4 GiB and 60 seconds per load/stress run.
 
 ## My verified checkpoint
 
@@ -46,7 +46,7 @@ My four skills require real integration evidence: own scoped Google accounts, di
 
 ## My open release blockers
 
-I supplied GCP project assignment3-515003 and a $4 total ceiling. Google credentials, account identity and read-only dedicated-calendar access are verified; Telegram token and owner ID are configured. Relevant Assignment 2 API keys were copied to an ignored file without being printed or exercised. Tailscale and cloud access remain pending.
+I supplied GCP project assignment3-515003 and a $4 total ceiling. Google credentials, account identity and read-only dedicated-calendar access are verified; Telegram token and owner ID are configured. Relevant Assignment 2 API keys were copied to an ignored file without being printed or exercised. My Mac is connected to my own tailnet, and isolated Cloud CLI access to the active project and enabled billing passed. Restricted network grants, cloud provisioning and live deployment remain pending.
 
 My custom SQLite state has generation-fenced checkpoints. Offline tests now cover native workspace/network identity recovery and notification claim/delivery/unknown-outcome handling. Native schedules are seeded at startup, but authenticated scheduled delivery is not yet demonstrated. Content review/revision/copy/dismiss endpoints exist and have API tests; refreshed visual checks and public skill installation evidence remain pending. OAuth credentials are excluded from general workspace archives; safe cloud refresh-state persistence still needs implementation and verification.
 
@@ -70,4 +70,14 @@ The latest 68-test offline suite passed in 23.57 seconds. Ruff passed; Bandit re
 
 I confirmed that both configured Gmail accounts are dedicated class-only accounts with made-up data. My Gmail API integration uses OAuth, so I follow Q13's preferred Path 1 for grader access. Changing account security settings remains my explicit action; Codex has not disabled 2-Step Verification, changed passwords, published the consent app or collected backup codes. I still need the grader-style sign-in and token-validity check. Q14 separates live cloud grading from the Zoom local-Gemma video without removing the detailed video steps. My [grader-access checklist](GRADER_ACCESS.md) records both paths and the private submission fields; passwords/codes never belong in this repository.
 
-My updated browser checks passed login, chat, plain-text injection rejection, content revision/copy/dismiss, new chat, mobile overflow, sign-out and browser-storage checks. I visually reviewed both screenshots. In chat, I confirmed a real Telegram reply to the synthetic study-plan prompt. The preceding home-channel warning led to an owner-derived native home-channel fix, covered by the 68-test suite. Tailscale was not found in the standard system/user Applications paths or CLI locations checked with permission; installation/sign-in remain pending. The package advisory scan reported no known vulnerabilities; editable project/Hermes packages were excluded by that scanner, and image scanning remains pending. A credential scan of 73 candidate files found no real secret values; its initial public `token_uri` match was confirmed to be a false positive. All 94 requirement IDs remain mapped, and all 25 original source hashes remain unchanged.
+My updated browser checks passed login, chat, plain-text injection rejection, content revision/copy/dismiss, new chat, mobile overflow, sign-out and browser-storage checks. I visually reviewed both screenshots. In chat, I confirmed a real Telegram reply to the synthetic study-plan prompt. The preceding home-channel warning led to an owner-derived native home-channel fix, covered by the 68-test suite. The earlier check found no Tailscale installation. I subsequently installed the verified package and signed into my own tailnet; its status is Running/online. Private inference rules and a remote connection test remain pending. The package advisory scan reported no known vulnerabilities; editable project/Hermes packages were excluded by that scanner, and image scanning remains pending. A credential scan of 73 candidate files found no real secret values; its initial public `token_uri` match was confirmed to be a false positive. All 94 requirement IDs remain mapped, and all 25 original source hashes remain unchanged.
+
+## My November 17 network and release checkpoint
+
+I completed Tailscale installation/sign-in and moved the Mac from the shared USC network to my own tailnet. The self-only CLI check confirms online status and owner/admin capability; Ollama remains on loopback. A restricted policy with allow/deny assertions is prepared privately, but has not been applied or tested end to end.
+
+My official Google Cloud CLI container stores its configuration only inside Assignment 3. Native sign-in passed; the project is ACTIVE and billing is enabled. Gmail and Calendar APIs are enabled; hosting APIs and resources are still pending. There has been no cloud deployment or paid inference.
+
+The published implementation checkpoints `267cd8d` and `7006869` both passed GitHub CI: [implementation run](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44048939718), [installer documentation run](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44049372349).
+
+I tightened the release script to require the reviewed project, a finite positive budget no higher than its reviewed ceiling, and literal boolean readiness. All 19 targeted release tests passed; Ruff and Bandit passed for the changed source. These are authorization checks, not a billing hard cap. The complete network-disabled regression suite passed 82 tests in 21.98 seconds.

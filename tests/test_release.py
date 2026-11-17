@@ -12,10 +12,12 @@ spec.loader.exec_module(deploy)
 ENV = {
     "A3_GCP_PROJECT": "synthetic-project",
     "A3_REGION": "us-west1",
-    "A3_BUDGET_USD": "5",
+    "A3_BUDGET_USD": "4",
     "A3_IMAGE": "us-west1-docker.pkg.dev/synthetic-project/a3/agent@sha256:" + "a" * 64,
 }
 GATE = {
+    "project": "synthetic-project",
+    "budget_usd": 4,
     "ready": True,
     "frozen": False,
     "blockers": [],
@@ -42,3 +44,31 @@ def test_digest_and_budget_required():
 def test_instance_resource_not_service():
     command = deploy.command(ENV, GATE)
     assert command[:5] == ["gcloud", "beta", "run", "instances", "deploy"]
+
+
+@pytest.mark.parametrize("budget", ["4.01", "5", "-1", "nan", "Infinity", "-Infinity", "invalid"])
+def test_budget_cannot_exceed_approval_or_bypass_with_nonfinite_values(budget):
+    with pytest.raises(ValueError):
+        deploy.command({**ENV, "A3_BUDGET_USD": budget}, GATE)
+
+
+def test_different_valid_project_and_own_image_are_still_refused():
+    alternate = {
+        **ENV,
+        "A3_GCP_PROJECT": "unapproved-project",
+        "A3_IMAGE": "us-west1-docker.pkg.dev/unapproved-project/a3/agent@sha256:" + "b" * 64,
+    }
+    with pytest.raises(ValueError, match="reviewed release gate"):
+        deploy.command(alternate, GATE)
+
+
+@pytest.mark.parametrize("ceiling", [None, "nan", "Infinity", 0, -1])
+def test_missing_or_invalid_authorization_is_fail_closed(ceiling):
+    with pytest.raises(ValueError):
+        deploy.command(ENV, {**GATE, "budget_usd": ceiling})
+
+
+def test_lower_declared_budget_is_allowed_but_truthy_readiness_is_not():
+    assert deploy.command({**ENV, "A3_BUDGET_USD": "3.50"}, GATE)
+    with pytest.raises(ValueError):
+        deploy.command(ENV, {**GATE, "ready": "false"})

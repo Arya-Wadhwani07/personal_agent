@@ -22,13 +22,13 @@ docker build --target test -t assignment3-tests:local .
 docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 256 --memory 4g --cpus 4 --tmpfs /tmp:rw,nosuid,nodev,size=512m assignment3-tests:local .venv/bin/python -m pytest -q -p no:cacheprovider --basetemp=/tmp/pytest
 ```
 
-## My November 16 integration checkpoint
+## My November 17 integration checkpoint
 
-My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](agent_docs/IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
+My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private inference access is not yet configured. Both published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](agent_docs/IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
 I am building a synthetic personal assistant for CSCI 599 Assignment 3 in [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent). I use Codex as an engineering and testing collaborator and remain responsible for understanding and submitting the work.
 
-My selected system uses Hermes v0.22.7, Telegram, Daylight browser chat and local Gemma 4 E2B through Ollama. The deployment target is one Cloud Run Instance with a private Tailscale path to local inference. Application code, tests, Docker configuration and CI/CD workflows exist locally; deployment, live accounts, CI execution and final submission evidence are incomplete.
+My selected system uses Hermes v0.22.7, Telegram, Daylight browser chat and local Gemma 4 E2B through Ollama. The deployment target is one Cloud Run Instance with a private Tailscale path to local inference. Application code, tests, Docker configuration and CI/CD workflows exist locally; the published checkpoints passed CI, while deployment and final submission evidence are incomplete.
 
 **Provider plan:** Hermes OpenAI browser OAuth is my primary, NVIDIA is fallback and local Gemma handles private/simple work. The optional paid API adapter remains separate. Offline routing tests and browser sign-in passed; NVIDIA fallback and deployed inference still need verification. No paid inference calls have been made.
 
