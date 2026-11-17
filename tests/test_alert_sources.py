@@ -41,3 +41,29 @@ async def test_independent_alert_sources_deduplicate_and_report_degradation(sett
     )
     assert "PRIVATE" not in caplog.text
     assert store.db.execute("SELECT COUNT(*) FROM notifications").fetchone()[0] == expected
+
+
+async def test_slow_source_is_cancelled_without_losing_other_alerts(settings, store, monkeypatch):
+    import asyncio
+
+    from personal_agent import broker as module
+
+    monkeypatch.setattr(module, "ALERT_SOURCE_SECONDS", 0.02)
+    cancelled = asyncio.Event()
+
+    async def emails():
+        try:
+            await asyncio.Event().wait()
+        finally:
+            cancelled.set()
+
+    async def calendar():
+        return {"untrusted_data": [{"id": "soon", "summary": "Synthetic meeting",
+            "start": {"dateTime": (datetime.now(UTC) + timedelta(minutes=10)).isoformat()}}]}
+
+    broker = Broker(settings, store, SimpleNamespace(emails=emails, calendar=calendar))
+    async with asyncio.timeout(1):
+        result = await broker.call("a3_alerts", {})
+    assert cancelled.is_set()
+    assert result["unavailable_sources"] == ["email"]
+    assert len(result["alerts"]) == 1

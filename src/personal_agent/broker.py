@@ -1,6 +1,7 @@
 # I developed this file with Codex assistance; see PROCESS_LOG.md.
 """Allowlisted tool capabilities; no model-callable send, approval, shell, or arbitrary HTTP."""
 
+import asyncio
 import hashlib
 import json
 import time
@@ -10,6 +11,8 @@ import httpx
 from .audit import emit
 from .content_review import public_reference, review
 from .state import PolicyError
+
+ALERT_SOURCE_SECONDS = 30
 
 TOOLS = {
     "a3_calendar": (
@@ -152,13 +155,19 @@ class Broker:
             # One unavailable source must not suppress alerts from the other source.
             unavailable = []
             collected = {}
-            for source, fetch in (("email", self.services.emails), ("calendar", self.services.calendar)):
+            async def collect(source, fetch):
                 try:
-                    collected[source] = await fetch()
+                    async with asyncio.timeout(ALERT_SOURCE_SECONDS):
+                        collected[source] = await fetch()
                 except (PolicyError, httpx.HTTPError, TimeoutError):
                     collected[source] = {"untrusted_data": []}
                     unavailable.append(source)
                     emit("alert_source", component=source, outcome="unavailable")
+
+            await asyncio.gather(
+                collect("email", self.services.emails),
+                collect("calendar", self.services.calendar),
+            )
             inbox, events = collected["email"], collected["calendar"]
             from datetime import UTC, datetime
 

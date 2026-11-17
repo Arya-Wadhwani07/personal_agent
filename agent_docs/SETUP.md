@@ -2,11 +2,11 @@
 
 ## My November 17 regression and implementation update
 
-I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **129 offline tests in 24.78 seconds**, with **73% measured combined statement/branch coverage** in the test process. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper.
+I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **132 offline tests in 67.51 seconds**, with **74% measured combined statement/branch coverage** in the test process. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper. Alert sources run concurrently with a 30-second limit each, followed by a 55-second delivery budget. Cancellation marks an in-flight send unknown and leaves unattempted alerts pending; these limits cover network waits, not arbitrary local storage stalls.
 
 My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
 
-I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. Public-tap installation and a real agent invocation still need verification. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
+I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. My public tap was fetched at commit 5ba6fa6 and passed the native safety scan. A fresh isolated Hermes profile then used Gemma to execute the installed helper successfully; the first ambiguous invocation failed and the explicit helper-command retry passed. This standalone skill check served a 4,096-token context, so it does not replace my separate 65,536-token application check or required video. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
 
 ## My November 17 integration checkpoint
 
@@ -82,3 +82,15 @@ I completed a separate Hermes browser sign-in for cloud deployment. Its bootstra
 On cloud startup, my gateway restores the latest dedicated authentication object from the private state bucket. The bootstrap is used only when that object does not exist. Hermes still owns the browser flow and refresh HTTP requests. My pinned storage adapter records a generation-conditional `refresh_pending` marker before Hermes refreshes, then stores the rotated grant before returning it. Normal native saves also write through to that object. An interrupted or ambiguous refresh blocks subsequent inference and prevents fallback to stale bootstrap credentials.
 
 If recovery reports a pending refresh, I complete a fresh separate cloud sign-in and review a deliberate reset of the authentication checkpoint. I do not delete the marker or restore an old refresh token just to bypass the failure. This recovery/reset procedure still needs live GCS validation before release. Credentials are excluded from the general workspace ZIP and are never included in submission artifacts or logs.
+
+
+## My repeatable offline regression check
+
+From Assignment 3, I build the locked test image, then run tests with no network, a read-only root, disposable state and the agreed resource limits:
+
+```sh
+docker build --target test -t a3-tests .
+docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 256 --memory 4g --cpus 4 --tmpfs /tmp:rw,nosuid,nodev,size=512m a3-tests .venv/bin/python -m pytest -q -p no:cacheprovider --basetemp=/tmp/pytest
+```
+
+My Isolated validation workflow runs the corresponding lint, static-security, regression and package-advisory checks. The separate Runtime vulnerability gate must also pass or have evidence-backed false-positive dispositions before release; a green test run alone is insufficient. Current image High findings remain unresolved. For a manual email check I review the exact draft through Telegram and explicitly approve that single send; no test command authorizes it. Cloud recovery, real schedules, final-model comparison and the 48-hour/video checks remain separate from this offline suite.
