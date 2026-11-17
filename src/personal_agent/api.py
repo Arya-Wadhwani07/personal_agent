@@ -271,6 +271,8 @@ def internal_app(s: Settings, *, router=None, broker=None):
 
     @app.post("/human/approve")
     async def approve(request: Request):
+        if not s.email_enabled:
+            raise PolicyError("Email access is paused until synthetic mailbox verification")
         payload = await body(request)
         identifier = payload["id"]
         message = broker.store.claim_send(

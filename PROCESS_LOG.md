@@ -10,7 +10,7 @@ The implementation separates the public browser edge, native Hermes gateway and 
 
 My provider selection changed from an API-key proposal to supported Hermes OpenAI browser OAuth after I asked for another assignment check. Hermes now owns authentication and refresh; the routing proxy forwards its authenticated requests. A real synthetic comparison completed on gpt-6.1-sol. Google consent, refresh and dedicated-calendar reads also passed, and I confirmed a Telegram reply.
 
-My latest isolated suite passed 165 tests in 21.07 seconds. Browser interactions, static analysis and package advisory checks provided additional evidence within their stated limits. Real GCS/OAuth recovery and direct search/fallback checks passed.
+My latest isolated suite passed 177 tests in 22.50 seconds. Browser interactions, static analysis and package advisory checks provided additional evidence within their stated limits. Real GCS/OAuth recovery and direct search/fallback checks passed.
 
 - Cloud deployment, deployed workflow acceptance, final reports and the Zoom video remain unfinished.
 - I will record actual operating evidence rather than treat local tests as a completed 48-hour run.
@@ -61,3 +61,9 @@ I named the bot **Monday** and asked Codex to simplify the Markdown.
 Codex bound deployment and observation to my reviewed immutable image, with negative tests for substituting another valid registry digest. The initial deployment gate is distinct from live acceptance: I still approve deployment, and observation still requires every actual live check.
 
 My exact-image release/observation checks passed **26 isolated tests**, with lint and static security checks passing. The private environment matches the reviewed project, state bucket and provider quotas. The prepared deployment command has not been executed; my production review is the final authorization step.
+
+## November 17: briefing quality, clean history and licensing
+
+I noticed technical cron wrappers and poor Telegram formatting in the morning briefing. Codex disabled native response wrapping, revised the scheduled prompts, added deterministic calendar gaps and escaped alert markup. The full offline suite passed 177 tests; a clearly labeled synthetic preview passed Telegram parsing with six bold headings, and browser checks passed.
+
+After I confirmed that promotional messages were real, I reported deleting them. The old local state was preserved privately and a clean profile retained only my native OAuth login. I requested an MIT license for my original code; third-party notices and course-material terms remain unchanged. My Process Log reflection, AI-tools inventory and final 200–300-word submission edit remain pending my own input.

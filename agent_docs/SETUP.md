@@ -29,6 +29,13 @@ Cloud deployment and its end-to-end acceptance remain separate. I do not run two
 
 I never paste passwords, tokens, callback URLs or credential JSON into chat, Git or videos. The application’s recipient allowlist is separate from Google’s OAuth test-user list.
 
+### Email readiness and fallback key
+
+- **Email gate:** `A3_EMAIL_ENABLED` defaults to `false`. I enable it only after preparing dedicated class-only mailboxes with made-up data. A disabled gate prevents reads and sends without consuming an approval.
+- **Current local profile:** after reporting promotional-mail cleanup on November 17, I enabled the gate and started fresh conversation/activity state. Earlier state is privately quarantined under ignored `private/`; it must not enter grader evidence or be restored into the clean profile.
+- **NVIDIA:** the existing authorized key is now present in my ignored local `.env`; no new key is needed. Local paid calls remain disabled. A configured key alone does not enable paid inference.
+- **Cloud release:** the new runtime requires the email gate in a reviewed, versioned runtime environment. The old image/configuration is not the updated release candidate.
+
 ## Run and test locally
 
 From Assignment 3:

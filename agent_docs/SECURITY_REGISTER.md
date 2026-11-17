@@ -1,6 +1,6 @@
 # Monday — Security Register
 
-I track design risks, observed findings and verified fixes separately. **The current native image gate passed; live deployed security acceptance is still pending.** A passing scoped gate is not a guarantee that no vulnerabilities exist.
+I track design risks, observed findings and verified fixes separately. **The earlier native image gate passed; the updated source needs a fresh image gate and live deployed security acceptance.** A passing scoped gate is not a guarantee that no vulnerabilities exist.
 
 **Current baseline:** patched SQLite/ACL/Tailscale dependencies, non-root execution, no effective capabilities, no-new-privileges and exact-version dispositions expiring November 24. [Current evidence](IMPLEMENTATION_STATUS.md) · [Disposition file](../config/image-dispositions.json)
 

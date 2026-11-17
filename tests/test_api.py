@@ -192,3 +192,30 @@ async def test_slow_request_body_times_out_and_releases_slot(monkeypatch):
     await middleware({"type": "http"}, receive, send)
     assert not reached and middleware.active == 0
     assert messages[0]["status"] == 408
+
+
+async def test_paused_email_does_not_consume_human_approval(settings, store):
+    from dataclasses import replace
+    from unittest.mock import AsyncMock
+
+    paused = replace(settings, email_enabled=False)
+    services = Services(paused)
+    services.send_approved = AsyncMock(return_value={"id": "synthetic"})
+    broker = Broker(paused, store, services)
+    app = internal_app(paused, broker=broker)
+    draft = store.draft(
+        {"to": "recipient@example.test", "subject": "Synthetic", "body": "Made-up message"},
+        paused.email_allowlist,
+    )
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://policy"
+    ) as client:
+        result = await client.post("/human/approve",
+            headers={"Authorization": "Bearer " + paused.internal_key},
+            json={"id": draft["id"], "digest": draft["digest"], "human_id": "1234"})
+    assert result.status_code == 400
+    services.send_approved.assert_not_awaited()
+    # A refused request must not consume the draft or leave an uncertain send claim.
+    assert store.claim_send(draft["id"], draft["digest"], "1234", "1234",
+                            paused.email_allowlist)["subject"] == "Synthetic"
+    await services.client.aclose()

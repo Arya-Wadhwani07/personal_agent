@@ -178,3 +178,32 @@ async def test_search_uses_own_adapter_and_excludes_linkedin_and_active_urls(set
         assert [x["url"] for x in result["untrusted_data"]] == ["https://example.test/article"]
         with pytest.raises(PolicyError):
             await service.search("x" * 401)
+
+
+async def test_paused_mailbox_never_refreshes_or_reads_or_sends(settings):
+    def unexpected(request):
+        pytest.fail("Paused mailbox made a network request")
+    async with httpx.AsyncClient(transport=httpx.MockTransport(unexpected)) as client:
+        service = Services(replace(settings, email_enabled=False), client)
+        with pytest.raises(PolicyError, match="paused"):
+            await service.emails()
+        with pytest.raises(PolicyError, match="paused"):
+            await service.send_approved({"to": "synthetic@example.test"})
+
+
+async def test_inbox_query_keeps_flagged_mail_and_prioritizes_urgent(settings, monkeypatch):
+    async def headers():
+        return {"Authorization": "Bearer synthetic"}
+    def response(request):
+        if request.url.path.endswith("/messages"):
+            assert request.url.params["q"] == "is:starred OR (is:unread -category:promotions -category:social)"
+            return httpx.Response(200, json={"messages": [{"id": "normal"}, {"id": "urgent"}]})
+        urgent = request.url.path.endswith("/urgent")
+        return httpx.Response(200, json={"snippet": "Fictional test", "labelIds": ["STARRED"] if urgent else [],
+            "payload": {"headers": [{"name": "Subject", "value": "Action required: synthetic review" if urgent else "Synthetic update"}]}})
+    async with httpx.AsyncClient(transport=httpx.MockTransport(response)) as client:
+        service = Services(settings, client)
+        monkeypatch.setattr(service, "google_headers", headers)
+        result = await service.emails()
+    assert [x["id"] for x in result["untrusted_data"]] == ["urgent", "normal"]
+    assert result["untrusted_data"][0]["starred"] is True

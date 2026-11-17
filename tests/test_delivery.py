@@ -129,3 +129,17 @@ async def test_delivery_deadline_or_cancellation_never_retries_uncertain_send(
     statuses = dict(store.db.execute("SELECT id,status FROM notifications").fetchall())
     assert statuses == {"first": "unknown", "second": "pending"}
     assert [item["id"] for item in store.pending_notifications()] == ["second"]
+
+
+async def test_telegram_alert_escapes_untrusted_html_and_preserves_heading(settings):
+    import json
+    notifier = Notifier(SimpleNamespace(s=replace(settings, telegram_token="synthetic-token")))
+    def response(request):
+        payload = json.loads(request.content)
+        assert payload["parse_mode"] == "HTML"
+        assert payload["text"].startswith("<b>🔔 Monday · Alert</b>\n\n")
+        assert "&lt;b&gt;Injected&lt;/b&gt; &amp;" in payload["text"]
+        assert payload["text"].count("<b>") == 1
+        return httpx.Response(200, json={"ok": True, "result": {"message_id": 22}})
+    async with httpx.AsyncClient(transport=httpx.MockTransport(response)) as client:
+        assert await notifier.deliver(client, "<b>Injected</b> & synthetic") == ("sent", "22")

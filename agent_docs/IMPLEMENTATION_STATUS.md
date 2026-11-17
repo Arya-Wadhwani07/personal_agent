@@ -7,9 +7,9 @@
 | Item | Current result |
 | --- | --- |
 | Local bot | Running; I confirmed both cloud and local Telegram replies. |
-| Source regression | **165 passed in 21.07 seconds**, network disabled and disposable test state. |
+| Source regression | **177 passed in 22.50 seconds**, network disabled and disposable test state. |
 | Lint / static security | Ruff and Bandit passed for the reviewed source. |
-| Native cloud image | Published successfully from `ecb61d2`; build, tests, image profile and vulnerability gate passed. |
+| Native cloud image | Earlier `ecb61d2` publication passed. The new source requires a fresh native image and gate before release. |
 | Google federation | Corrected exact ID-qualified GitHub subject; successful publish proves end-to-end authentication. |
 | Production protection | My GitHub review is required; only branch `main` is allowed. |
 | Cloud Run Instance | **Not deployed.** Release approval and live acceptance remain. |
@@ -42,13 +42,13 @@ My [published original skill](https://github.com/Arya-Wadhwani07/personal_agent/
 
 ## Test scope
 
-- **Regression:** 165 offline tests, including actual native Hermes subprocess integration with mocked inference.
+- **Regression:** 177 offline tests, including actual native Hermes subprocess integration with mocked inference.
 - **White-box:** routing, privacy, approvals, quotas, state fencing, recovery and release checks.
 - **Black-box:** API/browser behavior and native gateway/tool turns; separate real provider and messaging probes.
 - **Load:** 100/100 mocked requests at concurrency 4; p95 22.084 ms in the latest recorded probe.
 - **Stress/recovery:** concurrency 32 produced 4 successes and 252 deliberate HTTP 429 responses, then 10/10 recovery successes.
 - **Limits:** mocked load uses a 20 ms fake upstream. These numbers are not model or cloud throughput.
-- **Coverage:** the earlier measured suite reported 74% combined statement/branch coverage. I have not measured that figure again for all 165 tests.
+- **Coverage:** the earlier measured suite reported 74% combined statement/branch coverage. I have not measured that figure again for all 177 tests.
 
 ## Security result
 
@@ -79,7 +79,7 @@ The requested custom non-resetting budget period was rejected by the API. The ve
 
 ## Remaining acceptance checklist
 
-- [ ] Approve and deploy the exact published digest; stop the local Telegram poller before starting the cloud poller.
+- [ ] Publish and review the updated source image, then approve and deploy its exact digest; stop the local Telegram poller before starting the cloud poller.
 - [ ] Verify cloud health, authenticated browser chat, Telegram and actual cloud-to-Mac Gemma inference.
 - [ ] Exercise the four skills and useful scheduled briefing, recap and unsolicited alerts against synthetic data.
 - [ ] Review and explicitly approve one exact synthetic email if I choose to demonstrate a real send.
@@ -101,8 +101,20 @@ The requested custom non-resetting budget period was rejected by the API. The ve
 
 The full [94-ID requirements baseline](REQUIREMENTS.md) and [architecture map](ARCHITECTURE.md#a15-requirement-by-requirement-architecture-coverage) remain authoritative. A source implementation or passing mock test alone does not complete a grading criterion.
 
+## Current local presentation and data review
+
+- My full offline suite passed **177 tests in 22.50 seconds**, including native cron delivery, Telegram formatting, calendar boundaries and a paused-email approval check.
+- Ruff and Bandit passed. Isolated Chromium interaction, safe text rendering, mobile layout and sign-out checks passed again.
+- Telegram accepted a clearly labeled synthetic preview in MarkdownV2 with six bold entities. The native cron wrapper is disabled, removing job IDs and management footers. Actual scheduled-model output still needs a final live quality check.
+- My calendar adapter calculates explicit gaps within a fictional 09:00–17:00 window, respects overlaps/all-day events, and reports incomplete data as unavailable.
+- After I reported deleting promotional mail, my local profile was restarted with clean history. Earlier state remains privately quarantined under ignored `private/`; only the native OAuth login was carried forward.
+- Real Google reads and local health passed after restart. The email selector returned ten messages and the calendar returned zero events. These counts prove access, not independent verification that every remaining message is synthetic; my cleanup confirmation is the data-readiness input.
+- `A3_EMAIL_ENABLED` now defaults to false and gates reads and sends. It is enabled locally after cleanup; the cloud environment needs its own reviewed version update.
+- My authorized NVIDIA key is present locally; paid local calls remain disabled.
+- I added the standard MIT LICENSE for my original project code at my request. Dependency/course-material terms are preserved.
+
 ## Exact-image release control
 
-My predeployment gate now names the tested `ecb61d2` registry digest. Deployment and observation refuse a different digest, even if it is a valid image in my registry. `ready` records passed predeployment engineering checks; the GitHub production job still requires my explicit approval before it can deploy. Post-deployment checks remain required before observation; they are not falsely marked complete to permit the first deployment.
+My predeployment gate retains the earlier tested `ecb61d2` registry digest for traceability but now has `ready=false`: it is not the release candidate for the new changes. Deployment and observation refuse a different digest, even if it is a valid image in my registry. `ready` records passed predeployment engineering checks; the GitHub production job still requires my explicit approval before it can deploy. Post-deployment checks remain required before observation; they are not falsely marked complete to permit the first deployment.
 
-My exact-image release/observation checks passed **26 isolated tests**, with lint and static security checks passing. The private environment matches the reviewed project, state bucket and provider quotas. The prepared deployment command has not been executed; my production review is the final authorization step.
+My exact-image release/observation checks passed **26 isolated tests**, with lint and static security checks passing. The earlier private environment matches the reviewed project, state bucket and provider quotas. It still needs the new email-readiness setting. No production deployment command has been executed; image publication, final review and my production approval remain ahead.

@@ -23,6 +23,7 @@ def settings(tmp_path):
         openai_call_limit=10,
         cloud_key="synthetic-cloud-key",
         email_allowlist=("recipient@example.test",),
+        email_enabled=True,
         telegram_user_id="1234",
     )
 

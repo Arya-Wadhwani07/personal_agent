@@ -586,16 +586,16 @@ My minimum architectural invariants are: no private cloud call under hold policy
 
 The remaining implementation gates are:
 
-1. Migrate and verify OpenAI-primary/NVIDIA-fallback routing, then settle exact final cloud/local model IDs before collecting final evidence.
-2. Keep the approved Docker isolation and verify CI/protections. Hermes, Telegram, Gmail and dedicated Calendar are selected; runtime source and local tests now exist.
-3. Supply class-only credentials, permitted recipients, Tailscale setup, content preferences and schedule details; prove real integration rather than counting bundled tools.
+1. Publish the updated candidate and verify the selected OpenAI-primary/NVIDIA-fallback/local-Gemma routes on the actual Instance. Direct provider checks are already recorded.
+2. Retain the verified Docker isolation and GitHub production protections; run the native image gate on the updated source.
+3. Exercise all four integrated skills against the cleaned synthetic profile, including scheduled delivery and strict send approval.
 4. Prove complete live native-workspace backup/restore, single-writer lifecycle and confirmed alert delivery.
-5. Supply GCP project and spending limit before any paid call/provisioning; measure deployment sizing, security, performance and account lifetime.
+5. Measure deployed sizing, security, three-task performance and account lifetime within the authorized assignment3-515003 project and $4 planning ceiling.
 6. Resolve packaging/timezone/grace balance and retain genuine final-model operational evidence. Q10 permits minor non-model fixes without a new full run; Q11 resolves the restart conflict in favor of no grading restarts.
 
 ## A15. Requirement-by-requirement architecture coverage
 
-Each row points to the architecture response and its evidence gate. All entries are **planned**. Conditional options remain conditional; an unselected branch is not silently reported as complete. Source text, exact video prompts, and source-page references remain authoritative in REQUIREMENTS.md.
+Each row points to the architecture response and its evidence gate. The table maps architecture and acceptance obligations; current completion evidence is in IMPLEMENTATION_STATUS.md. Conditional options remain conditional; an unselected branch is not silently reported as complete. Source text, exact video prompts, and source-page references remain authoritative in REQUIREMENTS.md.
 
 | Requirement ID | Architecture location | Response or completion evidence |
 | --- | --- | --- |
@@ -689,7 +689,7 @@ Each row points to the architecture response and its evidence gate. All entries 
 | USER-09 | [A14](#a14-validation-strategy-and-unresolved-implementation-gates) | White-box and black-box coverage with mock/live separation. |
 | USER-10 | [A11](#a11-isolated-development-and-github-delivery) | CI, trusted image, approved release, smoke/recovery and enforceable freeze. |
 | USER-11 | [A4](#a4-entry-points-ui-and-interface-contracts) | Required browser plus messaging, neumorphic/accessibility behavior and DESIGN.md wireframe. |
-| USER-12 | [A1](#a1-scope-assumptions-and-decision-status), [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Confirmed date/time, pending timezone/grace and genuine observation plus delivery buffer. |
+| USER-12 | [A1](#a1-scope-assumptions-and-decision-status), [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Confirmed date/time, planning timezone America/Los_Angeles, unknown grace balance and genuine observation plus delivery buffer. |
 | USER-13 | [A9](#a9-security-architecture-and-release-gates) | Continuous risk/finding tracking, artifact-specific checks, remediation/retest and release blockers. |
 | USER-14 | [A6](#a6-tool-execution-email-approval-and-the-fourth-skill), [A7](#a7-proactive-scheduling-and-delivery) | Daily permitted-source original draft, provenance/history and no social publishing capability. |
 | USER-15 | [A11](#a11-isolated-development-and-github-delivery), [A18](#a18-repository-follow-up-and-coverage-review) | Named repository, coherent reviewed commits/pushes, explicit staging, remote verification and preserved history; CI/CD remains separate. |
@@ -840,3 +840,11 @@ The pinned Hermes storage adapter wraps the native save and refresh entry points
 The wrapper makes no custom OAuth requests and does not use ChatGPT credentials as an OpenAI Platform API key. Tests exercise the actual pinned Hermes refresh/save chain with synthetic transport results, alias synchronization, a competing writer, interruption, post-rotation storage failure and stale saves. Container cron dispatch remains in the gateway process and retains the same hook; a managed-systemd gateway is deliberately refused by this cloud launcher.
 
 - The local profile has no cloud-storage hook. Live GCS permissions/recovery and final-image behavior remain release checks.
+
+## A17. Briefing presentation and clean-data gate
+
+- **Availability:** `calendar_view.py` computes local calendar-day boundaries and free gaps within the fictional 09:00–17:00 workday. Overlaps merge; cancelled/transparent events do not block time. Truncated or malformed busy data yields an unavailable result.
+- **Telegram:** native MarkdownV2 conversion handles bold headings and Unicode bullets. `cron.wrap_response=false` suppresses framework wrappers. Deterministic alerts use escaped HTML, so external text cannot introduce markup.
+- **Email readiness:** `A3_EMAIL_ENABLED=false` blocks reads and sends before provider access; a blocked human approval does not consume the draft. Deployment requires an explicitly enabled reviewed environment after account preparation.
+- **Data separation:** pre-clean local history is quarantined under ignored `private/`; the fresh local profile copied only the existing native OAuth login. Historical personal content is excluded from current evidence.
+- **Release:** the new source cannot use the earlier published-image approval. `ready=false` remains until a fresh native build/security gate and updated private environment are reviewed. Live acceptance still precedes observation.

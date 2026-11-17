@@ -4,6 +4,7 @@
 import asyncio
 import json
 import time
+from html import escape
 
 import httpx
 
@@ -70,7 +71,8 @@ class Notifier:
                     "https://api.telegram.org/bot" + s.telegram_token + "/sendMessage",
                     json={
                         "chat_id": s.telegram_user_id,
-                        "text": text[:3500],
+                        "text": "<b>🔔 Monday · Alert</b>\n\n" + escape(text[:1600]),
+                        "parse_mode": "HTML",
                         "disable_web_page_preview": True,
                     },
                 ) as response:

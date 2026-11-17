@@ -1,12 +1,17 @@
 {
-  "ready": true,
+  "ready": false,
   "frozen": false,
   "project": "assignment3-515003",
   "budget_usd": 4,
   "instance": "assignment3-personal-agent",
   "cpu": "1",
   "memory": "2Gi",
-  "blockers": [],
+  "blockers": [
+    "Updated Telegram presentation requires a newly published native image and security gate",
+    "Cloud runtime environment needs a reviewed version with A3_EMAIL_ENABLED=true after class-only data preparation",
+    "Final live acceptance and submission-evidence review remain incomplete",
+    "Explicit deployment approval remains pending"
+  ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
   "secret_versions": {

@@ -247,7 +247,7 @@ My source authoring, dependency installation, application execution, and runtime
 
 ### Proposed host-safe approach
 
-My approved development environment is a non-root local Docker container with only this project mounted, read-only system files and bounded resources. Fresh isolated GitHub runners are planned for CI. Docker runtime/cache and Ollama runtime/log exceptions are approved; unrelated host data remains excluded.
+My approved development environment is a non-root local Docker container with only this project mounted, read-only system files and bounded resources. Fresh isolated GitHub runners execute CI. Docker runtime/cache and Ollama runtime/log exceptions are approved; unrelated host data remains excluded.
 
 My approved Docker exception covers its own runtime/cache files outside the project. A project-only bind mount restricts container data access but does not imply that Docker makes no host-side writes. This exception does not authorize unrelated file access. [Docker Desktop settings](https://docs.docker.com/desktop/settings-and-maintenance/settings/)
 
@@ -418,22 +418,22 @@ ARCHITECTURE.md preserves this UI and skill proposal while specifying the enforc
 
 For the separate advanced-integration criterion, my architecture recommends publishing the original content skill through an allowed Hermes tap with a pinned artifact and clean-install/run evidence.
 
-- This remains a choice for my review and needs separate publication authorization; A2A and three messaging services remain valid alternatives.
+- I selected and authorized original-skill publication; public tap installation and execution passed. A2A and three messaging services remain unselected alternatives.
 - The architecture's full requirement map includes these conditional branches and the non-runtime video/report/account obligations.
 
 ## 11. My selected baseline and remaining decisions
 
 | Area | My current decision and limit |
 | --- | --- |
-| Platform and interfaces | Hermes v0.22.7, Telegram and Daylight browser chat. Local browser checks passed; live Telegram/grader access remains pending. |
-| Sandbox and Git | Approved project-only Docker; public named repository and routine reviewed commits/pushes. CI execution and repository protections remain pending. |
-| Models | Hermes OpenAI browser OAuth primary is my working choice, NVIDIA cloud fallback, local Gemma 4 E2B. Claude is an accepted primary alternative. Exact cloud IDs and live OAuth verification remain pending; the adapter has offline coverage. |
+| Platform and interfaces | Hermes v0.22.7, Telegram and Daylight browser chat. Local browser and Telegram checks passed; deployed grader access remains pending. |
+| Sandbox and Git | Approved project-only Docker; public named repository and routine reviewed commits/pushes. CI publication and production review/main-branch protections are verified; the latest source needs a new image gate. |
+| Models | Hermes OpenAI browser OAuth primary is my working choice, NVIDIA cloud fallback, local Gemma 4 E2B. Claude is an accepted primary alternative. OpenAI gpt-6.1-sol OAuth and direct NVIDIA preflight are verified; deployed fallback acceptance remains. |
 | Local evidence | This 16 GiB Mac served 65,536 context and completed a real tool turn. Scoped prompts retain required instructions/history. Local failure forfeits local credit; cloud-only does not earn it. |
 | Skills and features | Calendar, email, direct Tavily search and original Content Brief; briefing, recap, email integration and alerts. Own credentials/scopes, safety controls and demonstrated use must support the four-skill claim. |
-| Accounts | Temporary synthetic Gmail roles, dedicated read-only Google Calendar and Telegram bot. Every send needs payload-specific human approval. Google credentials and calendar access are verified; Telegram ownership and real-message evidence remain pending. |
+| Accounts | Temporary synthetic Gmail roles, dedicated read-only Google Calendar and Telegram bot. Every send needs payload-specific human approval. Google credentials and calendar access are verified; Telegram ownership and replies are verified; I reported promotional-mail cleanup and started clean local history. |
 | Capacity and availability | One Cloud Run Instance; measured 1 vCPU/4 GiB is allowed if needed. No planned three-hour restart during grading. My $4 total ceiling is confirmed; deployed sizing remains unverified. |
 | Evidence | Final cloud/local selections determine logs/video. Minor non-model fixes do not restart the full 48-hour run. Graders test after End Date and again 48 hours later; exact schedule remains unknown. |
-| Remaining inputs | Cloud model IDs, Telegram ownership, Tailscale, content preferences, grace balance and packaging clarification. |
+| Remaining inputs | Release approval, grader-style account sign-in, my reflection, grace balance and packaging clarification. |
 
 I preserve G's detailed browser access procedure; Q01's older provisional GUI/Tailscale answer does not remove it. Q12's fallback-only evidence question is unanswered. [My source and decision register](CLARIFICATIONS.md)
 
@@ -443,7 +443,7 @@ For eligible cloud work, I plan OpenAI first and NVIDIA only as bounded fallback
 
 - If the cloud chain is unavailable or deliberately rate-limited for the required demonstration, an eligible request can use local Gemma; private requests remain local or held.
 - Each attempt records the actual model, routing reason and outcome.
-- My OAuth proxy and optional API adapter implement this chain; live provider checks remain pending.
+- My OAuth proxy and optional API adapter implement this chain; direct provider checks passed, while deployed failure-path acceptance remains.
 
 My web-search skill calls Tavily directly with my own key; merely adding attribution around bundled search would not qualify under Q05. My README lists the integration and intended use of all four skills. I retain explicit approval for every synthetic email send and no social publishing capability.
 
@@ -468,3 +468,7 @@ My repository follow-up adds a concise technology overview in ARCHITECTURE.md A1
 On November 16, 2026, I authorized the extracted-script review. Codex read all 19 unchanged files, verified archive identity and updated the UI, lifecycle, approval, storage and evidence plan. SCRIPT_REVIEW.md contains the adaptation order and planned tests; neither a browser nor a supplied script was run.
 
 The instructor clarification update applies Q01–Q14 to the active plan. Earlier review entries describe their original documentation milestone, not current implementation status.
+
+## Telegram presentation implementation
+
+My scheduled messages now use short bold headings, blank lines and Unicode bullets. Native cron wrapping is disabled, so job IDs and management footers do not appear. Briefings prioritize unread/flagged email and show explicit calendar gaps within my fictional 09:00–17:00 day. Escaped HTML protects deterministic alert text. Telegram accepted the synthetic MarkdownV2 preview; final scheduled content quality still needs live review.

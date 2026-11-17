@@ -37,6 +37,7 @@ class Settings:
     google_client_secret: str = ""
     calendar_id: str = ""
     email_allowlist: tuple[str, ...] = ()
+    email_enabled: bool = False
     telegram_user_id: str = ""
     telegram_token: str = ""
     tavily_key: str = ""
@@ -99,6 +100,7 @@ class Settings:
             google_client_id=e.get("GOOGLE_CLIENT_ID", ""),
             google_client_secret=e.get("GOOGLE_CLIENT_SECRET", ""),
             calendar_id=e.get("GOOGLE_CALENDAR_ID", ""),
+            email_enabled=e.get("A3_EMAIL_ENABLED", "false").lower() == "true",
             email_allowlist=tuple(
                 x.strip().lower() for x in e.get("EMAIL_ALLOWLIST", "").split(",") if x.strip()
             ),

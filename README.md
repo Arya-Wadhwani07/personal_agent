@@ -2,13 +2,13 @@
 
 I’m building **Monday**, my class-only personal assistant for CSCI 599 Assignment 3. Monday uses Hermes, replies through Telegram and browser chat, and routes work between OpenAI OAuth and local Gemma.
 
-My test profile is **Alex Chen**, a fictional student in Los Angeles. Connected mailboxes, calendar events and personal preferences contain made-up data only.
+My test profile is **Alex Chen**, a fictional student in Los Angeles. My connected accounts must contain made-up assignment data only. After real promotional mail appeared in a briefing, I reported removing it on November 17; I also started a clean local history, with the earlier state privately quarantined outside submission evidence.
 
 ## Current status
 
 - **Local bot:** running; I confirmed Telegram replies from both model paths.
-- **Cloud image:** built, tested, scanned and published from `ecb61d2`.
-- **Regression:** 165 isolated tests passed; lint and static security checks passed.
+- **Cloud image:** the earlier `ecb61d2` image passed publication; my latest presentation changes need a new native build and image gate.
+- **Regression:** 177 isolated tests passed in 22.50 seconds; lint and static security checks passed.
 - **Deployment:** pending my release approval and live acceptance checks.
 - **48-hour record:** not started. Local test time does not count as cloud uptime.
 
@@ -27,6 +27,8 @@ I use Monday to read my synthetic schedule, summarize mail, prepare replies, res
 | Durable checkpoint | Every minute | State backup and operational heartbeat. |
 
 These native schedules are implemented. **Actual cloud delivery still needs acceptance evidence.**
+
+My Telegram briefings use bold section headings and Unicode bullets without job IDs or cron management footers. Calendar gaps are calculated within the fictional profile's **09:00–17:00** window; incomplete calendar data is reported as unavailable. Email selection favors unread/flagged messages and excludes ordinary promotion/social categories. A clearly labeled synthetic preview passed Telegram's MarkdownV2 parsing check.
 
 Every email send requires my review of the exact recipient, subject and body in Telegram. Browser chat and scheduled jobs cannot approve a send. Monday has no LinkedIn posting capability.
 
@@ -106,6 +108,10 @@ docker run --rm --network none --read-only --cap-drop ALL \
 - **Grading:** no planned restarts or redeploys during the frozen window. Failures and gaps stay visible.
 
 The image gate passed after fixes and documented, expiring applicability decisions. Raw scanner findings remain available; I do not claim that every possible vulnerability has been eliminated. [Security register](agent_docs/SECURITY_REGISTER.md)
+
+## License
+
+I license my original project code under the [MIT License](LICENSE), copyright © 2026 Arya Wadhwani. Third-party dependencies and supplied course materials retain their own licenses and notices. Course materials and private account data are excluded from my public repository.
 
 ## Documentation map
 

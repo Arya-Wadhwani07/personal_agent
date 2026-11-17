@@ -114,6 +114,7 @@ def main():
         if (values.get("A3_STATE_BUCKET") != "assignment3-515003-a3-state"
             or values.get("A3_PRIMARY_AUTH") != "oauth"
             or values.get("A3_OPENAI_MODEL") != "gpt-6.1-sol"
+            or values.get("A3_EMAIL_ENABLED") != "true"
             or values.get("A3_SEARCH_CALL_LIMIT") != "50"
             or values.get("A3_NVIDIA_CALL_LIMIT") != "20"
             or values.get("A3_OPENAI_CALL_LIMIT") != "0"
