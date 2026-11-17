@@ -46,6 +46,7 @@ build/
 .cache/
 tmp/
 temp/
+/setup_downloads/
 
 # Local tool configuration and OS/editor files.
 /.agents/
