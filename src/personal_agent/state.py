@@ -26,6 +26,7 @@ class Store:
         self.db.execute("PRAGMA journal_mode=DELETE")
         self.db.execute("PRAGMA busy_timeout=5000")
         self.db.executescript("""
+        CREATE TABLE IF NOT EXISTS paid_usage (provider TEXT PRIMARY KEY, attempts INTEGER NOT NULL);
         CREATE TABLE IF NOT EXISTS private_sessions (id TEXT PRIMARY KEY);
         CREATE TABLE IF NOT EXISTS memory (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated REAL NOT NULL);
         CREATE TABLE IF NOT EXISTS drafts (id TEXT PRIMARY KEY, payload TEXT NOT NULL, digest TEXT NOT NULL,
@@ -58,6 +59,27 @@ class Store:
                 except Exception as exc:
                     self.poisoned = True
                     raise PolicyError("Durable commit failed; no action is acknowledged") from exc
+
+    def reserve_call(self, provider, limit):
+        """Reserve durably before network I/O; failures consume quota conservatively."""
+        if (
+            provider not in {"tavily", "nvidia", "openai"}
+            or type(limit) is not int
+            or not 0 < limit <= 1000
+        ):
+            raise PolicyError("Paid service quota is disabled")
+        with self.transaction() as db:
+            row = db.execute(
+                "SELECT attempts FROM paid_usage WHERE provider=?", (provider,)
+            ).fetchone()
+            used = row[0] if row else 0
+            if used >= limit:
+                raise PolicyError("Paid service lifetime quota is exhausted")
+            db.execute(
+                "INSERT INTO paid_usage VALUES (?,?) ON CONFLICT(provider) DO UPDATE SET attempts=excluded.attempts",
+                (provider, used + 1),
+            )
+        return used + 1
 
     def private_session(self, identifier, mark=False):
         if not isinstance(identifier, str) or not identifier or len(identifier) > 200:

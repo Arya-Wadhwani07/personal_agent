@@ -1,0 +1,102 @@
+{
+  "CVE-2026-76642": {
+    "packages": {
+      "bsdutils": "1:2.41.5-0+deb13u1",
+      "libblkid1": "2.41.5-0+deb13u1",
+      "liblastlog2-2": "2.41.5-0+deb13u1",
+      "libmount1": "2.41.5-0+deb13u1",
+      "libsmartcols1": "2.41.5-0+deb13u1",
+      "libuuid1": "2.41.5-0+deb13u1",
+      "login": "1:4.16.0-2+really2.41.5-0+deb13u1",
+      "mount": "2.41.5-0+deb13u1",
+      "util-linux": "2.41.5-0+deb13u1"
+    },
+    "basis": "No mount executable, no effective capabilities, no setuid/setgid files; startup enforces no-new-privileges. Privileged mount-hook preconditions cannot be met in this profile.",
+    "review_expires": "2026-11-24",
+    "reference": "https://security-tracker.debian.org/tracker/CVE-2026-76642"
+  },
+  "CVE-2026-78408": {
+    "packages": {
+      "bsdutils": "1:2.41.5-0+deb13u1",
+      "libblkid1": "2.41.5-0+deb13u1",
+      "liblastlog2-2": "2.41.5-0+deb13u1",
+      "libmount1": "2.41.5-0+deb13u1",
+      "libsmartcols1": "2.41.5-0+deb13u1",
+      "libuuid1": "2.41.5-0+deb13u1",
+      "login": "1:4.16.0-2+really2.41.5-0+deb13u1",
+      "mount": "2.41.5-0+deb13u1",
+      "util-linux": "2.41.5-0+deb13u1"
+    },
+    "basis": "The affected nsenter executable is removed from the runtime.",
+    "review_expires": "2026-11-24",
+    "reference": "https://security-tracker.debian.org/tracker/CVE-2026-78408"
+  },
+  "CVE-2026-78409": {
+    "packages": {
+      "bsdutils": "1:2.41.5-0+deb13u1",
+      "libblkid1": "2.41.5-0+deb13u1",
+      "liblastlog2-2": "2.41.5-0+deb13u1",
+      "libmount1": "2.41.5-0+deb13u1",
+      "libsmartcols1": "2.41.5-0+deb13u1",
+      "libuuid1": "2.41.5-0+deb13u1",
+      "login": "1:4.16.0-2+really2.41.5-0+deb13u1",
+      "mount": "2.41.5-0+deb13u1",
+      "util-linux": "2.41.5-0+deb13u1"
+    },
+    "basis": "No mount executable or privilege to mount; the runtime forbids privilege acquisition.",
+    "review_expires": "2026-11-24",
+    "reference": "https://security-tracker.debian.org/tracker/CVE-2026-78409"
+  },
+  "CVE-2026-78410": {
+    "packages": {
+      "bsdutils": "1:2.41.5-0+deb13u1",
+      "libblkid1": "2.41.5-0+deb13u1",
+      "liblastlog2-2": "2.41.5-0+deb13u1",
+      "libmount1": "2.41.5-0+deb13u1",
+      "libsmartcols1": "2.41.5-0+deb13u1",
+      "libuuid1": "2.41.5-0+deb13u1",
+      "login": "1:4.16.0-2+really2.41.5-0+deb13u1",
+      "mount": "2.41.5-0+deb13u1",
+      "util-linux": "2.41.5-0+deb13u1"
+    },
+    "basis": "No mount executable or fstab-authorized privileged caller; the runtime forbids privilege acquisition.",
+    "review_expires": "2026-11-24",
+    "reference": "https://security-tracker.debian.org/tracker/CVE-2026-78410"
+  },
+  "CVE-2025-69720": {
+    "packages": {
+      "libncursesw6": "6.5+20250216-2",
+      "libtinfo6": "6.5+20250216-2",
+      "ncurses-base": "6.5+20250216-2",
+      "ncurses-bin": "6.5+20250216-2"
+    },
+    "basis": "The affected infocmp executable is removed; the advisory describes its command-line parser, not the retained terminal library.",
+    "review_expires": "2026-11-24",
+    "reference": "https://security-tracker.debian.org/tracker/CVE-2025-69720"
+  },
+  "CVE-2026-16742": {
+    "packages": {
+      "libsystemd0": "257.13-1~deb13u1",
+      "libudev1": "257.13-1~deb13u1"
+    },
+    "basis": "systemd-homed is absent. Retained libsystemd/libudev packages share its source package but do not include the affected service.",
+    "review_expires": "2026-11-24",
+    "reference": "https://security-tracker.debian.org/tracker/CVE-2026-16742"
+  },
+  "CVE-2026-9538": {
+    "packages": {
+      "perl-base": "5.40.1-6+deb13u1"
+    },
+    "basis": "The affected Archive::Tar Perl module is absent from both installed Perl trees.",
+    "review_expires": "2026-11-24",
+    "reference": "https://security-tracker.debian.org/tracker/CVE-2026-9538"
+  },
+  "CVE-2026-53869": {
+    "packages": {
+      "hermes-agent": "0.0.0"
+    },
+    "basis": "Pinned, SHA-256-verified Hermes v0.22.7 retains upstream placeholder package metadata 0.0.0. Its WebSocket Host/Origin fix is behaviorally checked, and the public assignment edge exposes no WebSocket routes.",
+    "review_expires": "2026-11-24",
+    "reference": "https://github.com/NousResearch/hermes-agent/pull/30221"
+  }
+}

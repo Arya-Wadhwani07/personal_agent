@@ -7,6 +7,7 @@ import pytest
 
 from personal_agent.providers import responses_completion, responses_request
 from personal_agent.routing import RouteError, Router
+from personal_agent.state import Store
 
 PAYLOAD = {"messages": [{"role": "user", "content": "Compare the two fictional options"}]}
 
@@ -42,6 +43,7 @@ def local_result():
 async def run(settings, handler, payload=PAYLOAD):
     router = Router(
         settings,
+        store=Store(settings.state_dir),
         cloud=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
         local=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
     )

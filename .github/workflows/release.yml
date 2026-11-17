@@ -2,9 +2,15 @@ name: Approved Cloud Run Instance release
 on:
   workflow_dispatch:
     inputs:
+      operation:
+        description: Publish a tested image, or deploy an approved digest
+        required: true
+        type: choice
+        options: [publish, deploy]
+        default: publish
       image_digest:
         description: Reviewed Artifact Registry image including @sha256 digest
-        required: true
+        required: false
         type: string
 permissions:
   contents: read
@@ -14,6 +20,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   release:
+    if: inputs.operation == 'deploy'
     environment: production
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -24,19 +31,73 @@ jobs:
       - name: Enforce readiness, budget, and observation freeze
         env:
           A3_IMAGE: ${{ inputs.image_digest }}
-          A3_GCP_PROJECT: ${{ vars.GCP_PROJECT_ID }}
-          A3_REGION: ${{ vars.GCP_REGION }}
-          A3_BUDGET_USD: ${{ vars.APPROVED_BUDGET_USD }}
+          A3_GCP_PROJECT: assignment3-515003
+          A3_REGION: us-central1
+          A3_BUDGET_USD: "4"
         run: python scripts/deploy.py --plan
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
         with:
-          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
-          service_account: ${{ vars.DEPLOY_SERVICE_ACCOUNT }}
+          workload_identity_provider: projects/1043695272988/locations/global/workloadIdentityPools/a3-github/providers/github
+          service_account: a3-deploy@assignment3-515003.iam.gserviceaccount.com
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db
+      - name: Fetch pinned private environment configuration
+        run: |
+          mkdir -p .cache/cloud
+          version=$(python -c 'import json; print(json.load(open("config/release.json"))["secret_versions"]["a3-runtime-env"])')
+          gcloud secrets versions access "$version" --secret=a3-runtime-env --project=assignment3-515003 --out-file=.cache/cloud/runtime-env.json
+          chmod 600 .cache/cloud/runtime-env.json
       - name: Deploy reviewed immutable image to an Instance
         env:
           A3_IMAGE: ${{ inputs.image_digest }}
-          A3_GCP_PROJECT: ${{ vars.GCP_PROJECT_ID }}
-          A3_REGION: ${{ vars.GCP_REGION }}
-          A3_BUDGET_USD: ${{ vars.APPROVED_BUDGET_USD }}
+          A3_GCP_PROJECT: assignment3-515003
+          A3_REGION: us-central1
+          A3_BUDGET_USD: "4"
         run: python scripts/deploy.py --execute
+
+  publish:
+    if: inputs.operation == 'publish'
+    environment: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Respect the observation and grading freeze
+        run: python -c 'import json; gate=json.load(open("config/release.json")); assert gate["frozen"] is False, "Observation/grading freeze"'
+      - name: Build and test on native amd64
+        run: |
+          docker build --target test -t a3-tests .
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --memory 4g --cpus 4 --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=512m a3-tests .venv/bin/ruff check src tests scripts --no-cache
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --memory 4g --cpus 4 --tmpfs /tmp:rw,nosuid,nodev,size=512m a3-tests .venv/bin/bandit -q -r src scripts
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --memory 4g --cpus 4 --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=512m a3-tests .venv/bin/python -m pytest -q -p no:cacheprovider --basetemp=/tmp/pytest
+          docker build --target runtime --label org.opencontainers.image.revision=${{ github.sha }} -t a3-release .
+      - name: Verify runtime and vulnerability evidence
+        run: |
+          mkdir -p .cache/image-security
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --memory 1g --cpus 2 --tmpfs /tmp:rw,nosuid,nodev,size=128m --entrypoint python a3-release scripts/image_profile.py > .cache/image-security/profile.json
+          docker image save -o .cache/image-security/runtime.tar a3-release
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --user "$(id -u):$(id -g)" --memory 2g --cpus 2 --tmpfs /tmp:rw,nosuid,nodev,size=512m --mount "type=bind,source=$PWD/.cache/image-security,target=/audit" aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --cache-dir /audit/cache --input /audit/runtime.tar --scanners vuln --format json --output /audit/report.json --severity HIGH,CRITICAL --exit-code 0 --skip-version-check
+          python scripts/image_gate.py .cache/image-security/report.json .cache/image-security/profile.json --output .cache/image-security/gate.json
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
+        with:
+          workload_identity_provider: projects/1043695272988/locations/global/workloadIdentityPools/a3-github/providers/github
+          service_account: a3-deploy@assignment3-515003.iam.gserviceaccount.com
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db
+      - name: Publish only the tested immutable image
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+          image="us-central1-docker.pkg.dev/assignment3-515003/a3/agent:${{ github.sha }}"
+          docker tag a3-release "$image"
+          docker push "$image"
+          docker inspect --format='{{index .RepoDigests 0}}' "$image" >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve release verification reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-verification-${{ github.sha }}
+          path: |
+            .cache/image-security/report.json
+            .cache/image-security/profile.json
+            .cache/image-security/gate.json
+          retention-days: 7

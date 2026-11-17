@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [Dockerfile, uv.lock, pyproject.toml, "src/**", "scripts/**", "skills/**", .dockerignore, ".github/workflows/image-security.yml"]
+    paths: [Dockerfile, uv.lock, pyproject.toml, "src/**", "scripts/**", "skills/**", .dockerignore, ".github/workflows/image-security.yml", "config/image-dispositions.json"]
 permissions:
   contents: read
 concurrency:
@@ -24,12 +24,19 @@ jobs:
           docker image save -o .cache/image-security/runtime.tar a3-security:${{ github.sha }}
       - name: Block untriaged High and Critical image advisories
         run: |
-          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --memory 2g --cpus 2 --user "$(id -u):$(id -g)" --tmpfs /tmp:rw,nosuid,nodev,size=512m --mount "type=bind,source=$PWD/.cache/image-security,target=/audit" aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --cache-dir /audit/cache --input /audit/runtime.tar --scanners vuln --format json --output /audit/report.json --severity HIGH,CRITICAL --exit-code 1 --skip-version-check
-      - name: Preserve the failing gate report
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --memory 2g --cpus 2 --user "$(id -u):$(id -g)" --tmpfs /tmp:rw,nosuid,nodev,size=512m --mount "type=bind,source=$PWD/.cache/image-security,target=/audit" aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --cache-dir /audit/cache --input /audit/runtime.tar --scanners vuln --format json --output /audit/report.json --severity HIGH,CRITICAL --exit-code 0 --skip-version-check
+      - name: Verify the actual runtime profile and evaluate every finding
+        run: |
+          docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --memory 1g --cpus 2 --tmpfs /tmp:rw,nosuid,nodev,size=128m --entrypoint python a3-security:${{ github.sha }} scripts/image_profile.py > .cache/image-security/profile.json
+          python scripts/image_gate.py .cache/image-security/report.json .cache/image-security/profile.json --output .cache/image-security/gate.json
+      - name: Preserve raw findings, runtime proof and gate result
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: runtime-vulnerability-report-${{ github.sha }}
-          path: .cache/image-security/report.json
+          path: |
+            .cache/image-security/report.json
+            .cache/image-security/profile.json
+            .cache/image-security/gate.json
           if-no-files-found: warn
           retention-days: 7

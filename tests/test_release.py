@@ -17,6 +17,19 @@ ENV = {
     "A3_IMAGE": "us-west1-docker.pkg.dev/synthetic-project/a3/agent@sha256:" + "a" * 64,
 }
 GATE = {
+    "secret_versions": {
+        name: "1"
+        for name in (
+            "a3-api-key",
+            "a3-internal-key",
+            "a3-nvidia-key",
+            "a3-telegram-token",
+            "a3-google-client-secret",
+            "a3-google-refresh-token",
+            "a3-tavily-key",
+            "a3-tailscale-auth-key",
+        )
+    },
     "primary_auth": "oauth",
     "oauth_secret_version": "1",
     "project": "synthetic-project",
@@ -88,3 +101,11 @@ def test_oauth_release_mounts_pinned_native_credentials_without_paid_key():
 
     with pytest.raises(ValueError, match="requires Hermes OAuth"):
         deploy.command(ENV, {**GATE, "primary_auth": "api_key"})
+
+
+def test_every_cloud_secret_is_pinned():
+    for name in GATE["secret_versions"]:
+        with pytest.raises(ValueError, match="Pinned secret version"):
+            deploy.command(
+                ENV, {**GATE, "secret_versions": {**GATE["secret_versions"], name: "latest"}}
+            )

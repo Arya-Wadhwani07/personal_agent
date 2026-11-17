@@ -30,3 +30,7 @@ I installed Tailscale and signed into my own tailnet. An isolated permitted clie
 ## My reflection and remaining evidence
 
 My required personal reflection is still pending my own input; Codex has not invented what I learned or felt. I will add my two or three reflection sentences and the final deployment, operating-window, report and video evidence before submission. Private authentication records and raw transcripts are not attached to this public log.
+
+### November 17 technical checkpoint
+
+With Codex assistance, I added project-scoped cloud provisioning, keyless GitHub trust, pinned Secret Manager versions, persistent request quotas, patched runtime libraries and an evidence-based image gate. Live GCS state/OAuth recovery checks passed. The Tailscale build adapts upstream's version-stamping instructions; SQLite and ACL use checksum-verified upstream sources. ACL tests required Bash and a container-specific device-denial expectation, while retaining their permission assertions. My personal reflection and final-length submission edit remain deferred as requested.

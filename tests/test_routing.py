@@ -6,6 +6,7 @@ import httpx
 import pytest
 
 from personal_agent.routing import RouteError, Router, decide
+from personal_agent.state import Store
 
 
 def completion(model="nim-test"):
@@ -51,7 +52,7 @@ async def test_private_never_cloud_even_when_local_fails(settings, caplog):
     def local(request):
         raise httpx.ConnectError("synthetic offline")
 
-    router = Router(settings, **clients(cloud, local))
+    router = Router(settings, store=Store(settings.state_dir), **clients(cloud, local))
     caplog.set_level("INFO", logger="a3.audit")
     with pytest.raises(RouteError, match="held"):
         await router.complete(
@@ -72,7 +73,9 @@ async def test_sticky_privacy(settings):
     def local(request):
         return httpx.Response(200, json=local_result())
 
-    result = await Router(settings, **clients(cloud, local)).complete(
+    result = await Router(
+        settings, store=Store(settings.state_dir), **clients(cloud, local)
+    ).complete(
         {
             "messages": [
                 {"role": "user", "content": "This is confidential."},
@@ -89,7 +92,9 @@ async def test_laptop_off_cloud_continuity(settings):
         raise httpx.ConnectError("offline")
 
     result = await Router(
-        settings, **clients(lambda r: httpx.Response(200, json=completion()), local)
+        settings,
+        store=Store(settings.state_dir),
+        **clients(lambda r: httpx.Response(200, json=completion()), local),
     ).complete({"messages": [{"role": "user", "content": "Hello"}]})
     assert result["model"] == "nim-test"
 
@@ -108,11 +113,15 @@ async def test_429_fallback_and_reversal(settings):
         return httpx.Response(200, json=local_result())
 
     payload = {"messages": [{"role": "user", "content": "Reason step by step"}]}
-    result = await Router(replace(settings, simulate_429=True), **clients(cloud, local)).complete(
-        payload
-    )
+    result = await Router(
+        replace(settings, simulate_429=True),
+        store=Store(settings.state_dir),
+        **clients(cloud, local),
+    ).complete(payload)
     assert result["model"] == "gemma4:e2b" and not calls
-    result = await Router(settings, **clients(cloud, local)).complete(payload)
+    result = await Router(
+        settings, store=Store(settings.state_dir), **clients(cloud, local)
+    ).complete(payload)
     assert result["model"] == "nim-test" and calls == ["cloud"]
 
 
@@ -121,7 +130,7 @@ async def test_empty_model_response_is_failure(settings):
         return httpx.Response(200, json={"model": "nim", "choices": [{"message": {"content": ""}}]})
 
     with pytest.raises(RouteError, match="incomplete"):
-        await Router(settings, **clients(empty, empty)).complete(
+        await Router(settings, store=Store(settings.state_dir), **clients(empty, empty)).complete(
             {"messages": [{"role": "user", "content": "Reason deeply"}]}
         )
 

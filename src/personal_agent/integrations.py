@@ -17,8 +17,9 @@ from .state import PolicyError
 
 
 class Services:
-    def __init__(self, settings: Settings, client=None):
+    def __init__(self, settings: Settings, client=None, *, store=None):
         self.s = settings
+        self.store = store
         self.client = client or httpx.AsyncClient(
             timeout=20, trust_env=False, follow_redirects=False
         )
@@ -171,6 +172,9 @@ class Services:
             raise PolicyError("Tavily is not configured")
         if not query or len(query) > 400:
             raise PolicyError("Search query exceeds bounds")
+        if not self.s.paid_calls or self.store is None:
+            raise PolicyError("Search spending authorization is not configured")
+        self.store.reserve_call("tavily", self.s.search_call_limit)
         data = await self.request(
             "POST",
             "https://api.tavily.com/search",

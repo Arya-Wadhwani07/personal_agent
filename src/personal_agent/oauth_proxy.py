@@ -126,7 +126,7 @@ class OAuthRouter(Router):
     """Per-request adapter with shared clients; credentials exist only for this request."""
 
     def __init__(self, parent, body, headers):
-        super().__init__(parent.s, cloud=parent.cloud, local=parent.local)
+        super().__init__(parent.s, cloud=parent.cloud, local=parent.local, store=parent.store)
         self.original = body
         self.forward_headers = {
             k: headers[k]

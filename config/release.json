@@ -7,12 +7,23 @@
   "cpu": "1",
   "memory": "2Gi",
   "blockers": [
-    "Untriaged image findings VULN-005/006/008 and final amd64 image verification pending",
-    "Cloud IAM, bounded usage/cost monitoring and final deployment approval pending",
-    "Live GCS recovery and durable OAuth refresh-state recovery unverified",
-    "Actual Cloud Run-to-Mac inference and deployed integrations unverified",
-    "Final operational evidence, grader access and video incomplete; public skill installation/execution verified"
+    "Final hardened image gate and amd64 verification pending",
+    "Live deployed integrations and private cloud-to-Mac inference pending",
+    "GitHub production protection and concrete deployment approval pending",
+    "Operational acceptance and observation start pending"
   ],
   "primary_auth": "oauth",
-  "oauth_secret_version": "1"
+  "oauth_secret_version": "1",
+  "secret_versions": {
+    "a3-api-key": "1",
+    "a3-internal-key": "1",
+    "a3-nvidia-key": "1",
+    "a3-telegram-token": "1",
+    "a3-google-client-secret": "1",
+    "a3-google-refresh-token": "1",
+    "a3-tavily-key": "1",
+    "a3-hermes-oauth": "1",
+    "a3-runtime-env": "1",
+    "a3-tailscale-auth-key": "1"
+  }
 }

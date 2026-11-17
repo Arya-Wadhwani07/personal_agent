@@ -11,6 +11,7 @@ import httpx
 from .audit import emit
 from .providers import responses_completion, responses_request
 from .settings import Settings
+from .state import PolicyError
 
 
 class RouteError(Exception):
@@ -110,8 +111,9 @@ def ollama_messages(messages):
 
 
 class Router:
-    def __init__(self, settings: Settings, *, cloud=None, local=None):
+    def __init__(self, settings: Settings, *, cloud=None, local=None, store=None):
         self.s = settings
+        self.store = store
         self.cloud = cloud or httpx.AsyncClient(
             timeout=settings.timeout, trust_env=False, follow_redirects=False
         )
@@ -156,6 +158,15 @@ class Router:
                     }
                     body.update(model=model, stream=False, max_tokens=2048)
                     url = self.s.cloud_url
+                if self.store is None:
+                    raise RouteError("paid_quota_unconfigured")
+                try:
+                    self.store.reserve_call(
+                        provider,
+                        self.s.openai_call_limit if route == "cloud" else self.s.nvidia_call_limit,
+                    )
+                except PolicyError as exc:
+                    raise RouteError("paid_quota_exhausted") from exc
                 data = await bounded_json(
                     self.cloud,
                     url,
@@ -243,7 +254,12 @@ class Router:
     async def complete(self, payload, decision=None):
         request_id = uuid.uuid4().hex
         decision = decision or decide(payload["messages"])
-        transient = {"rate_limited", "transient_upstream", "model_unavailable"}
+        transient = {
+            "rate_limited",
+            "transient_upstream",
+            "model_unavailable",
+            "paid_quota_exhausted",
+        }
         attempted_local = False
 
         async def attempt(route, reason):

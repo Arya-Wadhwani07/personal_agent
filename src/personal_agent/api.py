@@ -122,7 +122,6 @@ def base_app(s, lifespan=None):
 
 
 def internal_app(s: Settings, *, router=None, broker=None):
-    router = router or Router(s)
     if broker is None:
         checkpoint = None
         if s.bucket:
@@ -133,6 +132,8 @@ def internal_app(s: Settings, *, router=None, broker=None):
             checkpoint = GCSCheckpoint(storage.Client().bucket(s.bucket))
             checkpoint.restore(s.state_dir)
         broker = Broker(s, Store(s.state_dir, checkpoint=checkpoint), Services(s))
+
+    router = router or Router(s, store=broker.store)
 
     @asynccontextmanager
     async def lifespan(app):

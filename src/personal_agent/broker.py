@@ -61,6 +61,7 @@ TOOLS = {
 class Broker:
     def __init__(self, settings, store, services):
         self.s, self.store, self.services = settings, store, services
+        self.services.store = store
 
     async def call(self, name, args, *, user_task=""):
         if self.store.poisoned:

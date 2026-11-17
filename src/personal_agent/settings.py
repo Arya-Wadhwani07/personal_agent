@@ -17,6 +17,9 @@ class Settings:
     primary_model: str = ""
     primary_url: str = "https://api.openai.com/v1/responses"
     paid_calls: bool = False
+    search_call_limit: int = 0
+    nvidia_call_limit: int = 0
+    openai_call_limit: int = 0
     simulate_primary_429: bool = False
     cloud_key: str = ""
     cloud_model: str = "nvidia/nemotron-3-ultra-550b-a55b"
@@ -49,6 +52,9 @@ class Settings:
             )
         if self.api_key == self.internal_key:
             raise ValueError("Public and internal credentials must differ")
+        for limit in (self.search_call_limit, self.nvidia_call_limit, self.openai_call_limit):
+            if type(limit) is not int or not 0 <= limit <= 1000:
+                raise ValueError("Paid call limits must be integers between 0 and 1000")
         if self.primary_auth not in ("api_key", "oauth"):
             raise ValueError("Unsupported primary authentication mode")
         if self.primary_url != "https://api.openai.com/v1/responses":
@@ -79,6 +85,9 @@ class Settings:
             primary_key=e.get("A3_OPENAI_API_KEY", ""),
             primary_model=e.get("A3_OPENAI_MODEL", ""),
             paid_calls=e.get("A3_PAID_CALLS", "false").lower() == "true",
+            search_call_limit=int(e.get("A3_SEARCH_CALL_LIMIT", "0")),
+            nvidia_call_limit=int(e.get("A3_NVIDIA_CALL_LIMIT", "0")),
+            openai_call_limit=int(e.get("A3_OPENAI_CALL_LIMIT", "0")),
             simulate_primary_429=e.get("A3_SIMULATE_PRIMARY_429", "false").lower() == "true",
             cloud_key=e.get("NVIDIA_API_KEY", ""),
             cloud_model=e.get("NVIDIA_MODEL", cls.cloud_model),

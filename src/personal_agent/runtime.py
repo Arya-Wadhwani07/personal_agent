@@ -156,6 +156,9 @@ async def serve():
 
 
 def main():
+    from .isolation import enforce
+
+    enforce()
     from .audit import configure
 
     configure()
