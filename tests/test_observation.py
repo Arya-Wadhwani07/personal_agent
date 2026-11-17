@@ -10,6 +10,7 @@ obs = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(obs)
 GATE = {"ready": True, "frozen": False, "blockers": [], "project": "assignment3-515003", "instance": "assignment3-personal-agent"}
 CHECKS = {**dict.fromkeys(obs.CHECKS, True), "image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:" + "a"*64}
+GATE["reviewed_image"] = CHECKS["image"]
 START = datetime(2026, 11, 17, 20, tzinfo=UTC)
 
 
@@ -43,3 +44,9 @@ def test_gap_and_local_only_heartbeats_remain_visible():
     for item in logs:
         item["jsonPayload"]["outcome"] = "local_only"
     assert obs.summarize(manifest, logs, START+timedelta(minutes=11))["durable_heartbeats"] == 0
+
+
+def test_observation_cannot_claim_a_different_valid_image():
+    replacement = CHECKS["image"].replace("a" * 64, "b" * 64)
+    with pytest.raises(ValueError, match="reviewed release"):
+        obs.create_manifest(GATE, {**CHECKS, "image": replacement}, START)

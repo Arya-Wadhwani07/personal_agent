@@ -21,6 +21,8 @@ def create_manifest(gate, acceptance, now=None):
     expected = r"us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:[a-f0-9]{64}"
     if not re.fullmatch(expected, image):
         raise ValueError("The observed immutable release digest is required")
+    if image != gate.get("reviewed_image"):
+        raise ValueError("Observation image differs from the reviewed release")
     return {"schema": 1, "started_at": (now or datetime.now(UTC)).isoformat(),
             "required_hours": 48, "project": gate["project"], "instance": gate["instance"],
             "region": "us-central1", "image": image, "cloud_model": "gpt-6.1-sol",

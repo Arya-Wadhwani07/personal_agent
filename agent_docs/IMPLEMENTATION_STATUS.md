@@ -100,3 +100,9 @@ The requested custom non-resetting budget period was rejected by the API. The ve
 | USER / VIDEO / DOC | Guardrails, CI/CD, readable docs and submission plan. | Remaining human inputs and final deliverables. |
 
 The full [94-ID requirements baseline](REQUIREMENTS.md) and [architecture map](ARCHITECTURE.md#a15-requirement-by-requirement-architecture-coverage) remain authoritative. A source implementation or passing mock test alone does not complete a grading criterion.
+
+## Exact-image release control
+
+My predeployment gate now names the tested `ecb61d2` registry digest. Deployment and observation refuse a different digest, even if it is a valid image in my registry. `ready` records passed predeployment engineering checks; the GitHub production job still requires my explicit approval before it can deploy. Post-deployment checks remain required before observation; they are not falsely marked complete to permit the first deployment.
+
+My exact-image release/observation checks passed **26 isolated tests**, with lint and static security checks passing. The private environment matches the reviewed project, state bucket and provider quotas. The prepared deployment command has not been executed; my production review is the final authorization step.

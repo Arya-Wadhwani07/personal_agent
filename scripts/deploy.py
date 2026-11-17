@@ -39,6 +39,8 @@ def command(env, gate):
         image,
     ):
         raise ValueError("Reviewed project-owned Artifact Registry image digest required")
+    if image != gate.get("reviewed_image"):
+        raise ValueError("Deployment image differs from the exact reviewed digest")
     primary_auth = gate.get("primary_auth")
     if primary_auth != "oauth":
         raise ValueError("This reviewed release profile requires Hermes OAuth")

@@ -55,3 +55,9 @@ I named the bot **Monday** and asked Codex to simplify the Markdown.
 
 - The [reference repository](https://github.com/aadit11/AgenticAIThree) informed presentation only: short introductions, descriptive headings, bullets and compact tables.
 - My own project choices, wording, requirements and evidence remain independent. Repeated checkpoints now live in HISTORY.md, with current results in IMPLEMENTATION_STATUS.md. Native image publication succeeded after correcting the verified GitHub subject condition; my production review and main-branch rule are confirmed.
+
+## November 17: exact-image release check
+
+Codex bound deployment and observation to my reviewed immutable image, with negative tests for substituting another valid registry digest. The initial deployment gate is distinct from live acceptance: I still approve deployment, and observation still requires every actual live check.
+
+My exact-image release/observation checks passed **26 isolated tests**, with lint and static security checks passing. The private environment matches the reviewed project, state bucket and provider quotas. The prepared deployment command has not been executed; my production review is the final authorization step.

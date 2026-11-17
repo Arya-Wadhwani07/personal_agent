@@ -17,6 +17,7 @@ ENV = {
     "A3_IMAGE": "us-west1-docker.pkg.dev/synthetic-project/a3/agent@sha256:" + "a" * 64,
 }
 GATE = {
+    "reviewed_image": ENV["A3_IMAGE"],
     "secret_versions": {
         name: "1"
         for name in (
@@ -109,3 +110,11 @@ def test_every_cloud_secret_is_pinned():
             deploy.command(
                 ENV, {**GATE, "secret_versions": {**GATE["secret_versions"], name: "latest"}}
             )
+
+
+def test_another_valid_registry_digest_cannot_replace_the_reviewed_image():
+    substitute = ENV["A3_IMAGE"].replace("a" * 64, "b" * 64)
+    with pytest.raises(ValueError, match="exact reviewed digest"):
+        deploy.command({**ENV, "A3_IMAGE": substitute}, GATE)
+    with pytest.raises(ValueError, match="exact reviewed digest"):
+        deploy.command(ENV, {**GATE, "reviewed_image": None})
