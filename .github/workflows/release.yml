@@ -6,7 +6,7 @@ on:
         description: Publish a tested image, or deploy an approved digest
         required: true
         type: choice
-        options: [publish, deploy]
+        options: [publish, deploy, diagnose]
         default: publish
       image_digest:
         description: Reviewed Artifact Registry image including @sha256 digest
@@ -101,3 +101,15 @@ jobs:
             .cache/image-security/profile.json
             .cache/image-security/gate.json
           retention-days: 7
+
+  diagnose:
+    if: inputs.operation == 'diagnose'
+    environment: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Show only the identity claims used by the GCP restriction
+        run: python scripts/oidc_diagnostics.py
