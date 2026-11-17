@@ -163,6 +163,18 @@ def internal_app(s: Settings, *, router=None, broker=None):
         broker.store.assert_available()
         return {"status": "policy_ready"}
 
+    @app.get("/ready")
+    async def ready():
+        broker.store.assert_available()
+        if s.bucket and s.primary_auth == "oauth":
+            from .auth_checkpoint import AuthCheckpointError, assert_auth_ready
+
+            try:
+                assert_auth_ready(s.state_dir)
+            except AuthCheckpointError:
+                return JSONResponse({"status": "auth_recovery_required"}, 503)
+        return {"status": "ready"}
+
     @app.post("/checkpoint")
     async def checkpoint():
         with broker.store.transaction():
@@ -319,7 +331,7 @@ def edge_app(s: Settings, client=None, policy_client=None):
         try:
             response = await client.get("/health", timeout=3)
             policy = await policy_client.get(
-                "/health", timeout=3, headers={"Authorization": "Bearer " + s.internal_key}
+                "/ready", timeout=3, headers={"Authorization": "Bearer " + s.internal_key}
             )
             ok = response.status_code == 200 and policy.status_code == 200
         except httpx.HTTPError:

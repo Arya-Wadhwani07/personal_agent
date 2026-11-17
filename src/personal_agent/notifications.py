@@ -23,7 +23,7 @@ class Notifier:
             s = self.broker.s
             if not s.telegram_token or not s.telegram_user_id.isdigit():
                 raise PolicyError("Class-only Telegram notification destination is not configured")
-            await self.broker.call("a3_alerts", {})
+            collection = await self.broker.call("a3_alerts", {})
             sent = 0
             async with httpx.AsyncClient(
                 timeout=20, trust_env=False, follow_redirects=False
@@ -36,8 +36,9 @@ class Notifier:
                     self.broker.store.finish_notification(item["id"], status, provider_id)
                     emit("delivery", component="telegram_alert", outcome=status)
                     sent += status == "sent"
-            emit("job", job="a3-alerts", outcome="completed", count=sent)
-            return {"status": "completed", "sent": sent, "at": time.time()}
+            outcome = "degraded" if collection.get("unavailable_sources") else "completed"
+            emit("job", job="a3-alerts", outcome=outcome, count=sent)
+            return {"status": outcome, "sent": sent, "at": time.time()}
 
     async def deliver(self, client, text):
         s = self.broker.s
@@ -64,8 +65,9 @@ class Notifier:
                 data = json.loads(raw)
                 if not isinstance(data, dict):
                     return "unknown", None
-            identifier = (data.get("result") or {}).get("message_id")
-            if data.get("ok") is True and identifier is not None:
+            result = data.get("result")
+            identifier = result.get("message_id") if isinstance(result, dict) else None
+            if data.get("ok") is True and type(identifier) is int and identifier > 0:
                 return "sent", str(identifier)
             return ("pending", None) if data.get("ok") is False else ("unknown", None)
         except httpx.HTTPError, ValueError, TypeError, TimeoutError:

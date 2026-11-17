@@ -8,7 +8,7 @@ function bubble(role, text, error=false) {
   const item = document.createElement("div"); item.className = "bubble " + role + (error ? " error" : "");
   item.textContent = text; $("messages").append(item); item.scrollIntoView({block:"nearest"});
 }
-function clear() { history=[]; $("messages").replaceChildren(); notice("New conversation. My saved synthetic preferences remain available."); }
+function clear() { history=[];$("message").value=""; $("messages").replaceChildren(); notice("New conversation. My saved synthetic preferences remain available."); }
 $("login").addEventListener("submit", event => {
   event.preventDefault(); key=$("key").value; $("key").value="";
   $("login").hidden=true; $("message").disabled=false; $("send").disabled=false;
@@ -34,7 +34,7 @@ $("chat").addEventListener("submit", async event => {
     if(typeof reply!=="string" || !reply.trim())throw new Error("No usable reply was returned.");
     history.push(user,{role:"assistant",content:reply});bubble("assistant",reply);
     notice("Email approval: in Telegram, use /review followed by the draft ID.");
-  }catch(error){bubble("assistant",error.name==="AbortError"?"The request timed out. The action may still be running; check before repeating it.":error.message,true);notice("Reply not confirmed.");}
+  }catch(error){$("message").value=text;bubble("assistant",error.name==="AbortError"?"The request timed out. The action may still be running; check before repeating it.":error.message,true);notice("Reply not confirmed. My message is preserved; I will check activity before retrying an action.");}
   finally{clearTimeout(timer);busy=false;$("send").disabled=false;$("message").disabled=false;$("message").focus();}
 });
 async function health(){try{const response=await fetch("/health",{signal:AbortSignal.timeout(5000)});const data=await response.json();const ready=response.ok&&data.status==="ready";$("health").textContent=ready?"Gateway available":"Gateway unavailable";$("indicator").classList.toggle("ready",ready);}catch{$("health").textContent="Connection unavailable";$("indicator").classList.remove("ready");}}
@@ -50,8 +50,10 @@ async function draftRequest(path, payload) {
   return data;
 }
 async function showDrafts(){
+  const sessionKey=key;
   try{
     const data=await draftRequest("/content");
+    if(!key || key!==sessionKey)return;
     $("drafts").replaceChildren();
     if(!data.items.length){$("drafts").textContent="No content drafts yet. Ask me to research an idea.";return;}
     for(const draft of data.items){

@@ -1,0 +1,35 @@
+name: Runtime vulnerability gate
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [Dockerfile, uv.lock, pyproject.toml, "src/**", ".github/workflows/image-security.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: image-security-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Build immutable runtime candidate
+        run: |
+          mkdir -p .cache/image-security
+          docker build --target runtime -t a3-security:${{ github.sha }} .
+          docker image save -o .cache/image-security/runtime.tar a3-security:${{ github.sha }}
+      - name: Block untriaged High and Critical image advisories
+        run: |
+          docker run --rm --read-only --cap-drop ALL --security-opt no-new-privileges --memory 2g --cpus 2 --user "$(id -u):$(id -g)" --tmpfs /tmp:rw,nosuid,nodev,size=512m --mount "type=bind,source=$PWD/.cache/image-security,target=/audit" aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 image --cache-dir /audit/cache --input /audit/runtime.tar --scanners vuln --format json --output /audit/report.json --severity HIGH,CRITICAL --exit-code 1 --skip-version-check
+      - name: Preserve the failing gate report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: runtime-vulnerability-report-${{ github.sha }}
+          path: .cache/image-security/report.json
+          if-no-files-found: warn
+          retention-days: 7

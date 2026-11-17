@@ -4,8 +4,11 @@
 import hashlib
 import json
 import time
-from urllib.parse import urlsplit
 
+import httpx
+
+from .audit import emit
+from .content_review import public_reference, review
 from .state import PolicyError
 
 TOOLS = {
@@ -29,6 +32,10 @@ TOOLS = {
             "body": {"type": "string"},
             "sources": {"type": "array", "items": {"type": "string"}},
         },
+    ),
+    "a3_review_content": (
+        "Check a draft claim-to-source ledger and previous topics before saving; no publishing.",
+        {"draft": {"type": "object"}},
     ),
     "a3_content_history": ("Read saved content drafts and their review states.", {}),
     "a3_weather": ("Read current weather and today's range for the fictional profile city.", {}),
@@ -104,16 +111,10 @@ class Broker:
             ):
                 raise PolicyError("Content draft bounds invalid")
             for url in sources:
-                parsed = urlsplit(url)
-                if (
-                    parsed.scheme != "https"
-                    or not parsed.hostname
-                    or parsed.username
-                    or len(url) > 1000
-                ):
-                    raise PolicyError("Each source needs a public HTTPS reference")
-                if parsed.hostname == "linkedin.com" or parsed.hostname.endswith(".linkedin.com"):
-                    raise PolicyError("LinkedIn scraping sources are excluded")
+                try:
+                    public_reference(url)
+                except ValueError as exc:
+                    raise PolicyError(str(exc)) from None
             normalized = " ".join(topic.casefold().split())
             identifier = hashlib.sha256(normalized.encode()).hexdigest()[:24]
             with self.store.transaction() as db:
@@ -134,6 +135,11 @@ class Broker:
                 "sources": sources,
                 "publishing": "No publishing capability is installed",
             }
+        if name == "a3_review_content":
+            try:
+                return review(args["draft"])
+            except ValueError as exc:
+                raise PolicyError(str(exc)) from None
         if name == "a3_content_history":
             return self.store.content_items()
         if name == "a3_activity":
@@ -143,8 +149,17 @@ class Broker:
                 ).fetchall()
             return {"completed": self.store.activity(time.time() - 86400), "email_review": pending}
         if name == "a3_alerts":
-            inbox = await self.services.emails()
-            events = await self.services.calendar()
+            # One unavailable source must not suppress alerts from the other source.
+            unavailable = []
+            collected = {}
+            for source, fetch in (("email", self.services.emails), ("calendar", self.services.calendar)):
+                try:
+                    collected[source] = await fetch()
+                except (PolicyError, httpx.HTTPError, TimeoutError):
+                    collected[source] = {"untrusted_data": []}
+                    unavailable.append(source)
+                    emit("alert_source", component=source, outcome="unavailable")
+            inbox, events = collected["email"], collected["calendar"]
             from datetime import UTC, datetime
 
             candidates = [
@@ -169,6 +184,7 @@ class Broker:
             self.store.queue_notifications(candidates)
             return {
                 "alerts": self.store.pending_notifications(),
+                "unavailable_sources": unavailable,
                 "instruction": "Pending alerts use the trusted scheduled notifier. This tool does not claim delivery.",
             }
         raise PolicyError("Unsupported capability")

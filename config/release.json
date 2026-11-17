@@ -7,10 +7,11 @@
   "cpu": "1",
   "memory": "2Gi",
   "blockers": [
-    "Cloud IAM, cost monitoring and final deployment approval pending",
+    "Untriaged High image findings VULN-005/006 and final image verification pending",
+    "Cloud IAM, bounded usage/cost monitoring and final deployment approval pending",
     "Live GCS recovery and durable OAuth refresh-state recovery unverified",
-    "Tailscale private inference and deployed integrations unverified",
-    "Image checks, advanced skill publication and final evidence incomplete"
+    "Actual Cloud Run-to-Mac inference and deployed integrations unverified",
+    "Public skill verification and final operational/video evidence incomplete"
   ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1"

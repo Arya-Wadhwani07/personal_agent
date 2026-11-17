@@ -12,13 +12,17 @@ with sync_playwright() as p:
     browser = p.chromium.launch(args=["--no-sandbox", "--disable-dev-shm-usage"])
     page = browser.new_page(viewport={"width": 1280, "height": 900})
     page.route("**/health", lambda route: route.fulfill(json={"status": "ready"}))
+    assets = Path(__file__).resolve().parents[1] / "src/personal_agent/static"
+    for asset, route_path in (("index.html", "/"), ("app.js", "/app.js"), ("app.css", "/app.css")):
+        page.route("http://a3.test" + route_path, lambda route, request, name=asset: route.fulfill(path=str(assets / name)))
     reply = {
         "content": "I have a fictional project meeting at 10:00 AM. My afternoon has space for focused work. Email drafts are ready for review in Telegram."
     }
     page.route(
         "**/v1/chat/completions",
         lambda route: route.fulfill(
-            json={"choices": [{"message": {"role": "assistant", "content": reply["content"]}}]}
+            status=reply.get("status", 200),
+            json={"error": "Synthetic service unavailable", "choices": [{"message": {"role": "assistant", "content": reply["content"]}}]}
         ),
     )
     draft = {
@@ -46,7 +50,7 @@ with sync_playwright() as p:
         route.fulfill(json={"status": "updated"})
 
     page.route("**/content/*/review", review)
-    page.goto("http://host.docker.internal:18080", wait_until="networkidle")
+    page.goto("http://a3.test/", wait_until="networkidle")
     if not (page.get_by_label("Message my assistant").is_disabled()):
         raise RuntimeError("Browser verification failed")
     page.get_by_label("Private access key").fill("synthetic-ui-key-" + "x" * 32)
@@ -86,12 +90,32 @@ with sync_playwright() as p:
         raise RuntimeError("Browser verification failed")
     if not (page.locator("#messages img, #messages script").count() == 0):
         raise RuntimeError("Browser verification failed")
+    reply["status"] = 503
+    page.get_by_label("Message my assistant").fill("Preserve my synthetic unsent request.")
+    page.get_by_role("button", name="Send", exact=False).click()
+    page.get_by_text("Synthetic service unavailable", exact=True).wait_for()
+    if page.get_by_label("Message my assistant").input_value() != "Preserve my synthetic unsent request.":
+        raise RuntimeError("Failed-request draft was lost")
+    if page.get_by_label("Message my assistant").is_disabled():
+        raise RuntimeError("Composer did not recover")
     page.get_by_role("button", name="New chat", exact=True).click()
+    if page.get_by_label("Message my assistant").input_value():
+        raise RuntimeError("New chat retained the previous draft")
     page.set_viewport_size({"width": 390, "height": 844})
     if not (page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")):
         raise RuntimeError("Browser verification failed")
     page.screenshot(path=str(OUT / "mobile.png"), full_page=True)
+    pending = []
+    page.route("**/content", lambda route: pending.append(route))
+    with page.expect_request("**/content"):
+        page.get_by_role("button", name="Refresh drafts", exact=True).click()
     page.get_by_role("button", name="Sign out & clear chat", exact=True).click()
+    if not pending:
+        raise RuntimeError("Late-response fixture did not start")
+    pending[0].fulfill(json={"items": [draft]})
+    page.wait_for_timeout(100)
+    if page.locator(".content-draft").count():
+        raise RuntimeError("Late response restored drafts after signout")
     if not (page.get_by_label("Message my assistant").is_disabled()):
         raise RuntimeError("Browser verification failed")
     if not (page.get_by_label("Private access key").input_value() == ""):
@@ -106,11 +130,12 @@ print(
             "checks": [
                 "login",
                 "chat",
+                "failed-request draft recovery and composer reset",
                 "plain-text XSS rejection",
                 "content revision, copy and dismiss",
                 "new chat",
                 "mobile no horizontal overflow",
-                "signout",
+                "signout and late-response isolation",
                 "no browser storage",
             ],
             "model": "mocked",

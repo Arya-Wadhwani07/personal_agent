@@ -148,3 +148,47 @@ async def test_overload_is_bounded_and_recovers(settings):
         release.set()
         assert all(r.status_code == 200 for r in await asyncio.gather(*tasks))
         assert (await request()).status_code == 200
+
+
+async def test_upstream_failure_does_not_disclose_response_body(settings):
+    app = edge_app(settings, httpx.AsyncClient(
+        base_url="http://hermes", transport=httpx.MockTransport(
+            lambda r: httpx.Response(500, text="synthetic-private-provider-secret")
+        )))
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://edge") as client:
+        response = await client.post("/v1/chat/completions",
+            headers={"Authorization": "Bearer " + settings.api_key},
+            json={"messages": [{"role": "user", "content": "synthetic"}]})
+        assert response.status_code == 503
+        assert "private-provider-secret" not in response.text
+
+
+async def test_oversized_upstream_response_is_refused(settings):
+    app = edge_app(settings, httpx.AsyncClient(
+        base_url="http://hermes", transport=httpx.MockTransport(
+            lambda r: httpx.Response(200, content=b"x" * (settings.max_response + 1))
+        )))
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://edge") as client:
+        response = await client.post("/v1/chat/completions",
+            headers={"Authorization": "Bearer " + settings.api_key},
+            json={"messages": [{"role": "user", "content": "synthetic"}]})
+        assert response.status_code == 502
+
+
+async def test_slow_request_body_times_out_and_releases_slot(monkeypatch):
+    from personal_agent.api import Bounds
+    original_timeout = asyncio.timeout
+    monkeypatch.setattr(asyncio, "timeout", lambda seconds: original_timeout(0.01))
+    reached = []
+    async def application(scope, receive, send):
+        reached.append(True)
+    async def receive():
+        await asyncio.sleep(0.1)
+        return {"type": "http.request", "body": b"synthetic", "more_body": True}
+    messages = []
+    async def send(message):
+        messages.append(message)
+    middleware = Bounds(application, 1024, 1)
+    await middleware({"type": "http"}, receive, send)
+    assert not reached and middleware.active == 0
+    assert messages[0]["status"] == 408

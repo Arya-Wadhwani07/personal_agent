@@ -7,10 +7,11 @@ import json
 import time
 from datetime import UTC, datetime, timedelta
 from email.message import EmailMessage
-from urllib.parse import quote, urlsplit
+from urllib.parse import quote
 
 import httpx
 
+from .content_review import public_reference
 from .settings import Settings
 from .state import PolicyError
 
@@ -37,7 +38,10 @@ class Services:
                     if len(raw) > 524288:
                         raise PolicyError("Connected service response exceeds size limit")
                 try:
-                    return json.loads(raw)
+                    data = json.loads(raw)
+                    if not isinstance(data, dict):
+                        raise ValueError("Expected an object")
+                    return data
                 except ValueError as exc:
                     raise PolicyError("Connected service returned invalid data") from exc
 
@@ -181,10 +185,9 @@ class Services:
         )
         results = []
         for item in data.get("results", [])[:5]:
-            parsed = urlsplit(item.get("url", ""))
-            if parsed.scheme != "https" or not parsed.hostname or parsed.username:
-                continue
-            if parsed.hostname == "linkedin.com" or parsed.hostname.endswith(".linkedin.com"):
+            try:
+                public_reference(item.get("url", ""))
+            except ValueError:
                 continue
             results.append(
                 {

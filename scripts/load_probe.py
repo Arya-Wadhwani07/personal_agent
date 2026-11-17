@@ -48,8 +48,8 @@ async def main():
                 await asyncio.gather(*(one() for _ in range(count)))
             if any(code not in (200, 429) for code in statuses):
                 raise RuntimeError("Unexpected load failure")
-            if name == "representative" and any(code != 200 for code in statuses):
-                raise RuntimeError("Representative load rejected")
+            if name in ("representative", "recovery") and any(code != 200 for code in statuses):
+                raise RuntimeError(f"{name} load rejected")
             return {
                 "phase": name,
                 "requests": count,

@@ -33,6 +33,9 @@ def test_delivery_claim_replay_unknown_and_recovery(store):
         (401, {"ok": False}, "pending"),
         (500, {}, "unknown"),
         (200, {"ok": True}, "unknown"),
+        (200, {"ok": True, "result": ["malformed"]}, "unknown"),
+        (200, {"ok": True, "result": {"message_id": False}}, "unknown"),
+        (200, {"ok": True, "result": {"message_id": "unexpected"}}, "unknown"),
     ],
 )
 async def test_only_provider_ack_means_delivered(settings, code, body, expected):

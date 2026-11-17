@@ -63,6 +63,7 @@ def register(ctx):
             "a3_draft_email": ["to", "subject", "body"],
             "a3_search": ["query"],
             "a3_content_brief": ["topic", "body", "sources"],
+            "a3_review_content": ["draft"],
             "a3_memory": ["action"],
         }.get(name, [])
         ctx.register_tool(

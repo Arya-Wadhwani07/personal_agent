@@ -1,12 +1,20 @@
 # My Implementation and Evidence Status
 
+## My November 17 regression and implementation update
+
+I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **129 offline tests in 24.78 seconds**, with **73% measured combined statement/branch coverage** in the test process. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper.
+
+My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
+
+I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. Public-tap installation and a real agent invocation still need verification. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
+
 ## My November 17 integration checkpoint
 
 My selected primary is Hermes OpenAI browser OAuth with `gpt-6.1-sol`; a real synthetic inference passed. NVIDIA remains fallback and Gemma 4 E2B handles local work. Google OAuth refresh, Gmail identity and dedicated-calendar access passed; the Telegram owner is configured. My project is `assignment3-515003` with a $4 total ceiling. My Mac is connected to my own Tailscale network, and isolated Google Cloud CLI sign-in verified the active project and enabled billing. Private Gemma inference passed through an isolated Tailscale client, while an excluded tag was blocked. The separate cloud OAuth login is saved; cloud storage recovery and the actual Cloud Run path remain unverified. Published implementation checkpoints passed GitHub CI. Paid API calls remain disabled. Deployment and final evidence are unfinished; [my implementation status](IMPLEMENTATION_STATUS.md) distinguishes verified results from remaining work.
 
 Last updated: November 17, 2026. My assignment is **not ready for submission or deployment**. I authorized full implementation, Docker runtime files, local Ollama checks, and synthetic tests limited to 4 CPUs/4 GiB and 60 seconds per load/stress run.
 
-## My verified checkpoint
+## My earlier verified checkpoint (before this audit)
 
 | Scope | Observed result | Practical limit |
 | --- | --- | --- |
@@ -93,3 +101,18 @@ I tightened the release script to require the reviewed project, a finite positiv
 - GitHub CI for the preceding release-guard checkpoint `cbc9381` passed: [CI run](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44054819924). The new adapter still needs its own CI/image and live GCS checks. No cloud resources, deployment, paid inference or genuine 48-hour observation have been claimed.
 
 My final release-profile review also verified Python 3.11 grammar compatibility for the deployment helper and re-ran all 20 release tests successfully. The actual Cloud CLI interpreter refused the plan at the expected readiness gate. A private-value scan covered 71 source/document files with zero credential matches; all 94 requirement IDs remain mapped in the architecture.
+
+## My current release blockers after regression
+
+| Area | Implemented or checked | Work that still blocks acceptance |
+| --- | --- | --- |
+| Core application | Eleven narrow tools, provider routing, native Hermes, protected approval, state adapters, native cron and UI exist; 129 offline tests pass. | Real deployed execution and end-to-end feature usefulness are not established by mocks. |
+| Runtime security | Trivy 0.76.0 scanned the rebuilt Debian 13.7 candidate; pinned zlib security update verified; non-root initialization and installer removal passed. | Final scan has 0 Critical, 47 OS High entries, 2 Hermes metadata High entries and 2 Go-binary High entries; these are package findings, not 51 proven exploits. Applicability review/fixes remain required. |
+| Original skill | Claim/source validation, topic-history checks, native scan verdict safe, isolated native-hub install and helper execution pass. | Approved public publication, pinned tap fetch and actual Hermes skill invocation still need evidence. |
+| Deployment | Instance CLI flags verified locally; startup health probe and OAuth-aware readiness implemented. | IAM, secrets, bucket, immutable amd64 artifact, cost monitoring, deployment approval, live storage/OAuth recovery and actual cloud-to-Mac inference. |
+| Live skills/features | Google refresh/calendar and Telegram reply passed earlier. | Real search/fallback calls with bounded cost; explicit approved Gmail test send; scheduled briefing/recap and a fresh unsolicited alert. |
+| Grading evidence | Original rubric/deliverable pages reread; all 94 IDs preserved and mapped; all 25 originals hash-identical. | Three-task comparison, interval-wide 48-hour logs, grader login, video and final packaging. My own reflection is deferred at my request. |
+
+My latest-source UI run covers authenticated composition, content revision/copy/dismissal, plaintext XSS fixtures, failed-request recovery, mobile overflow and sign-out with a delayed response. The mock API probe recorded 100/100 successes at concurrency 4 (p95 22.084 ms), 4 successes and 252 intentional 429 responses at concurrency 32, then 10/10 recovery successes (p95 23.942 ms). Stress percentiles predominantly measure fast rejections, not model throughput.
+
+My local scan artifacts are ignored under .cache/audit/. The scanned runtime manifest is sha256:10dc185eb9919f48cc2b51e03645967368b2f4af3b21d145c506507e2b6b44bc, built before the final content-helper/readiness additions. Its dependency/OS findings remain relevant, but the final deployable image must be rebuilt and scanned. The separate image-security workflow fails on untriaged High/Critical advisories and retains the report; an ordinary CI pass does not override it.

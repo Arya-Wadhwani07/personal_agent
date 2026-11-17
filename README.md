@@ -1,5 +1,13 @@
 # My Personal Agent
 
+## My November 17 regression and implementation update
+
+I asked to prioritize implementation and leave my personal reflection and final submission writing for tomorrow. The current source passes **129 offline tests in 24.78 seconds**, with **73% measured combined statement/branch coverage** in the test process. Separate native subprocess checks, browser tests and earlier live checks have their own scope. I fixed independent alert-source failures, malformed delivery acknowledgements, failed-chat draft loss, late draft responses after sign-out, and cloud-auth readiness. My content workflow now has an original claim-to-source review helper.
+
+My bounded mock load/stress/recovery checks and latest-source Chromium checks pass. Ruff and Bandit pass; the installed-package advisory check reports no known vulnerabilities in its scanned scope, excluding editable project/Hermes packages. A separate runtime image scan found OS and bundled-component advisories. The Debian 13 baseline, removal of the unused installer, and pinned zlib update cleared the scanned Critical findings and affected bundled installer packages, but **untriaged High findings still block release**. No claim of zero vulnerabilities or complete rubric coverage is justified.
+
+I explicitly authorized publication of my reviewed original Hermes skill after its native safety scan and isolated installation passed. Public-tap installation and a real agent invocation still need verification. My existing running local assistant remains on its earlier image; the new source and image checks do not silently update it. Live Cloud Run/GCS acceptance, bounded fallback/search usage, autonomous delivery evidence, final-model performance comparison, the genuine 48-hour record and video remain open. Earlier test/build counts below are historical checkpoints; acceptance columns describe work still to prove.
+
 I build on [Hermes Agent by Nous Research](https://github.com/NousResearch/hermes-agent), pinned to v0.22.7. Codex assisted with my project source, documentation and tests; source comments and [PROCESS_LOG.md](PROCESS_LOG.md) record that assistance. Original course materials remain unchanged and excluded from this repository.
 
 My [grader-access checklist](agent_docs/GRADER_ACCESS.md) records the professor's two account paths and private Brightspace fields. My [Process Log](PROCESS_LOG.md) records the implementation and Codex assistance.
