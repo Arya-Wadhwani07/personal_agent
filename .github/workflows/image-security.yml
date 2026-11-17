@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [Dockerfile, uv.lock, pyproject.toml, "src/**", ".github/workflows/image-security.yml"]
+    paths: [Dockerfile, uv.lock, pyproject.toml, "src/**", "scripts/**", "skills/**", .dockerignore, ".github/workflows/image-security.yml"]
 permissions:
   contents: read
 concurrency:
