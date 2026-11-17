@@ -30,11 +30,7 @@ def command(env, gate):
         approved = Decimal(str(gate.get("budget_usd", "0")))
     except (InvalidOperation, ValueError):
         raise ValueError("Finite approved spending limit required") from None
-    if (
-        not requested.is_finite()
-        or not approved.is_finite()
-        or not 0 < requested <= approved
-    ):
+    if not requested.is_finite() or not approved.is_finite() or not 0 < requested <= approved:
         raise ValueError("Declared budget must be positive and within the approved ceiling")
     # This validates release authorization; it is not a cloud billing hard cap.
     # Actual usage monitoring and a funded availability window remain release gates.
@@ -43,6 +39,23 @@ def command(env, gate):
         image,
     ):
         raise ValueError("Reviewed project-owned Artifact Registry image digest required")
+    primary_auth = gate.get("primary_auth")
+    if primary_auth != "oauth":
+        raise ValueError("This reviewed release profile requires Hermes OAuth")
+    secrets = [
+        "API_SERVER_KEY=a3-api-key:latest",
+        "A3_INTERNAL_KEY=a3-internal-key:latest",
+        "NVIDIA_API_KEY=a3-nvidia-key:latest",
+        "TELEGRAM_BOT_TOKEN=a3-telegram-token:latest",
+        "GOOGLE_CLIENT_SECRET=a3-google-client-secret:latest",
+        "GOOGLE_REFRESH_TOKEN=a3-google-refresh-token:latest",
+        "TAVILY_API_KEY=a3-tavily-key:latest",
+        "TS_AUTHKEY=a3-tailscale-auth-key:latest",
+    ]
+    version = str(gate.get("oauth_secret_version", ""))
+    if not re.fullmatch(r"[1-9][0-9]*", version):
+        raise ValueError("Pinned cloud OAuth bootstrap secret version required")
+    secrets.append("/run/a3-oauth/auth.json=a3-hermes-oauth:" + version)
     return [
         "gcloud",
         "beta",
@@ -67,7 +80,7 @@ def command(env, gate):
         "--env-vars-file",
         "config/cloud-env.yaml",
         "--set-secrets",
-        "API_SERVER_KEY=a3-api-key:latest,A3_INTERNAL_KEY=a3-internal-key:latest,A3_OPENAI_API_KEY=a3-openai-key:latest,NVIDIA_API_KEY=a3-nvidia-key:latest,TELEGRAM_BOT_TOKEN=a3-telegram-token:latest,GOOGLE_CLIENT_SECRET=a3-google-client-secret:latest,GOOGLE_REFRESH_TOKEN=a3-google-refresh-token:latest,TAVILY_API_KEY=a3-tavily-key:latest,TS_AUTHKEY=a3-tailscale-auth-key:latest",
+        ",".join(secrets),
         "--no-invoker-iam-check",
         "--quiet",
     ]

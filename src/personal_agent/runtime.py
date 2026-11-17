@@ -90,7 +90,7 @@ async def serve():
     emit("startup", component="supervisor", version="0.1.0", outcome="starting")
     commands = [
         [sys.executable, "-m", "personal_agent.runtime", "policy"],
-        [sys.executable, "-m", "gateway.run"],
+        [sys.executable, "-m", "personal_agent.gateway_launcher"],
         [sys.executable, "-m", "personal_agent.runtime", "edge"],
     ]
     processes = []

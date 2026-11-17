@@ -47,3 +47,6 @@ override-dependencies = ["psutil==7.2.2", "Pillow==13.0.0", "cryptography==50.0.
 
 [tool.uv.sources]
 hermes-agent = { path = ".cache/vendor/hermes-agent-0.22.7", editable = true }
+
+[tool.ruff.per-file-target-version]
+"scripts/deploy.py" = "py311"

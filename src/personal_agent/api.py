@@ -190,6 +190,13 @@ def internal_app(s: Settings, *, router=None, broker=None):
         from .oauth_proxy import OAuthRouter, chat_payload, response_from_chat, response_wire
         from .routing import Decision, decide
 
+        if s.bucket:
+            from .auth_checkpoint import AuthCheckpointError, assert_auth_ready
+
+            try:
+                assert_auth_ready(s.state_dir)
+            except AuthCheckpointError:
+                return JSONResponse({"error": "Cloud authentication recovery is required"}, 503)
         payload = await body(request)
         transcript = chat_payload(payload)
         decision = decide(transcript["messages"])
