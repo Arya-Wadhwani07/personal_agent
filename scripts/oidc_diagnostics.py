@@ -12,13 +12,18 @@ FIELDS = ("repository", "repository_id", "repository_owner_id", "ref", "sub", "w
 def main():
     url = os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"]
     parsed = urllib.parse.urlsplit(url)
-    if parsed.scheme != "https" or not parsed.hostname.endswith(".actions.githubusercontent.com"):
+    if parsed.scheme != "https" or not parsed.hostname or not parsed.hostname.endswith(".actions.githubusercontent.com"):
         raise SystemExit("Unexpected GitHub token issuer endpoint")
     audience = "projects/1043695272988/locations/global/workloadIdentityPools/a3-github/providers/github"
     url += ("&" if parsed.query else "?") + urllib.parse.urlencode({"audience": audience})
-    request = urllib.request.Request(url, headers={
+    request = urllib.request.Request(url, headers={  # noqa: S310 - HTTPS issuer validated above
         "Authorization": "Bearer " + os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]})
-    with urllib.request.urlopen(request, timeout=20) as response:  # nosec B310
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
+
+    opener = urllib.request.build_opener(NoRedirect)
+    with opener.open(request, timeout=20) as response:
         raw = response.read(1048577)
     if len(raw) > 1048576:
         raise SystemExit("Oversized identity response")
