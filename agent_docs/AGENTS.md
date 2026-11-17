@@ -24,7 +24,8 @@ My writing must stay accurate about who did the work and what has happened. Plan
 - My project root is `/Users/arya/Personal/Code/Projects/CSCI 599/Assignment 3`. All project changes stay inside it; creating, editing, deleting, moving, or installing anything outside it requires my explicit permission.
 - Temporary files, caches, environments, logs, and test outputs also stay inside my project. Commands need a side-effect check before execution.
 - I allowed one read-only inspection of the sibling `Assignment 2` directory to learn its structure. That inspection is complete. Further inspection outside Assignment 3 requires fresh permission, including any return to Assignment 2.
-- My permission did not include reading or copying Assignment 2 implementation files, credentials, environments, or data.
+- I subsequently authorized inspecting and reusing relevant Assignment 2 API configuration, including the OpenAI/Claude, NVIDIA and search credentials needed for this assignment. This does not cover unrelated application code or personal data. Credentials must never be printed or committed. Paid calls remain blocked until I provide a budget.
+- I have approved Docker Desktop runtime/cache files outside Assignment 3, with only this project mounted into containers. I have also approved synthetic checks against my installed Ollama/Gemma, including Ollama runtime/log files. These exceptions do not permit unrelated host-file access.
 - If a necessary tool requires access beyond these boundaries, I need a specific explanation and a permission request before it proceeds. The restriction must not be silently bypassed.
 
 ## My project structure
@@ -48,7 +49,7 @@ Assignment-required submission files and platform-required workspace/skill files
 
 ## My approval and review workflow
 
-I have approved the initial guardrails, assignment-document review, requirements baseline creation, engineering-role definition, documentation style updates, preparation of a rough design covering UI, sandbox testing, and CI/CD, and the detailed system architecture. Creating and synchronizing these documents does not approve the proposed technology choices. Application implementation, sandbox provisioning, CI/CD workflow configuration, and deployment still need approval. I have now authorized connecting this project to my named GitHub repository and committing/pushing reviewed coherent changes.
+I have approved the documentation baseline and now authorized implementation of the full assignment, its sandbox tests, CI/CD configuration, and routine reviewed commits/pushes to my named repository. Hermes, Telegram, Gmail, and a dedicated Google Calendar are the selected implementation baseline. I will provide the GCP project and spending limit later; provisioning, paid calls, and production deployment remain pending those inputs and release approval.
 
 - Before each new coherent change set, I expect a concrete description of the proposed work so I can approve its scope. Actions already covered by that approval do not need repeated permission requests.
 - Each change set ends with a review of the files or diff, applicable checks, and a clear account of changes, results, limitations, and decisions. I review that checkpoint before the next scope begins.
@@ -75,21 +76,25 @@ My application source authoring, dependency installation, execution, and runtime
 - My sandbox receives only approved project source, synthetic fixtures, and explicitly authorized test credentials. Personal documents, unrelated local files, home directories, existing credential stores, and host shell history must not be exposed or mounted.
 - Unit and mock integration tests should run without external service access, using disposable state. Live checks require their own approved profile and actual-service evidence, with no claim that mocks prove deployed behavior.
 - My test plan includes both white-box checks of internal policies/branches and black-box checks through supported interfaces, alongside the existing SDLC categories. Load, stress, and destructive recovery checks target disposable sandbox infrastructure within agreed limits.
-- Local Docker installation/startup can create host-side files outside Assignment 3. I have not approved that exception. A remote disposable development environment and isolated CI runners are proposed alternatives; provisioning or transfer to a new environment still needs my authorization. Routine source pushes to my named GitHub repository are authorized under the version-control agreement.
-- My GitHub CI/CD plan must validate early and keep releases reproducible. Builds and tests can be automated, but production deployment needs my approval and must be blocked during the 48-hour evidence window and grading freeze unless I explicitly authorize an intervention. Every intervention must be recorded honestly.
-- My confirmed deadline is November 17, 2026, at 11:59 PM. America/Los_Angeles is the planning timezone pending confirmation; my remaining grace-day balance is unknown. Grace days do not reduce the required 48 hours of real operation.
+- I approved Docker Desktop startup and its runtime/cache files. Development uses a non-root container with a read-only system, no added capabilities, and project-only mounts. Runtime tests use disposable containers with networking disabled and read-only source. I approved synthetic load/stress checks up to 4 CPUs/4 GiB and 60 seconds per run, without paid calls.
+- My GitHub CI/CD plan validates early and keeps releases reproducible. Production deployment needs approval and stays blocked during grading. My observation release is controlled: a minor non-model fix does not require a new full 48-hour run (Q10), but needs review, retesting and an accurate change/outage timeline. A primary-model change needs new logs and video (Q09).
+- My confirmed deadline is November 17, 2026, at 11:59 PM. America/Los_Angeles is the planning timezone; my remaining grace-day balance is unknown. Q07 describes grader tests after End Date (deadline + 2) and again 48 hours later; it does not grant me extra grace days or specify the exact first-test time.
 
 ## My design alignment
 
 My [design proposal](DESIGN.md), [system architecture](ARCHITECTURE.md), and [requirements baseline](REQUIREMENTS.md) need to stay consistent as I make decisions:
 
 - My assistant needs both a Telegram/Discord integration and the selected platform's browser interface for grading. WhatsApp alone or a browser-only implementation would leave requirements unmet. My browser interface does not count as a third messaging platform.
-- Hermes, Telegram, and a small neumorphic browser chat remain a proposed combination. If I choose OpenClaw, its dashboard and grader-access requirements take precedence over assumptions about custom styling.
+- Hermes, Telegram, and the Daylight neumorphic browser chat are selected and locally implemented. Live Telegram and deployed grader access still need verification.
 - My UI should use soft raised panels and recessed inputs while preserving readable contrast, keyboard access, clear status, and honest loading/error states. The supplied Hermes browser UI must block approval-gated sends and direct me to drafts or a supported messaging approval flow.
 - My sandbox review must verify effective filesystem, privilege, network, credential, resource, and cleanup boundaries before application execution. White-box and black-box results must identify whether dependencies were mocked or real.
 - My delivery workflow should validate changes in isolated CI, build a reviewed immutable image, deploy only an approved release to a Cloud Run Instance, and verify readiness and live behavior afterward. Any rollback needs compatible state and explicit authorization. The GitHub destination and routine commit/push workflow are authorized; Actions, OIDC, secrets, protections, and deployment configuration remain pending.
-- My remaining planning inputs include repository visibility/access controls, chosen sandbox host, laptop RAM, cloud authentication, test integrations, deadline timezone, and grace balance. Missing inputs stay visible; the deadline does not justify skipping verification or claiming an incomplete 48-hour run.
-- My new fourth-skill recommendation is LinkedIn Content Brief: permitted-source research, topic selection, an original source-backed daily draft, and review history. It remains a proposal. The initial scope has no direct LinkedIn search, personal-account access, or social publishing capability; it uses a synthetic assignment profile and does not replace the four required advanced features.
+- My remaining inputs include exact cloud model IDs, GCP project/budget, class-only credentials, private networking, repository protections, deadline timezone and grace balance. The repository is public; Docker is approved; this Mac has 16 GiB RAM. OpenAI API is my working primary choice, NVIDIA my fallback, and Claude an allowed alternative. Provider migration is not implemented yet.
+- LinkedIn Content Brief is my fourth skill: permitted-source research, an original source-backed draft and review history. Its basic workflow exists; full review controls and live evidence remain unfinished. It has no direct LinkedIn search, account access or publishing capability. Each of my four skills must demonstrate substantive integration; merely wrapping bundled search does not count.
+
+## My instructor clarification policy
+
+My [clarification register](CLARIFICATIONS.md) records Q01–Q12, including unanswered questions. Specific instructor answers supersede older conflicting recommendations: no planned three-hour restarts during grading; valid local inference is required for local credit; final-model logs/video must match my deployment. Minor non-model fixes retain the Q10 observation exemption. I keep the verified single-Instance architecture, synthetic accounts, explicit approval for every email send, and substantive four-skill evidence. OpenAI API is the planned primary with NVIDIA fallback; paid calls and provisioning still await my budget. Scoped local prompts retain safety instructions and the verified context configuration.
 
 ## My starter-code adaptation rules
 
@@ -143,6 +148,10 @@ Before load or stress testing, I will agree on the target, workload, duration, r
 
 ## My current status and next steps
 
+**Current implementation checkpoint (November 16):** Full implementation is authorized. My latest completed source suite passed 37 tests; subsequent private-network additions still need verification. A real Hermes/Gemma memory-tool turn, isolated browser checks and bounded mock load/recovery checks passed. No paid cloud calls, live service setup, deployment or 48-hour run has occurred. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) separates tested source, the older running local image and remaining release blockers.
+
+The following numbered entries preserve my preceding documentation milestone; their implementation-authorization statements are superseded by the checkpoint above.
+
 1. **Guardrails:** I have approved the boundaries, uppercase Markdown naming, engineering/testing role, continuous documentation maintenance, and natural first-person writing style.
 2. **Assignment analysis:** My source review with Codex was completed on November 16, 2026: all five PDFs (103 pages) and all 19 archive files were read without executing the supplied code. The video-instruction pages and rubric table were also visually reviewed. My original documents remain unchanged. My later extracted-script review read all 19 files (684 lines) and verified that each is byte-identical to its ZIP member; none was executed.
 3. **Requirements:** My baseline in `agent_docs/REQUIREMENTS.md` contains 94 traceable requirement/option/workflow IDs, including ongoing vulnerability tracking, the daily content-skill proposal, and standing version-control workflow. My review is still pending. No application tests, automated security scans, or 48-hour run have taken place. The manual starter-code review identified two open source-level security findings; deployed impact is untested.
@@ -166,3 +175,5 @@ For the completed PDF review, Codex used installed macOS PDFKit through Swift wi
 - **2026-11-16:** I supplied [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent) and authorized commits/pushes after meaningful reviewed changes. Codex added the technology appendix and USER-15, synchronized the six project Markdown files, and prepared the initial repository baseline with explicit source/secret/generated-file exclusions. At that checkpoint, the extracted Gemma review awaited my next instruction; the subsequently authorized review is recorded below. CI/CD execution and runtime checks remain pending.
 
 - **2026-11-16:** I authorized reading the extracted local Gemma scripts. Codex read all 19 files, verified byte identity with the ZIP, recorded SCRIPT_REVIEW.md and two source-level findings, and updated my architecture/design/test order without changing requirement IDs. Original files remain unchanged; no supplied script or runtime test was executed.
+
+- **2026-11-16 clarification update:** I supplied instructor Q&A and selected OpenAI or Claude primary with NVIDIA fallback. Codex synchronized the active plan with Q01–Q12; older numbered milestones above remain historical. Documentation review does not prove provider migration or cloud availability.

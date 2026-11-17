@@ -1,36 +1,50 @@
 # My Personal Agent
 
-I am developing a synthetic personal assistant for CSCI 599 Assignment 3. My repository is [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent).
+I am building a synthetic personal assistant for CSCI 599 Assignment 3 in [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent). I use Codex as an engineering and testing collaborator and remain responsible for understanding and submitting the work.
 
-The project is currently a documentation baseline. The proposed system uses Hermes, Telegram, browser chat, cloud inference and local Gemma 4 through Ollama/Tailscale, hosted on a Cloud Run Instance. Platform/provider choices still need approval and verification. No runnable application, sandbox, GitHub Actions workflow, deployment or 48-hour observation run exists yet.
+My selected system uses Hermes v0.22.7, Telegram, Daylight browser chat and local Gemma 4 E2B through Ollama. The deployment target is one Cloud Run Instance with a private Tailscale path to local inference. Application code, tests, Docker configuration and CI/CD workflows exist locally; deployment, live accounts, CI execution and final submission evidence are incomplete.
 
-## My project documents
+**Provider plan:** OpenAI API is my working primary choice, NVIDIA is fallback and Claude API is an accepted primary alternative. The current cloud adapter is still NVIDIA-only. Exact cloud model IDs, migration/tests and spending approval remain pending; no paid calls have been made.
 
-| Document | What I keep there |
+## My four skills
+
+| Skill | What I created or configured | How I use it and what remains |
+| --- | --- | --- |
+| Calendar | Custom bounded Google adapter, dedicated-calendar restriction and read-only scope, with my own OAuth client planned. | Briefing and upcoming-event alerts; live account integration and demonstration pending. |
+| Email | Custom draft store, recipient allowlist, owner-only payload-bound approval, expiry/replay protection and uncertain-send handling. | Synthetic mailbox reads and explicitly approved sends; live credentials and test-send evidence pending. |
+| Web search | Direct Tavily adapter with my own key planned, bounded results, source attribution and LinkedIn exclusion. | Sourced briefings/content research; live authenticated search pending. This is not a wrapper around bundled search. |
+| LinkedIn Content Brief | Original research-to-draft workflow, topic deduplication and stored draft history, with no publishing capability. | Daily source-backed outreach drafts for review; review controls, live demonstration and separate skill-publication evidence remain unfinished. |
+
+Simply enabling a bundled capability does not count under the instructor clarification. I must demonstrate substantive integration and useful behavior for all four. My four advanced features are morning briefing, end-of-day recap, email integration and proactive alerts; skill names do not replace that feature requirement.
+
+## My documentation
+
+| Document | Purpose |
 | --- | --- |
-| [Working agreement](agent_docs/AGENTS.md) | Filesystem boundaries, review, security and standing commit/push authorization. |
-| [Requirements](agent_docs/REQUIREMENTS.md) | 94 requirement/option/workflow IDs, source references, rubric coverage and open questions. |
-| [Design](agent_docs/DESIGN.md) | Proposed experience, neumorphic UI, skills and delivery approach. |
-| [Architecture](agent_docs/ARCHITECTURE.md) | Component rationale, five diagrams, all requirement mappings and a concise technology appendix. |
-| [Security register](agent_docs/SECURITY_REGISTER.md) | Prospective risks, two open starter-code findings, remediation/retests and release gates; runtime controls remain unverified. |
-| [Starter-script review](agent_docs/SCRIPT_REVIEW.md) | My read-only review of all 19 extracted files, source identity, adaptation plan and planned tests. |
+| [Working agreement](agent_docs/AGENTS.md) | Scope, sandbox boundaries, review and version control. |
+| [Requirements](agent_docs/REQUIREMENTS.md) | All 94 stable requirement/option/workflow IDs and rubric coverage. |
+| [Instructor clarifications](agent_docs/CLARIFICATIONS.md) | Q01–Q12, authority, final-model evidence rules and unanswered questions. |
+| [Design](agent_docs/DESIGN.md) | Interfaces, skills, testing and delivery plan. |
+| [Architecture](agent_docs/ARCHITECTURE.md) | Component rationale, five diagrams, requirement map and technology appendix. |
+| [Implementation status](agent_docs/IMPLEMENTATION_STATUS.md) | Actual test results, artifact differences and release blockers. |
+| [Setup](agent_docs/SETUP.md) | Private Telegram/Gmail/Calendar preparation and pending cloud setup. |
+| [Security register](agent_docs/SECURITY_REGISTER.md) | Risks, findings, review evidence and release gates. |
+| [Starter review](agent_docs/SCRIPT_REVIEW.md) | Original 19-file review and adaptation constraints. |
 
-## My version-control workflow
+## My verification and operating policy
 
-I review a meaningful change set, run applicable checks, synchronize affected Markdown, inspect explicitly staged files, commit with a descriptive message and push to this repository. My initial branch is `main`; future branch/protection rules will guide the workflow when configured. Remote commit verification is reported after a push. Ordinary commits/pushes are authorized; deployment, destructive history rewriting and visibility/access changes require separate authorization.
+The latest completed source suite passed 37 isolated tests; later network additions still need testing. A real Hermes/Gemma memory-tool turn, isolated Chromium checks and bounded mock load/recovery checks passed. These results do not prove live Google/Telegram/cloud access or final-image readiness. The running local image predates some current source changes; full details and limits are in the status document.
 
-Git preserves source history. It does not replace persistent-agent backups or guarantee that an old image can restore a newer state schema.
+My local browser entry point is `http://127.0.0.1:18080`; it is not the grader URL. Access keys stay in ignored private configuration. Class-only accounts and fictional data are required; two temporary fictional-role mailboxes are allowed, and every send still needs explicit approval.
 
-## My local assignment materials
+I retain final-model logs/video. A primary-model change requires new logs and a new video; a minor non-model harness fix does not require a new full 48-hour run, but needs an honest change/test/outage timeline. Graders test after End Date (deadline + 2) and again 48 hours later; the exact first-test time is not supplied. My 48-hour observation has not started. Planned three-hour restarts stay disabled during grading; unexpected restarts remain reportable incidents with potential penalty. I keep access available through regrades.
 
-The original PDFs, ZIP and extracted starter files live under `docs/` in my local Assignment 3 workspace. They are excluded from this initial Git baseline; source links into that folder work only in a workspace containing those materials. I keep supplied files unchanged and retain their source references in REQUIREMENTS.md. The authorized extracted-script review is complete: all 19 files were read and found byte-identical to the ZIP. None was executed or modified.
+My GCP project, spending limit, live credentials, deployed sizing and Tailscale configuration remain pending. 1 vCPU/4 GiB is allowed when measurements justify it; another person's cost report is not my budget.
 
-Credentials, environments, caches, private state, recordings and generated artifacts are also excluded by default. Any sanitized evidence selected for submission or Git will need deliberate review.
+## My source and version-control boundaries
 
-## My current verification and next steps
+I review coherent changes, synchronize Markdown, check explicitly staged paths, commit and push to this repository. Routine pushes are authorized; deployment, skill publication, submission, destructive history changes and visibility changes retain separate approval requirements.
 
-My documentation checks cover all 94 requirement IDs, links, tables/fences, 19 archive-to-extracted comparisons, source hashes and planned-versus-completed wording. Manual review identified proxy resource-limit and log/error-handling findings for future adaptation. It did not run application tests, vulnerability scanners or rendered-diagram verification. SCRIPT_REVIEW.md gives the revised implementation order.
+Original PDFs, ZIP and extracted scripts remain unchanged under local `docs/`, excluded from Git. Links into that directory require a workspace containing those materials. Credentials, caches, environments and private state are excluded. I deliberately review any sanitized evidence before publication.
 
-Before implementation I still need the decisions listed in ARCHITECTURE.md A14, the approved development sandbox and service access. CI/CD remains planned for this repository; its workflow and deployment credentials have not been configured. Runnable setup instructions will be added and verified when the application exists.
-
-I use Codex as an engineering and testing collaborator and remain responsible for understanding and submitting my individual work. The final PROCESS_LOG.md, reports, video and live evidence remain pending.
+Final reports, Process Log, video, published skill evidence and operational artifacts remain unfinished. I do not substitute mock results or historical model logs for final deployed evidence.

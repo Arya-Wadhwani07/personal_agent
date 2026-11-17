@@ -1,8 +1,16 @@
 # My Local Gemma Starter-Script Review
 
-Status: read-only source review completed on November 16, 2026. I have not executed, installed, modified or deployed any supplied script. My application and sandbox still do not exist.
+Status: the original read-only source review remains complete and supplied files remain unchanged. My separately authored implementation and Docker sandbox now exist. I preserved the browser chat protocol while replacing the broad starter proxy with bounded, allowlisted routes and structured errors. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) records implementation tests; the source findings below remain the historical review of the supplied files.
 
 I requested a careful review of the extracted local Gemma bundle and updates to my plans. The bundle contains shell scripts, Python, configuration and text instructions; the browser JavaScript is embedded in Hermes/web_ui.py. It is not a separate JavaScript application.
+
+## Instructor clarification overrides for my adaptation
+
+My original 19-file source observations remain unchanged. [CLARIFICATIONS.md](CLARIFICATIONS.md) governs how I adapt them: OpenAI API is my planned primary with NVIDIA fallback; old NIM examples do not define the final selection. I retain one Cloud Run Instance and its internal components. Q04's separate-Service IAM example is not a replacement deployment recipe.
+
+Q01 permits scoped local context/tools while retaining required instructions and the verified Hermes context setting. Q03 requires real local evidence for local credit. Q05 requires substantive skills and rejects a bundled-search wrapper, so I use my direct Tavily adapter and own scoped Google integrations.
+
+Q11 supersedes preventive three-hour restarts during grading. Q06 permits justified 1 vCPU/4 GiB. Q09 requires final-model logs/video; Q10 allows minor non-model fixes without another full run. Q12 is unanswered. The verification table below records the original source-review milestone; current runtime results and remaining gaps are in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## My review scope and source identity
 

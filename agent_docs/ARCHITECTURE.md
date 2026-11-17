@@ -1,6 +1,8 @@
 # My Assignment 3 System Architecture
 
-Status: proposed architecture for my review, not an implemented or approved technology selection. No application code, environment, workflow, account, or deployment was created with this document.
+Status: my approved implementation is underway. Hermes v0.22.7 is installed from a verified source archive in a Python 3.14 container. The public browser edge uses port 8080, the native Hermes API stays on loopback 8081, and the policy/router/tool broker uses loopback 8090. Telegram, Gmail, and a dedicated Google Calendar are selected. Architecture coverage below remains a target, not completion evidence; [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) records actual verification and gaps.
+
+My custom database uses SQLite rollback journaling because the base image links SQLite 3.40.1, affected by the upstream WAL-reset issue. Immutable GCS objects and generation-conditional manifests protect custom checkpoints. Native workspace capture/restore code and mocked tests now exist, but complete live recovery and Tailscale identity persistence remain release blockers. No cloud resources have been provisioned.
 
 Last updated: November 16, 2026.
 
@@ -22,7 +24,7 @@ The assignment has three separate capability obligations:
 
 The publication recommendation reuses the fourth skill while avoiding a dependency on another person's availability or two additional messaging services. This is my design inference, not extra credit or automatic fulfillment of ADV-01. I would publish only the approved standalone skill package, not the full assignment repository, credentials, or synthetic account configuration. The assignment's permitted publication option and individual-work rules both remain applicable. [D pp. 17, 20; S pp. 9-10]
 
-All accounts and personalization are class-only and synthetic. My existing permissions authorize this documentation, not provisioning, transfer to new development hosts, installation, application development, or outside-project filesystem access. I have separately authorized Git setup and routine reviewed commits/pushes to my named repository in A11. The deadline remains November 17, 2026, 11:59 PM; America/Los_Angeles is a planning assumption and grace balance is unknown. Readiness must precede a real 48-hour run plus delivery time. [USER-01/02/08/12; POLICY-01]
+All accounts and personalization remain synthetic. I have authorized full implementation in approved Docker, local Gemma checks, bounded synthetic tests and routine reviewed Git pushes. Provisioning, paid calls, deployment and publication still need their stated inputs/approval. The deadline is November 17, 2026, 11:59 PM; America/Los_Angeles is the planning timezone and grace balance is unknown. Q07 describes grader tests after End Date (deadline + 2) and again 48 hours later. [USER-01/02/08/12; POLICY-01; CLARIFICATIONS.md Q07]
 
 ## A2. Technology choices and their justification
 
@@ -31,13 +33,13 @@ I distinguish assignment-mandated technologies from recommendations. Every selec
 | Component or technology | Why I would use it | Tradeoff and decision gate |
 | --- | --- | --- |
 | Hermes platform, proposed | It is an allowed framework and the assignment supplies a browser proxy, startup examples, and approval-hook guidance. Reusing those contracts keeps custom work focused on routing, safety, and the fourth skill. | Exact release hooks, runtime compatibility, scheduler behavior, and background writers need inspection. OpenClaw remains the alternative in A13. [G pp. 1-16; Z Hermes files] |
-| Python extensions, proposed for Hermes | My router, policy adapters, state coordinator, and tests would share the selected platform's runtime, avoiding a separate backend language/service. | No Python version is selected. G's v0.22.7 guidance says Python 3.14, while earlier references describe older releases; I must verify the chosen release rather than combine incompatible instructions. [REQUIREMENTS.md section 11] |
+| Python extensions for Hermes | My router, policy adapters, state coordinator and tests share the platform runtime. | Python 3.14.10 and Hermes v0.22.7 are pinned and locally exercised. Cloud compatibility still needs deployed evidence. [REQUIREMENTS.md section 11] |
 | Small HTML/CSS/JavaScript browser interface | It can preserve the supplied web UI/API contract while implementing accessible neumorphic chat and draft cards. A second frontend server/build framework is unnecessary for the current screen. | Supplied scripts and response formats need review. Safe text rendering, authentication, keyboard use, and mobile behavior need browser tests. [HERMES-01/04; USER-11] |
 | Telegram, proposed | It meets the required messaging channel and gives me a place for scheduled delivery and supported human approvals. | One polling consumer per bot, authorized numeric identities, and callback validation are necessary. Discord is a valid substitute. Telegram documents an HTTP Bot API; buttons alone are not an authorization policy. [Telegram Bot API](https://core.telegram.org/bots/api) |
 | Google Cloud Run Instance | It is the required long-running host for the gateway and scheduler. | I need a supported region, quotas, resource allocation, stable URL, and actual Instance configuration. The documented command family is `gcloud beta run instances`; a Service-only workflow would be wrong. [Instance lifecycle](https://docs.cloud.google.com/run/docs/instances/create-and-manage-instances) |
 | Docker-compatible image and isolated development VM/container | One reproducible image packages the runtime and gives me a reviewed execution boundary. A separate disposable development environment satisfies my sandbox rule. | Containers still need restricted mounts, identities, capabilities, network access, and resource limits. A virtual environment only manages packages. No local Docker startup or host installation is authorized. [Docker execution controls](https://docs.docker.com/engine/containers/run/) |
 | Gemma 4 through Ollama on my hardware | This is the required local inference route. E2B is a reasonable first candidate to evaluate against available RAM, without changing the assignment's accepted model choices. | Tag, quantization, context, thinking/output budget, and full-turn performance remain unmeasured. Larger context needs more memory; actual served context/offload can be inspected with `ollama ps`. [Ollama context](https://docs.ollama.com/context-length) |
-| NIM or platform-supported OpenAI/ChatGPT OAuth | One of these allowed paths supplies cloud reasoning and laptop-off availability. | Provider/account entitlement, exact model ID, context and refresh behavior must be verified. I have not selected either or assumed an OAuth session is an API key. [CORE-03; D pp. 5-8] |
+| OpenAI API primary; NVIDIA NIM fallback | OpenAI is my working primary choice under Q02 and my provider instruction; NVIDIA remains a secondary cloud path. Claude API is an allowed primary alternative. | Exact models, budget and live checks remain pending. The current adapter is NVIDIA-only and must be migrated. Edu OAuth is a distinct supported entitlement, not an API key. NIM reliability remains a fallback risk. [CORE-03; CLARIFICATIONS.md Q02/Q09] |
 | Tailscale userspace proxy and private Serve path | This supplies the required cloud-to-laptop link without publicly exposing Ollama. Userspace networking offers SOCKS5/HTTP proxy access where a TUN device is unavailable. | The local inference client must explicitly use the proxy; having an online Tailscale node is insufficient. Generic ephemeral-node advice does not override G's OpenClaw persistence rules. [Tailscale userspace networking](https://tailscale.com/docs/concepts/userspace-networking) |
 | Dedicated Cloud Storage bucket | It is the required durable home for workspace/memory, snapshots, and retained evidence under separate access/retention policies. | Object storage is not a transactional shared filesystem. Active lock-dependent state stays on container disk, with the consistency protocol in A8. [Cloud Storage FUSE limitations](https://docs.cloud.google.com/storage/docs/cloud-storage-fuse/overview) |
 | Platform-native state plus a small local journal, proposed | Existing workspace files retain platform compatibility; a coordinator records job, approval, content, and durability state. A local SQLite journal is a candidate if the chosen runtime supports it. | No additional database dependency is selected yet. Any SQLite use stays off FUSE and needs consistent backup, migrations, integrity checks, and restore tests. Otherwise I need an equivalent transactional local journal. [OPS-01/02/03; S pp. 8-9, 16-19] |
@@ -45,7 +47,7 @@ I distinguish assignment-mandated technologies from recommendations. Every selec
 | Cloud Logging plus durable sanitized exports | Routing, lifecycle, and job evidence can be correlated without recording message text. Exports preserve the actual observation interval for submission. | Retention, export permissions, sensitive fields, and gaps need review before the window starts. Logs alone do not prove successful external delivery. [CORE-10; OPS-06/07/08] |
 | GitHub Actions, Artifact Registry, and GCP OIDC | Isolated checks and immutable image promotion support repeatable releases; OIDC avoids storing a long-lived GCP key in GitHub. | Repository plan/access, restricted trust claims, separate identities, release approval, and freeze enforcement need implementation. [GitHub OIDC for GCP](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-google-cloud-platform) |
 | Platform scheduler/cron and bounded event polling | It supports proactive work without adding another scheduling service. | Jobs need timezone, deduplication, catch-up policy, completion/delivery records, and a single active scheduler. A continuous `sleep()` loop is not my trigger mechanism. [FUNC-04; OPS-03] |
-| Existing adapters for calendar, email, search, and weather | Narrow provider boundaries reduce custom authentication work and let fixtures exercise stable internal contracts. | Specific vendors and libraries remain pending. I must verify actual permissions and failures; no provider is justified merely by popularity. [FUNC-06/07/08/09] |
+| My calendar, email, direct search and weather adapters | Own Google OAuth/scopes, dedicated accounts, Tavily key and bounded custom workflows provide meaningful integration and testable safety boundaries. | Live credentials/demonstrations remain pending. Enabling bundled capabilities or merely wrapping bundled search does not qualify. [FUNC-02/06/07/08/09; Q05] |
 
 I would omit Kubernetes, Redis, a vector database, a second agent framework, and a separate UI hosting service from the initial build because no current requirement needs their operational overhead. This is a scope decision, not a claim that those tools are generally unsuitable. If a measured limitation requires one, I will document its benefit, cost, and new failure modes before adding it.
 
@@ -142,6 +144,11 @@ These boundaries let white-box tests exercise policies and black-box tests asser
 
 ## A5. Hybrid routing, privacy, and model failure
 
+**Provider migration plan:** My cloud adapter will try the chosen OpenAI model, then the configured NVIDIA model only on eligible transient/rate-limit failures within a shared deadline/attempt budget. Authentication/configuration errors surface clearly; no request can cycle indefinitely between providers. Private/local-only context never enters either cloud provider. Logs distinguish selection, each attempted provider/model, fallback reason and final outcome without message bodies or credentials. Claude is an accepted alternative, not an automatically enabled third paid provider.
+
+My reversible 429 controls must support both primary-failure → NVIDIA verification and whole-cloud-chain rate limiting → local Gemma demonstration. Mock tests must verify both, plus private hold and exhausted fallback. The current NVIDIA-only implementation has not satisfied this migration. Exact model IDs and paid-call budget remain pending. [Q02/Q09/Q12]
+
+
 My proposed private-task policy is **hold** when an eligible local call cannot complete; cloud fallback for private content is not enabled. Privacy classification must occur before any cloud classifier or logging of content. I would use explicit trusted privacy flags plus conservative local rules for supported requests, with ambiguity defaulting to hold or clarification. Privacy promises cover the full turn, including tool results and history; a local-only label does not authorize sending its content to an external search/email provider.
 
 My routing precedence would be:
@@ -152,7 +159,7 @@ My routing precedence would be:
 | 2 | Private/local-only request | Use local only if available and the entire turn fits its verified limits; otherwise hold without cloud inference. |
 | 3 | Non-private request exceeding local context/capability, or needing deeper reasoning | Use the configured cloud route if available. |
 | 4 | Non-private simple/extractive task within local capability | Prefer local when healthy; use cloud if local is unavailable. |
-| 5 | Cloud rate limit or reversible simulated 429 | Fall back locally only if privacy, context, capability, and local health permit. Otherwise return a truthful deferred/error response. |
+| 5 | Primary cloud rate limit or reversible simulation | Try the configured NVIDIA fallback within the bounded cloud policy. If the complete cloud chain fails/is deliberately rate-limited, use eligible local inference or return a truthful error. Private turns never enter this chain. |
 | 6 | Other provider/network failure | Apply bounded retry only where safe, then a permitted fallback or explicit failure. No infinite route oscillation. |
 
 Rules operate on task properties, not equality checks for the video prompts. Equivalent arithmetic, explanatory, and private test cases must exercise the same rules. If tool output expands a turn beyond the local budget, I will re-evaluate eligibility before the next model call; private turns cannot silently migrate to cloud. A long prompt must not be truncated without disclosure to manufacture a pass. [CORE-06/07/08/09/11]
@@ -163,7 +170,7 @@ sequenceDiagram
     participant G as Gateway and policy
     participant R as Router
     participant L as Local adapter via Tailscale
-    participant C as Cloud adapter
+    participant C as OpenAI primary and NVIDIA fallback
     participant E as Evidence logger
     I->>G: Authenticated request
     G->>R: Trusted context and validated task
@@ -180,7 +187,7 @@ sequenceDiagram
     else Cloud-eligible route
         R->>C: Actual inference
         C-->>R: Model response or classified failure
-        R->>R: Bounded retry or eligible local fallback
+        R->>R: Bounded cloud fallback then eligible local fallback
         R->>E: Actual attempts and final outcome
         R-->>G: Validated result or explicit failure
     end
@@ -191,11 +198,14 @@ Figure 2 separates selection from completion. After an initial local failure, on
 
 The local adapter alone uses a loopback SOCKS/HTTP proxy to the fixed authorized tailnet endpoint. Ollama binds to loopback on my hardware, exposed only through a private Tailscale TCP path and agent-only grant. General web fetching cannot reuse this private-network privilege. Health checks distinguish transport reachability, installed model, and successful inference. `/api/tags` lists models; it is not proof of a completed agent turn. [Ollama model listing](https://docs.ollama.com/api/tags)
 
-My proposed health state distinguishes ready, unavailable, and recovering, with bounded probes and cooldown. A powered-off laptop or missing model does not trigger repeated Tailscale repair. Genuine proxy/daemon failure may receive bounded repair, followed by actual inference verification. Cloud-eligible traffic remains usable while local is unavailable. Context for Hermes must meet the assignment's at-least-64K expectation, with the exact served value, thinking/output budget, and full tool turn measured. If E2B cannot function on my hardware, I will record evidence and discuss CORE-12's accommodation rather than claim hybrid completion.
+My health design distinguishes ready, unavailable and recovering, with bounded probes/cooldown. Laptop shutdown does not trigger endless network repair. Hermes retains at least 64K context; my machine served 65,536 and completed a real tool turn. Q01 permits task-relevant context/tools while retaining necessary policy/history. Q03 requires a reproducible local reply for local points; cloud-only operation forfeits those points. A friend's machine is allowed for the video with truthful attribution, not a claim that my deployment used it.
 
 The reversible 429 test is a trusted test configuration scoped to the cloud adapter, never triggered by arbitrary chat text. It records simulated status, demonstrates eligible local fallback, and is removed and verified before ordinary operation. Actual quota exhaustion is unnecessary. The video uses the four exact prompts and local off/on sequence already preserved in REQUIREMENTS.md; the expected route pattern under my proposed policy is local → cloud → held → local.
 
 ## A6. Tool execution, email approval, and the fourth skill
+
+Q05 requires substantive integration and README evidence for each of calendar, email, web search and my original content skill. My direct Tavily adapter uses my own credentials; it does not merely wrap bundled search. Google tools use my own OAuth client/scopes and dedicated synthetic accounts. Q01 allows two fictional-role mailboxes and requires explicit approval for every send. The original content workflow combines sourced research, synthesis, deduplication and review history without publishing. Live use and demonstration remain required; code existence alone is not completion.
+
 
 | Adapter/skill | Input and useful output | Control and reason |
 | --- | --- | --- |
@@ -330,6 +340,11 @@ A private “hold” policy concerns model/tool data handling, not an assertion 
 
 ## A10. Runtime lifecycle, availability, and the observation window
 
+I keep the supplied **single Cloud Run Instance** topology; the loopback broker is an internal component, not a second service. Q04's pasted Cloud Run Service IAM/ID-token advice is diagnostic context for a different topology, not a deployment change.
+
+Q07 describes an initial grader check after End Date (deadline + 2) and another 48 hours later. Exact scheduling is not supplied. Q09 requires final-model logs/artifacts and a new video after a primary-model change. Q10 says a minor non-model harness fix does not require repeating the full run; its build/test/outage history stays visible. Q12's fallback-only question is unanswered. None of these waive access through regrades or the no-restart/redeploy grading freeze.
+
+
 The supplied start-agent.sh is only a two-process supervisor; the following is my planned integrated lifecycle, not behavior already present in that file. My startup dependency order is configuration validation → scoped secret/identity access → state restore and owner check → Tailscale setup → platform gateway/scheduler initialization → UI → readiness. Local inference health is tracked separately: an offline laptop must not prevent cloud-eligible chat from becoming available. Startup records the observed platform version, runtime user and effective isolation details without secrets. [CORE-08; SEC-01; HERMES-02]
 
 UI or gateway death causes the supervised unit to exit/recover rather than leaving a misleading half-alive deployment. Shutdown stops new work, drains bounded requests, pauses scheduling, checkpoints state and terminates children. Startup/shutdown logic must preserve the supplied Tailscale and state behavior. Recovery attempts have limits, and errors in state restore are not hidden by creating a fresh empty workspace.
@@ -346,7 +361,7 @@ UI or gateway death causes the supervised unit to exit/recover rather than leavi
 
 My initial allocation would evaluate the source recommendation of 1 vCPU/1 GiB, increasing it if measured runtime/context overhead requires more; the OpenClaw reference suggests 2 GiB. These are proposals, not caps or a measured cost estimate. Region, platform support, actual peak memory and build/runtime architecture require validation. Model inference runs on my laptop or the cloud provider, not an assumed GPU in the Instance. [OPS-04/05]
 
-Before the observation window, I will complete controlled recovery/load/stress tests and decide whether to adopt the recommended bounded network recovery and separate three-hour preventive restart schedule. A cooldown is not that schedule. The conflict between preventive restarts and the grading freeze remains unresolved; manual restarts/redeployments during grading are excluded. Automatic restart acceptability must be backed by the assignment interpretation, state recovery and real lifecycle evidence. [OPS-07/09/10; REQUIREMENTS.md section 11]
+Before grading I complete bounded recovery/load/stress checks and measure memory. Q11 supersedes the older three-hour restart recommendation: planned restarts stay disabled, and unplanned restarts remain incidents with potential penalty. I address leaks/concurrency/capacity before the freeze. Q06 explicitly permits 1 vCPU/4 GiB when needed; I justify measured sizing and monitor the approved budget rather than borrow another person's cost estimate. [OPS-07/09/10; CLARIFICATIONS.md]
 
 My observation record includes UTC start/end bounds, scheduler timezone, release digest/config revision, availability samples at a documented cadence, real message/job delivery, routing/model failures, lifecycle events, backup outcomes, and every gap. I will choose retention/export storage before starting and export promptly afterward. An internal heartbeat alone does not prove external chat access; an approved external probe and real interaction evidence complement it. A manually repaired crash partway through is not an uninterrupted 48-hour success. The cadence, retention and recovery targets remain acceptance decisions, not invented rubric thresholds. [OPS-06/07/08]
 
@@ -358,7 +373,7 @@ My version-control and future CI/CD destination is [Arya-Wadhwani07/personal_age
 
 My initial tracked scope is project-authored documentation and .gitignore. Course PDFs, ZIP and extracted starter files remain local; credentials, generated state, environments and caches are excluded. Before subsequent application publication, I will verify repository visibility against the individual-work requirements and review the staged paths and content. The root README explains local-only source links.
 
-My proposed development host is a disposable remote VM/container, subject to approval of provider, cost and source transfer. It receives only approved project files and synthetic fixtures. Unit/mock integration tests have no external access; authorized live checks have a separate credential/network profile. Local virtual environments may exist inside that sandbox for dependency management, but do not constitute the security boundary. No unrelated host mounts, inherited personal credentials, or application container Docker socket are permitted. [USER-08/09]
+My approved development host is project-scoped local Docker. Unit/mock integration tests run without external access; authorized live checks use a separate network/credential profile. The Python environment lives inside the container and is not itself the security boundary. No unrelated host mounts, inherited personal credentials or application-container Docker socket are permitted. Docker runtime/cache and local Ollama runtime exceptions are already approved. [USER-08/09]
 
 ```mermaid
 flowchart LR
@@ -399,8 +414,8 @@ My routing record contains request/attempt ID, UTC time, policy revision, select
 | Sanitized source ZIP | Complete source, platform/routing/skill/scheduler/container/deployment configuration and placeholder `.env.example`; filename `firstname_lastname_a3.zip`. Exclude caches, credentials, private backups and unrelated files. |
 | Security audit | Actual threat model with at least five risks, implemented/residual mitigations, isolation plus another measure, send/recipient tests, and three distinct injection results if claimed. Derived from the register and test artifacts. |
 | Performance report | At least three task types compared across local/cloud full agent turns: latency, quality, cost assumptions/actual evidence, decision correctness, context/thinking, cold/warm behavior, hardware and Instance memory rationale. Proposed types are arithmetic, synthetic email summarization and multi-step explanation/planning. |
-| Personalization Profile | Meaningful fictional persona/preferences and actual platform workspace files; any hardware accommodation clearly documented. |
-| Operational evidence | Real 48-hour interval, lifecycle/availability/job/delivery/routing records, bucket persistence configuration, and restart recall; original timestamps preserved. |
+| Personalization Profile | Meaningful fictional persona/preferences and actual platform workspace files; hardware/local-credit limitations and any borrowed-machine evidence attributed accurately. |
+| Operational evidence | Genuine interval and availability/job/delivery/routing records, exact final provider/model/context and image/config identifiers. Primary changes need new logs/video; minor non-model fixes retain Q10's exemption with a truthful build/outage timeline. |
 | PROCESS_LOG.md | Every AI tool/model used with known versions; chronological 200-300 word narrative with material prompts; substantial generated-code attribution by file/function/module; verification beyond execution; 2-3 sentences of my actual learning/reflection. |
 | Advanced-integration evidence | Proposed public pinned original-skill package and fresh-install/run transcript, or the complete selected alternative in A13. |
 | Video and private access | One correctly named MP4, exact sequence and private Brightspace access checklist below. |
@@ -428,13 +443,13 @@ My primary diagrams use Hermes, but the conditional requirements remain visible 
 | Three messaging platforms | Add two distinct supported services beside Telegram/Discord, map verified identities to one authorized synthetic profile and persistent memory, and retain channel-origin provenance. Browser chat is not a third platform. Demonstrate the prescribed new Bluebird fact across all claimed channels and after restoration; avoid duplicate consumers. [ADV-03] |
 | Calendar intelligence feature | Add conflict detection, task-appropriate slot selection and meeting context from prior synthetic email/documents. Basic calendar reads alone do not satisfy this feature. [FEAT-05] |
 | Personal knowledge base feature | Add deliberate learning of synthetic preferences/people/projects in workspace files and retrieval across sessions/restarts. Baseline memory persistence remains required even if I do not select this as one of four features. [FEAT-06] |
-| Hardware accommodation | If functional E2B cannot run, record hardware/context evidence in the profile and discuss cloud-only accommodation. It cannot demonstrate the local path or guarantee full routing credit. [CORE-12] |
+| Local hardware limits | Q03 requires a reproducible valid local reply for local points. A friend's machine may support the video with truthful attribution; cloud-only does not earn local credit. My own Mac has already completed a local tool turn. [CORE-12] |
 
 These branches are conditional design coverage, not a commitment to implement every option. Four selected features and one complete advanced integration are sufficient; implementing extra options earns no automatic extra credit. OpenClaw UI customization would need its own supported integration decision rather than reusing Hermes-specific endpoints.
 
 ## A14. Validation strategy and unresolved implementation gates
 
-My documentation review checks coverage and consistency. Runtime verification is still **not run**. Before writing application code, I need an approved sandbox and concrete selections; before a release, I need actual evidence against the acceptance gates.
+My documentation review checks coverage and consistency. Local runtime verification has begun in the approved sandbox; IMPLEMENTATION_STATUS.md records results and artifact limits. Final release still requires evidence against all applicable gates below.
 
 | Validation | Representative check and evidence |
 | --- | --- |
@@ -449,14 +464,14 @@ My documentation review checks coverage and consistency. Runtime verification is
 
 My minimum architectural invariants are: no private cloud call under hold policy; no unapproved/unauthorized email send; no content publishing capability; no claimed durable success before commit; no successful model outcome without a completed valid response; and no release with unresolved security blockers or missing required checks. These should have negative tests as well as happy-path tests. I will not invent test counts, code-coverage percentages, latency SLAs, throughput, stress duration, or recovery targets that the assignment does not specify.
 
-The main implementation gates are:
+The remaining implementation gates are:
 
-1. Confirm Hermes/OpenClaw, cloud provider/auth, hardware RAM/context and model tag, Telegram/Discord, four features, fourth-skill preferences, and advanced integration.
-2. Approve sandbox host/access/cost and transfer to that environment; verify the selected repository's visibility/protections/plan. The repository URL and routine commits/pushes are already authorized. Verify runtime and framework hooks for routing, approvals, scheduling and every state writer.
-3. Select test email and calendar authentication, search/weather sources, content topics, timezone, schedules, allowed recipients/destinations and data retention.
-4. Prove consistent backup/restore and single-writer lifecycle. If those cannot be established with supported hooks, revise A8 before enabling side effects or claiming persistence.
-5. Agree workload/resource/cost limits, scanner tooling, evidence cadence, actual region/resource allocation and live-check permissions.
-6. Resolve timezone/grace balance, MP4 packaging and preventive-restart ambiguity. Reserve real observation and final-delivery time; do not compensate for missing time with fabricated evidence.
+1. Migrate and verify OpenAI-primary/NVIDIA-fallback routing, then settle exact final cloud/local model IDs before collecting final evidence.
+2. Keep the approved Docker isolation and verify CI/protections. Hermes, Telegram, Gmail and dedicated Calendar are selected; runtime source and local tests now exist.
+3. Supply class-only credentials, permitted recipients, Tailscale setup, content preferences and schedule details; prove real integration rather than counting bundled tools.
+4. Prove complete live native-workspace backup/restore, single-writer lifecycle and confirmed alert delivery.
+5. Supply GCP project and spending limit before any paid call/provisioning; measure deployment sizing, security, performance and account lifetime.
+6. Resolve packaging/timezone/grace balance and retain genuine final-model operational evidence. Q10 permits minor non-model fixes without a new full run; Q11 resolves the restart conflict in favor of no grading restarts.
 
 ## A15. Requirement-by-requirement architecture coverage
 
@@ -464,9 +479,9 @@ Each row points to the architecture response and its evidence gate. All entries 
 
 | Requirement ID | Architecture location | Response or completion evidence |
 | --- | --- | --- |
-| CORE-01 | [A1](#a1-scope-assumptions-and-decision-status), [A13](#a13-conditional-branches-and-alternatives) | Proposed Hermes; selected framework/version and working gateway still needed. |
+| CORE-01 | [A1](#a1-scope-assumptions-and-decision-status), [A13](#a13-conditional-branches-and-alternatives) | Hermes v0.22.7 selected and locally exercised; deployed gateway evidence remains pending. |
 | CORE-02 | [A3](#a3-whole-system-topology-and-responsibility-boundaries), [A11](#a11-isolated-development-and-github-delivery) | Cloud Run Instance hosts gateway/scheduler; verify deployed resource and command family. |
-| CORE-03 | [A2](#a2-technology-choices-and-their-justification), [A5](#a5-hybrid-routing-privacy-and-model-failure) | Select supported cloud provider/model/auth and complete deployed inference. |
+| CORE-03 | [A2](#a2-technology-choices-and-their-justification), [A5](#a5-hybrid-routing-privacy-and-model-failure) | Planned OpenAI API primary/NVIDIA fallback; accepted Claude alternative. Exact IDs, migration, budget and deployed inference remain pending. |
 | CORE-04 | [A5](#a5-hybrid-routing-privacy-and-model-failure) | Gemma 4 through local Ollama; actual installed/loaded model and remote inference. |
 | CORE-05 | [A3](#a3-whole-system-topology-and-responsibility-boundaries), [A5](#a5-hybrid-routing-privacy-and-model-failure) | Explicit adapter proxy path through private Tailscale; verify real call. |
 | CORE-06 | [A5](#a5-hybrid-routing-privacy-and-model-failure), [A14](#a14-validation-strategy-and-unresolved-implementation-gates) | Task-property routing, paraphrase tests and completed calls on both routes. |
@@ -475,9 +490,9 @@ Each row points to the architecture response and its evidence gate. All entries 
 | CORE-09 | [A5](#a5-hybrid-routing-privacy-and-model-failure), [A12](#a12-evidence-architecture-reports-and-submission) | Proposed hold policy, no cloud call, matching README and demo. |
 | CORE-10 | [A5](#a5-hybrid-routing-privacy-and-model-failure), [A12](#a12-evidence-architecture-reports-and-submission) | Actual outcomes/model and required fields; no message text. |
 | CORE-11 | [A2](#a2-technology-choices-and-their-justification), [A5](#a5-hybrid-routing-privacy-and-model-failure) | Verified served context, Hermes at least 64K, deliberate thinking/output budget and full turn. |
-| CORE-12 | [A13](#a13-conditional-branches-and-alternatives) | Conditional hardware accommodation with evidence and credit limitation. |
+| CORE-12 | [A13](#a13-conditional-branches-and-alternatives) | Valid local reply required for local credit; truthful borrowed-machine video allowed, no full-credit cloud-only accommodation. |
 | FUNC-01 | [A4](#a4-entry-points-ui-and-interface-contracts) | Live Telegram/Discord incoming request and delivered reply. |
-| FUNC-02 | [A1](#a1-scope-assumptions-and-decision-status), [A6](#a6-tool-execution-email-approval-and-the-fourth-skill) | Four distinct skills, all exercised; weather also available. |
+| FUNC-02 | [A1](#a1-scope-assumptions-and-decision-status), [A6](#a6-tool-execution-email-approval-and-the-fourth-skill) | Four substantially integrated/exercised skills and README inventory; bundled search wrapper insufficient. Weather also required. |
 | FUNC-03 | [A1](#a1-scope-assumptions-and-decision-status), [A7](#a7-proactive-scheduling-and-delivery) | Proposed four features with autonomous execution evidence. |
 | FUNC-04 | [A7](#a7-proactive-scheduling-and-delivery) | Platform cron/heartbeat/event polling, no continuous sleep loop. |
 | FUNC-05 | [A7](#a7-proactive-scheduling-and-delivery), [A12](#a12-evidence-architecture-reports-and-submission) | Briefing, recap and unsolicited alert regardless of feature selection. |
@@ -496,10 +511,10 @@ Each row points to the architecture response and its evidence gate. All entries 
 | OPS-03 | [A8](#a8-persistence-concurrency-and-restoration) | All writers inventoried, consistent commits, conflicts and recovery tested. |
 | OPS-04 | [A3](#a3-whole-system-topology-and-responsibility-boundaries), [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Region/runtime/port/startup/IAM/HTTPS and actual integration checks. |
 | OPS-05 | [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Recommended allocation evaluated with measured memory rationale. |
-| OPS-06 | [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Genuine continuous 48-hour evidence across the interval. |
+| OPS-06 | [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Genuine availability/evidence; grader retest after 48 hours, final-model logs and Q10 minor-fix exception. |
 | OPS-07 | [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Lifecycle, crashes, recovery, jobs, messages, failures and gaps retained. |
 | OPS-08 | [A10](#a10-runtime-lifecycle-availability-and-the-observation-window), [A12](#a12-evidence-architecture-reports-and-submission) | Preselected durable evidence store, prompt export and true time bounds. |
-| OPS-09 | [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Recommended bounded repair/three-hour restart considered separately and tested if adopted. |
+| OPS-09 | [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Planned three-hour restarts disabled for grading; measured capacity and incident reporting. |
 | OPS-10 | [A10](#a10-runtime-lifecycle-availability-and-the-observation-window), [A11](#a11-isolated-development-and-github-delivery) | Frozen independently accessible release through regrades, laptop-off check. |
 | SEC-01 | [A9](#a9-security-architecture-and-release-gates), [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | Container boundary and runtime isolation evidence, startup report alternative. |
 | SEC-02 | [A9](#a9-security-architecture-and-release-gates) | Isolation plus at least one additional evidenced security measure. |
@@ -561,7 +576,7 @@ Each row points to the architecture response and its evidence gate. All entries 
 
 ## A16. References and document review
 
-My assignment references use the existing source keys: D for the main description, G for local Gemma/access/video instructions, V for recording instructions, S for advisory setup guidance, R for optional deployment guidance, and Z for the supplied scripts. The linked source register and physical-page references are in [REQUIREMENTS.md](REQUIREMENTS.md#source-register). This architecture was checked against that baseline; it does not claim a new PDF extraction or replace source precedence. The G video override, platform-version conflicts, OpenClaw identity rule, packaging question, restart ambiguity and filesystem exceptions remain recorded there.
+My original source keys are D, G, V, S, R and Z, with physical-page references in [REQUIREMENTS.md](REQUIREMENTS.md#source-register). [CLARIFICATIONS.md](CLARIFICATIONS.md) adds Q01–Q12 from the user-supplied instructor excerpts and records authority/unanswered questions. Specific answers resolve cloud authentication, local-credit, skill-counting, capacity, evidence and restart conflicts. Packaging, course timezone and grace balance remain open. Original sources remain unchanged.
 
 Official implementation references were consulted on November 16, 2026 and linked beside the claims they support: Cloud Run Instance lifecycle, Tailscale userspace networking, Ollama context/model listing, Cloud Storage FUSE/preconditions, Docker controls, Secret Manager, Telegram Bot API, GitHub OIDC, Hermes upstream, and the previously reviewed LinkedIn policy/API references. Current web documentation does not override assignment requirements or establish that the chosen release/account supports every planned hook. I will recheck the pinned stack during authorized implementation.
 
@@ -578,11 +593,11 @@ This appendix is my short explanation of what each technology does and where it 
 | Technology or concept | General overview in my project | Status and detail |
 | --- | --- | --- |
 | Git | Records coherent snapshots of my authored files so I can compare changes and restore earlier source through reviewed history. | Project-local repository initialized; commits/pushes authorized. My remote verification is reported for each change set. A11; USER-15. |
-| GitHub repository | Hosts shared remote history for my project and is the intended home for future checks and review. | [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent); destination selected, visibility/protections still to verify. A11. |
-| GitHub Actions | A workflow runner for repeatable checks, trusted image builds and explicitly approved releases. | Planned; no workflow has been created or executed. A11 and DESIGN.md section 9. |
-| Remote development VM/container | An isolated workspace where I will author application code, install dependencies and run tests without exposing unrelated local files. | Host, access, costs and transfer still need approval. A11; USER-08. |
-| Python environment and dependency lock | Supplies a repeatable language/package environment for proposed Hermes extensions and tests inside the approved sandbox. | Exact framework-compatible Python/dependencies are pending. A virtual environment is not the sandbox boundary. A2. |
-| Docker image | Packages application, runtime and configuration into a repeatable artifact for tests and the cloud Instance. | Planned; actual isolation settings and image scan need evidence. A2/A9. |
+| GitHub repository | Hosts reviewed source history. | My named repository is public; protections remain to verify. A11. |
+| GitHub Actions | Runs repeatable checks, trusted builds and approved releases. | Workflow files exist locally; hosted execution remains pending. A11. |
+| Local Docker sandbox | Isolates source authoring, dependencies and tests from unrelated host files. | Approved non-root, project-only profile with bounded resources; test networking disabled. A11; USER-08. |
+| Python environment and lock | Reproduces the Hermes extension/test environment. | Python 3.14.10 and uv lock exist. Package isolation complements the container boundary. A2. |
+| Docker image | Packages runtime, application and configuration. | Earlier image exercised; latest-source rebuild and OS/image scan remain pending. A2/A9. |
 | Artifact Registry | Stores the immutable image digest that a reviewed release will deploy. | Planned; builder permissions and retention remain unconfigured. A11. |
 | OIDC and separate cloud identities | Lets a trusted workflow obtain limited temporary cloud authority; builder, deployer and runtime have different jobs. | Planned; trust claims/IAM must be verified. A11. |
 | Test harness and security tools | Exercise policies and user-visible behavior, scan code/dependencies/images/secrets, and retain results tied to the tested artifact. | Tool names/versions remain open; required test categories and gates are fixed in A9/A14. |
@@ -592,19 +607,19 @@ This appendix is my short explanation of what each technology does and where it 
 
 | Component | General overview in my project | Why it is present and where to read more |
 | --- | --- | --- |
-| Hermes, proposed | The main assistant framework coordinating conversations, tools, scheduling and memory through supported extension points. | Allowed assignment platform; supplied browser/access examples fit the initial plan. A2-A4. OpenClaw remains the alternative in A13. |
+| Hermes v0.22.7 | Coordinates conversations, tools, scheduling and memory through extension points. | Selected and locally exercised; deployed behavior remains pending. A2-A4. |
 | Browser UI with HTML/CSS/JavaScript | My simple chat and draft-review surface with readable neumorphic styling. | Required grader access plus the requested UI; preserves the supplied proxy/API contract. A4 and DESIGN.md section 5. |
-| Telegram, proposed | My messaging interface for requests, replies, scheduled notifications and supported human approvals. | Satisfies the required Telegram/Discord channel. A4/A7. |
+| Telegram | My selected messaging interface for requests, scheduled notifications and human approvals. | Integration code exists; live bot setup and demonstration remain pending. A4/A7. |
 | Cloud Run Instance | The continuously running cloud host for the assistant, gateway and scheduler. | Required resource type; a Cloud Run Service is not interchangeable for this assignment. A3/A10. |
 | Router and model adapters | Choose and execute a permitted local/cloud route based on task properties, privacy, context and availability. | The hybrid-routing requirement needs policy enforcement and actual inference evidence. A5. |
-| Gemma 4 and Ollama | Gemma is the local model; Ollama serves it on my separately authorized hardware. | Required local model/server path; RAM/context/full-turn feasibility still needs testing. A5. |
-| Cloud model provider | NIM or the supported OAuth-based alternative supplies cloud inference and laptop-off service. | Provider/model/auth selection remains open. A2/A5. |
+| Gemma 4 E2B and Ollama | Local inference on my approved 16 GiB Mac. | Served context 65,536 and a real tool turn verified; deployed Tailscale path remains pending. A5. |
+| Cloud model provider | OpenAI API is my planned primary; NVIDIA is fallback. Claude API and supported Edu OAuth are accepted alternatives with different authentication/billing. | Exact IDs, budget and migration pending; current code is NVIDIA-only. A2/A5 and Q02/Q09. |
 | Tailscale userspace proxy and Serve | Connect the cloud model adapter to private loopback Ollama on my hardware. | Required private networking without public inference exposure. A3/A5. |
 | Tool policy and approval gate | Checks authorized operations, recipients and exact human approval before a send. | Prevents models, scheduled work and alternate tools from granting themselves send authority. A6/A9. |
 | Calendar, email, web and weather adapters | Normalize bounded data from dedicated class accounts and permitted sources. | Support the required skills, briefing and alerts; provider/auth decisions remain open. A6. |
 | LinkedIn Content Brief | Turns permitted topic research into an original daily draft with sources and review history. | Proposed fourth skill; no LinkedIn scraping, personal account or publishing capability. A6/A7. |
 | Scheduler and outbox | Trigger proactive jobs and track completion separately from notification delivery. | Demonstrates real autonomous behavior and handles retries/deduplication. A7. |
-| State coordinator and Cloud Storage | Serialize changes, checkpoint native workspace/journal state and retain committed snapshots durably. | Required persistence and concurrent-write safety. Local SQLite is only a candidate journal, not a chosen extra service. A8. |
+| State coordinator and Cloud Storage | Serialize changes and retain generation-fenced workspace/database snapshots. | SQLite rollback journaling selected; mocked recovery tests passed. Complete live recovery remains pending. A8. |
 | Secret Manager | Supplies narrowly accessible runtime credentials separately from source and images. | Required secure secret handling; exact injection/refresh mechanisms need review. A2/A9. |
 | Cloud Logging and evidence exports | Retain sanitized routing, lifecycle, job and recovery records with real timestamps. | Support measured behavior, the genuine 48-hour window and submission. A10/A12. |
 
@@ -616,7 +631,7 @@ I have supplied the repository and authorized routine reviewed commits/pushes. T
 
 This follow-up preserves all previous 93 requirements and adds USER-15 for version control, giving 94 individually mapped IDs. The appendix summarizes existing choices; it does not introduce an unreviewed framework, database, provider or test tool. No missing assignment obligation was identified against the existing source-derived baseline and its recorded 103-page/19-file review. That repository-only review did not re-extract the PDFs or inspect the extracted scripts; the later authorized script inspection is recorded in A19.
 
-My remaining gaps are evidence and decisions, not completed features: actual platform/model/runtime fit; supported routing/approval/state hooks; sandbox and service setup; repository visibility/protections; CI/CD implementation; real skill/feature execution; security/performance tests; reports/video and 48-hour operation. The source ambiguities about MP4 packaging, preventive restarts, deadline timezone and remaining grace days still need resolution. A14 and REQUIREMENTS.md section 11 retain the detailed gates.
+My remaining gaps include the OpenAI-primary/NVIDIA-fallback migration, live services/private networking, complete durable recovery, alert delivery acknowledgement, published original-skill installation, cloud deployment, CI execution, final security/performance checks, reports/video and real operational evidence. Local Hermes/Gemma and browser checks have passed within their recorded scope. Packaging, course timezone and grace balance remain open; preventive-restart ambiguity is resolved by Q11. A14 and IMPLEMENTATION_STATUS.md track remaining gates.
 
 My subsequent authorized review has read all 19 extracted starter files and verified byte identity with their archive members. SCRIPT_REVIEW.md and A19 record adaptation requirements, two source-level security findings and remaining framework integration gates. None of the supplied scripts has been executed or modified.
 

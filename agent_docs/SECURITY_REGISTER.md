@@ -1,6 +1,8 @@
 # My Security Risk and Finding Register
 
-Status: design-stage tracking plus a completed manual review of supplied starter code. My application, dependency lockfiles, container image, and pipeline have not been implemented or automatically scanned. Two source-level findings are recorded below; their impact on a deployed application has not been tested. This review does not establish that the future implementation is vulnerability-free.
+Status: implementation review is underway. My application source and dependency lock now exist; isolated policy/API tests and initial static/dependency scans have run. The initial dependency scan found no known advisories in its resolved scope; subsequent dependency changes require a fresh scan. Three initial static alerts were reviewed: fixed HTTPS bootstrap URL, empty OAuth cache value, and intentional container ingress binding. These are scoped configurations, not evidence that all vulnerabilities are absent. Current verification is in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+
+**VULN-003 — SQLite WAL-reset risk (mitigated in code; closure review pending):** The container links SQLite 3.40.1. Hermes warned that WAL mode is affected by the [SQLite WAL-reset issue](https://sqlite.org/wal.html#walresetbug). I changed my custom database to rollback journaling, matching Hermes's own fallback. No corruption was observed. Concurrent-write, snapshot and restart-related tests passed in the recorded suite. Final image/version/mode verification and closure evidence remain required; the finding is not marked closed.
 
 Last updated: November 16, 2026.
 
@@ -93,16 +95,16 @@ Broad proxy routing, incomplete approval hooks, default-green health and daemon 
 
 ## My security check record
 
-| Check | Planned scope | Current status |
+| Check | Scope and observed checkpoint | Remaining limit |
 | --- | --- | --- |
-| Threat-model/design review | Trust boundaries, grader access, tools, memory, content research, and residual risks. | Initial design review recorded; controls remain unverified. |
-| Static code analysis | Application and tool-adapter code for security-relevant patterns. | Manual review of all 19 starter files completed; VULN-001/002 open. Automated analysis and application assessment not run. |
-| Dependency analysis | Direct/transitive packages against advisory data, with pinned version evidence. | Not run; no lockfiles/build inventory. |
-| Secret detection | Source, relevant Git history, selected build contexts, and sanitized output artifacts. | Not run; no repository pipeline configured. |
-| Container/configuration analysis | Runtime packages, image, user/capabilities, mounts, networking, IAM, and CI configuration. | Not run; no deployable image or environment. |
-| White-box security tests | Policies, session boundaries, fetch validation, retry limits, and memory writes. | Not run; sandbox and implementation pending. |
-| Black-box security tests | Authorized/unauthorized UI/API behavior, injection/XSS, send denial, and isolation. | Not run; disposable target pending. |
-| Release gate | Exact commit/image/configuration, required checks, blocker triage, and accepted residual risks. | Not eligible; no release candidate. |
+| Threat model | Trust boundaries, grader access, tools, memory and content research reviewed. | Deployed controls and residual-risk decisions remain pending. |
+| Static analysis | Original 19-file manual review and initial application Ruff/Bandit checks. Three scoped alerts were reviewed. | Latest source needs renewed checks; VULN-001/002 need adaptation closure records. |
+| Dependencies | Initial installed-package advisory scan reported no known advisories. Lockfile exists. | Subsequent dependency additions require a new scan; no zero-vulnerability guarantee. |
+| Secrets | Ignored private configuration and explicit staging boundaries. | Current full source/history/image and artifact scan still required. |
+| Container/configuration | Non-root, project-scoped sandbox and an earlier runtime image exercised. | Latest image, OS advisories, cloud IAM and deployed configuration remain unverified. |
+| White-box | Approval, replay, concurrent claims, routing, bounded work and state tests passed within the recorded 37-test suite. | New provider chain, latest network code and broader injection defenses remain unverified. |
+| Black-box | Isolated API and Chromium auth/plain-text rendering/overload checks passed; model replies mocked. | Live cloud/messaging/account and complete injection evaluation remain pending. |
+| Release gate | Not eligible for release. | Required live checks, open findings and exact final artifact evidence remain incomplete. |
 
 My tool selection will match the platform and repository plan. GitHub can surface code-scanning results from CodeQL or compatible third-party tools, but feature availability and licensing must be checked for my repository. If a hosted feature is unavailable, I need an approved equivalent scanner/reporting path rather than silently skipping the check. [GitHub code scanning](https://docs.github.com/en/code-security/concepts/code-scanning/code-scanning), [GitHub security availability](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security)
 
@@ -120,3 +122,13 @@ If a live credential is exposed, my first remediation decision is revocation/rot
 | 2026-11-16 | I requested the detailed architecture. Codex linked its trust boundaries and storage/send failure contracts to the existing risk backlog. | Design review only; no new confirmed vulnerability, implemented mitigation, scan or retest. |
 | 2026-11-16 | I supplied the repository and authorized coherent commits/pushes. Codex documented staged-content controls and local-only source/secret/state exclusions. | Documentation/staging review only; repository visibility and automated scans remain unverified. |
 | 2026-11-16 | I authorized extracted-script review. Codex recorded VULN-001/002 from the unchanged Hermes proxy, with source identity, provisional severity and adaptation/retest gates. | Manual static evidence only; no exploit, scan, runtime test, fix or closure claimed. |
+
+## My clarification-driven controls
+
+I keep the instructor rulings in [CLARIFICATIONS.md](CLARIFICATIONS.md) separate from vulnerability findings. No new exploit is established by those posts.
+
+- **Provider boundaries:** OpenAI API is my planned primary, NVIDIA my fallback, with Claude an accepted alternative. Separate credentials and fixed provider endpoints, bounded attempts and per-provider audit outcomes must accompany migration. Private context cannot leak through fallback. NIM reliability remains a risk even as fallback; budget approval still gates paid calls.
+- **Synthetic account safety:** Two temporary fictional-role mailboxes and a dedicated temporary Calendar are allowed. Every send still needs explicit payload-bound human approval. Own credentials/scopes and restrictions support meaningful skill integration.
+- **Availability:** Planned three-hour grading restarts stay disabled. I address measured memory pressure before freezing; 1 vCPU/4 GiB is allowed if justified and affordable. Unexpected restarts remain reported incidents with potential penalty.
+- **Evidence integrity:** Final primary-model changes require new logs/video. Minor non-model fixes retain Q10's observation exemption but still require affected security/regression checks and an honest change/outage record. Unanswered fallback-only questions do not create a waiver.
+- **Topology:** One Instance with an internal broker preserves the documented deployment path. I do not copy separate-Service IAM recipes into Instance configuration without verifying the actual architecture.

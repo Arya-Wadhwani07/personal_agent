@@ -1,6 +1,6 @@
 # My Assignment 3 Design
 
-Status: rough design for my review. My repository destination and routine commit/push workflow are now authorized; no application, sandbox, GitHub Actions workflow, or cloud deployment has been created.
+Status: implementation is underway in my approved Docker sandbox. I selected Hermes, Telegram, Gmail, and a dedicated Google Calendar. The Daylight browser interface implements the proposed soft neumorphic styling, plain-text chat, visible connection/error states, and Telegram-only email approval. [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) distinguishes implemented behavior from pending live evidence. Cloud deployment and the 48-hour run have not started.
 
 Last updated: November 16, 2026.
 
@@ -10,7 +10,7 @@ My design follows [REQUIREMENTS.md](REQUIREMENTS.md) and the boundaries in [AGEN
 
 I want a useful personal assistant with a simple interface, reliable deployment, and evidence for the full rubric. The deadline I confirmed is **November 17, 2026, at 11:59 PM**. For planning, I am using **America/Los_Angeles**, my current timezone; the course timezone and number of remaining grace days still need confirmation.
 
-My 48-hour operational window has not started. Grace days extend the time available to submit; they do not shorten the required run. If one remaining grace day is confirmed under the course policy, the tentative extended deadline would be November 18 at 11:59 PM; two would give November 19 at 11:59 PM. These are conditional planning dates, not a confirmed extension. My latest feasible stable-run start is the applicable deadline minus 48 hours **and** time for evidence export, final checks, recording, and upload. A run starting at the last possible minute leaves no delivery buffer. [D pp. 14, 20]
+My operational evidence has not started. Q07 places grader checks after End Date (deadline + 2) and again 48 hours later. I prepare the final deployment and retain genuine logs/access through that period and regrades; I do not impose an unsupported deadline-minus-48-hours rule. Q09 requires fresh logs/video after a primary-model change; Q10 exempts minor non-model fixes from a new full run. Exact grading time and grace balance remain unknown. [CLARIFICATIONS.md](CLARIFICATIONS.md)
 
 To reduce last-minute deployment work, my plan brings an initial cloud deployment forward, after a small version passes its checks. I will build the remaining functionality in verified increments, then freeze a release for the real observation window. CI/CD can automate repeatable work; it cannot guarantee a grade, remove cloud startup time, or manufacture uptime evidence.
 
@@ -29,7 +29,7 @@ These distinctions come from D pp. 2, 8 and G pp. 3-20, 23-28. My browser UI doe
 
 ### Proposed starting point
 
-My proposed combination is **Hermes + Telegram + a small styled browser chat**. It fits the supplied Hermes UI and leaves one main messaging channel to verify. This is a scope recommendation based on the assignment materials, not a claim that the selected release, authentication, or laptop setup has already been tested.
+My selected combination is **Hermes + Telegram + Daylight browser chat**. The browser and real local-model integration have been exercised; live messaging and cloud deployment remain pending.
 
 If I prefer OpenClaw, the same architecture and test strategy still apply, but the grader-access branch and UI implementation change. I will approve the platform before implementation.
 
@@ -214,9 +214,9 @@ My source authoring, dependency installation, application execution, and runtime
 
 ### Proposed host-safe approach
 
-My preferred starting proposal is a **disposable remote Linux development VM/container workspace**, with fresh GitHub-hosted runners for CI. Only my authorized project source and synthetic fixtures enter those environments. They receive no host home-directory mount, personal documents, shell history, existing SSH/cloud credentials, or unrelated local files. Remote workspace provisioning and transfer to a new environment require my approval. Commits/pushes to my named GitHub repository are now authorized under USER-15.
+My approved development environment is a non-root local Docker container with only this project mounted, read-only system files and bounded resources. Fresh isolated GitHub runners are planned for CI. Docker runtime/cache and Ollama runtime/log exceptions are approved; unrelated host data remains excluded.
 
-Local Docker is an alternative only after I approve its host-side effects. Docker Desktop keeps settings and VM/image storage outside the project by default. A bind mount limited to Assignment 3 restricts container data access but does not mean Docker itself makes zero writes elsewhere. Starting or installing it under my current no-external-writes rule would need a specific exception. [Docker Desktop settings](https://docs.docker.com/desktop/settings-and-maintenance/settings/)
+My approved Docker exception covers its own runtime/cache files outside the project. A project-only bind mount restricts container data access but does not imply that Docker makes no host-side writes. This exception does not authorize unrelated file access. [Docker Desktop settings](https://docs.docker.com/desktop/settings-and-maintenance/settings/)
 
 My intended restriction is that project code and tests must not access unrelated host data. Operating-system/runtime files necessarily exist inside the approved sandbox. Generated logs, caches, databases, and fixtures use disposable sandbox paths; only sanitized outputs I approve are copied back into Assignment 3. A remote container/VM is not a promise of perfect isolation, so access controls must be verified.
 
@@ -262,7 +262,7 @@ My load tests would measure concurrent chat requests, scheduled work, and memory
 | Long-run evidence | Genuine 48-hour operation after pre-run tests, with lifecycle, scheduled-delivery, routing, and recovery records. |
 | Security release gate | Current required scans/reviews and behavioral checks for the exact candidate artifact, no unresolved release blockers, and documented permitted residual risks in SECURITY_REGISTER.md. |
 
-No tests have run against an application yet. This change receives document review only.
+Local application tests have run within the scope recorded in IMPLEMENTATION_STATUS.md. This clarification change receives document review; it does not itself rerun runtime tests or establish live deployment readiness.
 
 ### My ongoing security review
 
@@ -317,7 +317,7 @@ Google's current Instance documentation confirms a distinct singleton resource a
 - My dependency/build caches must exclude secrets and mutable agent state. Immutable image references prevent a moving `latest` tag from changing what is released.
 - My deployment concurrency group should serialize releases to an Instance. It should not cancel a deployment midway through changing state.
 - My initial cloud resource/IAM/OIDC setup is a separate authorized bootstrap step. CI/CD does not eliminate that work or repeated account authorization requirements.
-- My preliminary releases happen before the 48-hour window. Once the observation release is frozen, CI may continue testing branches, but CD must refuse changes to that Instance until I explicitly end the freeze. Any later intervention is logged honestly and evaluated against the assignment policy.
+- My preliminary releases and disruptive recovery tests happen before grading. CI can validate branches during the freeze, but CD must refuse grading-window changes. Q10 permits a reviewed minor non-model fix without restarting the full observation interval; its real build/outage timeline remains recorded. Model changes require new final-model logs/video.
 - My submitted release stays unchanged and accessible through regrades. A mock test pass or successful image build never substitutes for live grading access.
 - My time-saving measures are a single codebase/container, pinned dependencies, remote builds, caching, reproducible scripts, and early smoke-tested deployment. Exact build/deploy times remain unmeasured.
 
@@ -339,7 +339,7 @@ If selected, OpenClaw needs exact socket/user/origin/port and effective grants v
 | Operation | 48-hour evidence, monitoring, controlled recovery records, and sanitized exports. |
 | Submission/maintenance | Reports, video, Process Log, private grader credentials, final review, grading availability, and later authorized cleanup. |
 
-This is a proposed layout; the seven Markdown files and .gitignore are the current project-authored files; runtime folders remain proposed:
+This target layout describes responsibilities; runtime source, tests, scripts, Docker and workflow files now exist locally. IMPLEMENTATION_STATUS.md records what has been verified; the layout is not a deployment claim:
 
 ```text
 Assignment 3/
@@ -370,21 +370,27 @@ ARCHITECTURE.md preserves this UI and skill proposal while specifying the enforc
 
 For the separate advanced-integration criterion, my architecture recommends publishing the original content skill through an allowed Hermes tap with a pinned artifact and clean-install/run evidence. This remains a choice for my review and needs separate publication authorization; A2A and three messaging services remain valid alternatives. The architecture's full requirement map includes these conditional branches and the non-runtime video/report/account obligations.
 
-## 11. My decisions before implementation
+## 11. My selected baseline and remaining decisions
 
-| Decision | Proposed starting point or information still needed |
+| Area | My current decision and limit |
 | --- | --- |
-| Platform/interface | Hermes + Telegram + small neumorphic browser chat, subject to my approval. OpenClaw remains valid with its own dashboard/access path. |
-| Sandbox | Disposable remote development environment and fresh CI runners; provider/access/cost still need agreement. Local Docker would need an explicit host-write exception. |
-| GitHub | [Arya-Wadhwani07/personal_agent](https://github.com/Arya-Wadhwani07/personal_agent) selected; project-local Git setup and routine reviewed commits/pushes authorized. Initial branch: `main`. Visibility, protections, account plan and CI/CD credentials/configuration remain unverified. |
-| Deadline | November 17, 2026, 11:59 PM confirmed; timezone assumed America/Los_Angeles and grace balance still to confirm. |
-| Hardware/models | My available RAM, feasible served context, local Gemma variant, and cloud provider/auth route still need verification. |
-| Features/skills | The four-feature proposal remains open. LinkedIn Content Brief is my new fourth-skill recommendation, with permitted-source research and draft-only delivery; implementation and advanced integration are not selected. |
-| Content preferences | Synthetic audience/topics, voice, draft length, daily generation time, source policy, and notification destination still need agreement. Direct LinkedIn search and personal-account use are outside the initial scope. |
-| Security | My register and release criteria are documented. Actual controls, scanner tooling, findings, and remediation require implementation and sandbox verification. |
-| Accounts and schedule | Dedicated test email/calendar/messaging resources, synthetic persona, timezone, delivery times, and permitted recipients need agreement. |
-| Deployment | GCP project, credits/budget, supported region, runtime identity, secrets, state bucket, and authorized bootstrap scope remain unconfigured. |
-| Policy | Private tasks held when local inference is unavailable is proposed; email sending always needs explicit human approval. |
+| Platform and interfaces | Hermes v0.22.7, Telegram and Daylight browser chat. Local browser checks passed; live Telegram/grader access remains pending. |
+| Sandbox and Git | Approved project-only Docker; public named repository and routine reviewed commits/pushes. CI execution and repository protections remain pending. |
+| Models | OpenAI API primary is my working choice, NVIDIA cloud fallback, local Gemma 4 E2B. Claude is an accepted primary alternative. Exact cloud IDs/budget and adapter migration remain pending. |
+| Local evidence | This 16 GiB Mac served 65,536 context and completed a real tool turn. Scoped prompts retain required instructions/history. Local failure forfeits local credit; cloud-only does not earn it. |
+| Skills and features | Calendar, email, direct Tavily search and original Content Brief; briefing, recap, email integration and alerts. Own credentials/scopes, safety controls and demonstrated use must support the four-skill claim. |
+| Accounts | Temporary synthetic Gmail roles, dedicated read-only Google Calendar and Telegram bot. Every send needs payload-specific human approval. Credentials and live verification remain pending. |
+| Capacity and availability | One Cloud Run Instance; measured 1 vCPU/4 GiB is allowed if needed. No planned three-hour restart during grading. Budget and deployed sizing remain undecided. |
+| Evidence | Final cloud/local selections determine logs/video. Minor non-model fixes do not restart the full 48-hour run. Graders test after End Date and again 48 hours later; exact schedule remains unknown. |
+| Remaining inputs | GCP project/budget, cloud model IDs, accounts, Tailscale, content preferences, grace balance and packaging clarification. |
+
+I preserve G's detailed browser access procedure; Q01's older provisional GUI/Tailscale answer does not remove it. Q12's fallback-only evidence question is unanswered. [My source and decision register](CLARIFICATIONS.md)
+
+### My provider and skill design refinement
+
+For eligible cloud work, I plan OpenAI first and NVIDIA only as bounded fallback. If the cloud chain is unavailable or deliberately rate-limited for the required demonstration, an eligible request can use local Gemma; private requests remain local or held. Each attempt records the actual model, routing reason and outcome. The current code still has NVIDIA-only cloud routing, so this is pending implementation.
+
+My web-search skill calls Tavily directly with my own key; merely adding attribution around bundled search would not qualify under Q05. My README lists the integration and intended use of all four skills. I retain explicit approval for every synthetic email send and no social publishing capability.
 
 ## 12. Review record
 
@@ -397,3 +403,5 @@ On November 16, 2026, I requested the complete architecture. Codex created ARCHI
 My repository follow-up adds a concise technology overview in ARCHITECTURE.md A17 and a coverage/gap review in A18. The detailed component choices remain proposals. Supplied PDFs, the ZIP and extracted scripts stay local and unchanged; the newly authorized 19-file review is recorded in SCRIPT_REVIEW.md. Root README.md now indexes the planning documents and records the version-control boundary.
 
 On November 16, 2026, I authorized the extracted-script review. Codex read all 19 unchanged files, verified archive identity and updated the UI, lifecycle, approval, storage and evidence plan. SCRIPT_REVIEW.md contains the adaptation order and planned tests; neither a browser nor a supplied script was run.
+
+The instructor clarification update applies Q01–Q12 to the active plan. Earlier review entries describe their original documentation milestone, not current implementation status.
