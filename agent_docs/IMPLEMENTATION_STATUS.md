@@ -32,7 +32,7 @@ These probes have distinct scopes. The [release checklist](FINAL_REVIEW.md) repe
 
 ## Artifact-specific image evidence
 
-The published `ba45c35` checkpoint passed [isolated validation](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44193721357), the [native image gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44193721370), and [approved publication](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44195006786). Artifact Registry confirms digest `sha256:2d4c6c096ffd2f3aa2d409bcb597880714af3c543dc5ed7e28eeae6b1babf732` for that source. Publication is separate from production deployment and observation.
+The `9297bd4` weather/failover candidate passed [isolated validation](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44208764242), the [native image gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44208764207), and [approved publication](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44209039487). Artifact Registry confirms digest `sha256:5c99eb0e5f2931a25c08c90e9133c780be8e722b5697ff125f4112d8263b0640`; its Linux/amd64 image label matches the full source revision. Publication is separate from production deployment and observation.
 
 Every publish runs the image/profile gate again and retains raw findings. Exact-version dispositions expire November 24; unknown Critical/High findings, profile drift or expired decisions block release. [Security register](SECURITY_REGISTER.md)
 

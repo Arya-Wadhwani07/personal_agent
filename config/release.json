@@ -7,8 +7,7 @@
   "cpu": "1",
   "memory": "2Gi",
   "blockers": [
-    "Publish and verify the weather-hardened candidate",
-    "Explicit approval of the exact updated deployment is required"
+    "Explicit approval of this exact updated deployment is required"
   ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
@@ -24,8 +23,8 @@
     "a3-runtime-env": "2",
     "a3-tailscale-auth-key": "1"
   },
-  "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:2d4c6c096ffd2f3aa2d409bcb597880714af3c543dc5ed7e28eeae6b1babf732",
-  "source_commit": "ba45c3560e26e2416d0f8bd0582c0abead012764",
+  "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:5c99eb0e5f2931a25c08c90e9133c780be8e722b5697ff125f4112d8263b0640",
+  "source_commit": "9297bd477d5980062500027fd86a204ac823f274",
   "live_acceptance_pending": true,
   "authorization": "Manual GitHub production approval required before deployment",
   "region": "us-west1"
