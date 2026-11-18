@@ -30,6 +30,10 @@ def test_actual_native_cron_delivery_omits_wrapper(settings, monkeypatch):
     home = initialize(settings)
     cfg = json.loads((home / "config.yaml").read_text())
     assert cfg["cron"]["wrap_response"] is False
+    from hermes_cli.active_sessions import resolve_max_concurrent_sessions
+    from hermes_cli.prune_advisor import undecided
+    assert resolve_max_concurrent_sessions(cfg) == 2
+    assert not undecided(home)
     monkeypatch.setattr(scheduler_delivery._sched, "load_config", lambda: cfg)
     monkeypatch.setattr("gateway.config.load_gateway_config", lambda: GatewayConfig(
         platforms={Platform.TELEGRAM: PlatformConfig(enabled=True)}))

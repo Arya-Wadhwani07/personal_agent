@@ -396,3 +396,14 @@ The November 17 source check caught the unsupported us-central1 Instance target 
 | Google APIs / Tavily / Open-Meteo | Test calendar/mail, independent public research and weather. |
 | Pytest / Ruff / Bandit / Chromium / Trivy | Behavioral, static, browser and image checks with distinct scopes. |
 | Markdown / Mermaid | Readable specifications, reports, traceability and editable diagrams. |
+
+## Native session context and bounded concurrency
+
+I bind memory-write authorization to the latest literal user message captured by the native request middleware for that same session. This compensates for the pinned Hermes dispatch path omitting `user_task`; model arguments and tool results cannot supply authorization. Missing, oversized or evicted context fails closed. The in-memory context map holds at most 128 sessions and 16,384 characters per message.
+
+My gateway admits at most two simultaneous turns so browser checks and Telegram can coexist. I explicitly retain session history (`sessions.auto_prune: false`); the nearly empty 2 GiB filesystem can otherwise trigger Hermes’s absolute low-space advisory because of rounding. This setting records the retention choice; it does not create storage or prove future capacity.
+
+### Meeting times and morning email summaries
+
+- My trusted alert path formats calendar timestamps in the configured local timezone before delivery. Date, start/end times and UTC offsets remain visible across midnight and daylight-saving transitions; a missing end time is labeled unavailable. Telegram escapes event titles as data.
+- My morning scheduler and interactive briefing instructions require sender, subject and a concise summary of each selected Gmail preview. Previews are bounded to 500 characters; the assistant does not claim to have read the full body or invent missing actions and deadlines. Empty previews receive an explicit unavailable label.

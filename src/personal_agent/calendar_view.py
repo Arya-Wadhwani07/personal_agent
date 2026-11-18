@@ -49,3 +49,24 @@ def local_window(now, days, timezone):
     day = now.astimezone(zone).date()
     return (datetime.combine(day, time.min, zone),
             datetime.combine(day + timedelta(days=days), time.min, zone))
+
+
+def meeting_alert(event, timezone):
+    """Keep the event's exact local time in trusted alerts, independent of model wording."""
+    zone = ZoneInfo(timezone)
+
+    def point(value):
+        stamp = datetime.fromisoformat(value["dateTime"].replace("Z", "+00:00"))
+        if stamp.tzinfo is None:
+            stamp = stamp.replace(tzinfo=ZoneInfo(value.get("timeZone", timezone)))
+        return stamp.astimezone(zone)
+
+    start = point(event["start"])
+    start_text = start.strftime("%a, %b %d · %I:%M %p %Z (UTC%z)")
+    try:
+        end = point(event.get("end") or {})
+        end_text = end.strftime("%a, %b %d · %I:%M %p %Z (UTC%z)") if end.timestamp() > start.timestamp() else "unavailable"
+    except (KeyError, TypeError, ValueError):
+        end_text = "unavailable"
+    title = str(event.get("summary") or "Untitled meeting")[:300]
+    return start, f"Meeting soon: {title}\nStarts: {start_text}\nEnds: {end_text}\nTimezone: {timezone}"

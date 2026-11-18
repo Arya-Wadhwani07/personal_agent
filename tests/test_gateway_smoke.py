@@ -4,10 +4,12 @@
 import json
 import os
 import signal
+import sqlite3
 import subprocess
 import sys
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import httpx
@@ -30,7 +32,7 @@ def test_real_gateway_tool_turn(tmp_path, auth_mode):
                     "role": "assistant",
                     "content": "",
                     "tool_calls": [
-                        {"function": {"name": "a3_memory", "arguments": {"action": "read"}}}
+                        {"function": {"name": "a3_memory", "arguments": {"action": "save", "key": "study_interval", "value": "25 minutes"}}}
                     ],
                 }
             else:
@@ -101,7 +103,7 @@ def test_real_gateway_tool_turn(tmp_path, auth_mode):
                     headers={"Authorization": "Bearer " + env["API_SERVER_KEY"]},
                     json={
                         "messages": [
-                            {"role": "user", "content": "Read my fictional saved preferences."}
+                            {"role": "user", "content": "Remember study_interval=25 minutes. This is a fictional preference."}
                         ]
                     },
                 )
@@ -110,6 +112,8 @@ def test_real_gateway_tool_turn(tmp_path, auth_mode):
                     "Synthetic memory checked"
                     in response.json()["choices"][0]["message"]["content"]
                 )
+                with sqlite3.connect(tmp_path / "state" / "assistant.sqlite3") as db:
+                    assert db.execute("SELECT value FROM memory WHERE key='study_interval'").fetchone() == ("25 minutes",)
                 assert len(calls) >= 2
                 tool_results = [
                     m for call in calls for m in call["messages"] if m.get("role") == "tool"
@@ -122,6 +126,20 @@ def test_real_gateway_tool_turn(tmp_path, auth_mode):
                 assert not tools.intersection(
                     {"terminal", "execute_code", "send_message", "delegate_task"}
                 )
+                # Two distinct browser sessions share the same native admission budget
+                # as messaging. Both must complete without an active-session rejection.
+                def concurrent_turn(label):
+                    return client.post(
+                        "/v1/chat/completions",
+                        headers={"Authorization": "Bearer " + env["API_SERVER_KEY"]},
+                        json={"messages": [{"role": "user", "content":
+                            f"Synthetic session {label}: Remember study_interval=25 minutes."}]},
+                    )
+                with ThreadPoolExecutor(max_workers=2) as pool:
+                    responses = list(pool.map(concurrent_turn, ["A", "B"]))
+                assert all(r.status_code == 200 for r in responses)
+                assert all("Synthetic memory checked" in r.text for r in responses)
+
         finally:
             os.killpg(process.pid, signal.SIGTERM)
             try:

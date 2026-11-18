@@ -1,12 +1,14 @@
 {
-  "ready": true,
+  "ready": false,
   "frozen": false,
   "project": "assignment3-515003",
   "budget_usd": 4,
   "instance": "assignment3-personal-agent",
   "cpu": "1",
   "memory": "2Gi",
-  "blockers": [],
+  "blockers": [
+    "Publish and approve the memory-context, two-session and meeting/briefing correction"
+  ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
   "secret_versions": {
@@ -24,6 +26,6 @@
   "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:f909af14aaa3119ea5da1a4de90e238098bbeae1ae7baa5b298eadbc069303ec",
   "source_commit": "91858b8980aac6233fcc9fa9483f394bf8192edf",
   "live_acceptance_pending": true,
-  "authorization": "Arya explicitly approved the scheduler-corrected image, runtime-env version 3, us-west1, 1 vCPU/2 GiB and live acceptance on November 17, 2026; GitHub production review remains required.",
+  "authorization": "Previous exact-image approval remains recorded in Git history; the corrected candidate needs release approval.",
   "region": "us-west1"
 }

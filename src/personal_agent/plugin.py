@@ -3,10 +3,48 @@
 
 import json
 import os
+import threading
+from collections import OrderedDict
 
 import httpx
 
 from .broker import TOOLS
+
+# Native dispatch can omit user_task. Bind authorization to the request's actual
+# latest user message, never a model-supplied tool argument or retrieved result.
+_SESSION_TASKS = OrderedDict()
+_TASK_LOCK = threading.Lock()
+
+
+def remember_user_request(request, session_id):
+    if not session_id:
+        return
+    messages = request.get("messages", request.get("input", []))
+    task = ""
+    if isinstance(messages, list):
+        for message in reversed(messages):
+            if not isinstance(message, dict) or message.get("role") != "user":
+                continue
+            content = message.get("content", "")
+            if isinstance(content, list):
+                content = "\n".join(
+                    part.get("text", "") for part in content
+                    if isinstance(part, dict) and part.get("type") in ("text", "input_text")
+                    and isinstance(part.get("text"), str)
+                )
+            if isinstance(content, str) and len(content) <= 16384:
+                task = content
+            break
+    with _TASK_LOCK:
+        _SESSION_TASKS[str(session_id)] = task
+        _SESSION_TASKS.move_to_end(str(session_id))
+        while len(_SESSION_TASKS) > 128:
+            _SESSION_TASKS.popitem(last=False)
+
+
+def authorized_user_task(session_id):
+    with _TASK_LOCK:
+        return _SESSION_TASKS.get(str(session_id), "")
 
 
 def rpc(method, path, payload=None):
@@ -33,6 +71,7 @@ def guard(tool_name=None, function_name=None, **kwargs):
 
 
 def inference_headers(request, session_id="", **kwargs):
+    remember_user_request(request, session_id)
     request = dict(request)
     request["extra_headers"] = {
         **request.get("extra_headers", {}),
@@ -55,7 +94,7 @@ def register(ctx):
                 rpc(
                     "POST",
                     "/tools/" + _name,
-                    {"arguments": args, "user_task": kwargs.get("user_task", "")},
+                    {"arguments": args, "user_task": authorized_user_task(kwargs.get("session_id", ""))},
                 )
             )
 

@@ -44,6 +44,8 @@ Tailscale, private tailnet access rules and Hermes scheduling were new to me, an
 | Deployment runner setup | The first deployment attempt stopped because the runner tried to install gcloud beta interactively. | With Codex assistance, I made the workflow install the component explicitly and check the Instance command before deployment. |
 | Native scheduler path restriction | Live acceptance showed that Hermes refused scripts stored outside its profile script directory. | With Codex assistance, I installed the reviewed scripts in the permitted directory and added an actual native-execution test without relaxing the guard. |
 | Nondeterministic privacy test | A hosted test mistook digits in a random request ID for leaked synthetic input. | The test now uses a distinctive secret marker and deliberately reproduces the harmless request-ID collision while still checking that private content is absent. |
+| Native memory context and session admission | Live acceptance exposed an omitted user-context argument and a one-turn cap shared by browser testing and Telegram. | With Codex assistance, I bound memory authorization to the same session’s literal user request, tested real native writes, and used a bounded two-turn limit. Model acknowledgements alone were not accepted as evidence. |
+| Storage advisory | Hermes reported nearly 2 GiB free but triggered its absolute warning threshold. | I retained history explicitly; deleting an empty history would not resolve a rounded threshold warning. |
 | Unused repository material | I requested a reference-based cleanup before the final release. | Two unconsumed configuration files and one unused version constant were removed; framework callbacks and operational scripts were retained. |
 
 ## 5. Substantial AI-assisted code attribution
@@ -87,3 +89,5 @@ Codex generated initial drafts and subsequent revisions of the following project
 My [performance report](agent_docs/PERFORMANCE_REPORT.md), [security audit](agent_docs/SECURITY_AUDIT.md) and [personalization profile](agent_docs/PERSONALIZATION_PROFILE.md) retain measured outcomes and their limits. I freeze source documentation before observation and collect the final live checks, Zoom video and 48-hour evidence separately; future results are not recorded as earlier accomplishments.
 
 My release procedure is in [FINAL_REVIEW.md](agent_docs/FINAL_REVIEW.md). Earlier technical checkpoints remain available in [Git history](https://github.com/Arya-Wadhwani07/personal_agent/commits/main/).
+
+- **Alert and briefing review:** My live meeting alert arrived without its time. With Codex assistance, I added deterministic local date/time and timezone formatting, including daylight-saving regression checks. I also clarified that morning email items need a preview-grounded summary, not just a subject line.

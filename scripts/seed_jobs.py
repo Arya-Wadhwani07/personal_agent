@@ -54,6 +54,11 @@ def definitions(owner):
          "**Weather**, **Inbox**. Include actual calendar events with local start/end times, "
          "the tool's free_gaps within its stated availability_window, a short weather forecast "
          "with high/low temperatures, and at most five top unread/flagged email one-line summaries. "
+         "For each email show sender, subject, and a short plain-language summary of its "
+         "provided summary preview, including an action or deadline only when present. "
+         "Do not replace the summary with just a subject/title. If the preview is empty, "
+         "say 'Preview unavailable'; do not infer the message body from its subject. "
+         "Calendar start/end times must include the date and local timezone. "
          "Prioritize urgent or starred messages; omit routine promotions and duplicates. "
          "When there are no events or relevant emails, say so in one short line. "
          "If free-gap computation is unavailable, say unavailable; never just say 'Available'."),

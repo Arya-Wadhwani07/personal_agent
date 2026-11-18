@@ -169,3 +169,9 @@ Real bootstrap, rotation and fresh-profile recovery passed. Full deployed restar
 
 - My checkpoint and alert entrypoints are installed from the reviewed image into `$HERMES_HOME/scripts` before jobs are reconciled. Native path restrictions remain enabled; an execution test verifies both scripts and rejects an escape.
 - The cloud Ollama URL uses the verified Mac Tailscale IPv4 address through the userspace SOCKS proxy. Access remains limited by the existing tailnet rule; deployed local inference is checked separately from cloud fallback.
+
+## Memory writes and simultaneous interfaces
+
+- I use explicit fictional facts such as `Remember study_interval=25 minutes`. A successful write needs an actual tool result; a model’s acknowledgement alone is not evidence. Native gateway tests verify persistence and reject authorization from tool results or another session.
+- The gateway keeps a two-turn admission limit for browser/Telegram overlap. If both slots are occupied, a new request must wait and retry; the limit is not removed.
+- Session history is retained explicitly. The `2.0 GB free of 2.0 GB` advisory came from Hermes’s 2 GiB threshold and rounded display; deleting an empty history would not help.

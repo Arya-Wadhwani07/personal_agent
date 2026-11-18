@@ -41,6 +41,12 @@ async def test_independent_alert_sources_deduplicate_and_report_degradation(sett
     )
     assert "PRIVATE" not in caplog.text
     assert store.db.execute("SELECT COUNT(*) FROM notifications").fetchone()[0] == expected
+    if events:
+        from personal_agent.calendar_view import meeting_alert
+        _, text = meeting_alert(events["untrusted_data"][0], settings.timezone)
+        row = store.db.execute("SELECT body FROM notifications WHERE id LIKE 'event:%'").fetchone()
+        assert row[0] == text
+        assert "Starts:" in text and "America/Los_Angeles" in text
 
 
 async def test_slow_source_is_cancelled_without_losing_other_alerts(settings, store, monkeypatch):

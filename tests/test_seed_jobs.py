@@ -20,6 +20,9 @@ before = {j["name"]: j for j in list_jobs(include_disabled=True)}
 assert seed.reconcile("1234") == []
 assert len(list_jobs(include_disabled=True)) == 5
 morning = before["a3-morning"]
+assert "sender, subject, and a short plain-language summary" in morning["prompt"]
+assert "Preview unavailable" in morning["prompt"]
+assert "date and local timezone" in morning["prompt"]
 pause_job(morning["id"], reason="Synthetic operator pause")
 update_job(morning["id"], {"prompt": "obsolete prompt", "last_status": "success"})
 create_job(name="unrelated", prompt="Synthetic unrelated job", schedule="0 12 * * *", deliver="local")

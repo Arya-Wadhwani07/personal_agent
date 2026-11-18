@@ -9,6 +9,7 @@ import time
 import httpx
 
 from .audit import emit
+from .calendar_view import meeting_alert
 from .content_review import public_reference, review
 from .state import PolicyError
 
@@ -225,14 +226,16 @@ class Broker:
             for event in events["untrusted_data"]:
                 start = (event.get("start") or {}).get("dateTime")
                 if start:
-                    seconds = (
-                        datetime.fromisoformat(start.replace("Z", "+00:00")) - datetime.now(UTC)
-                    ).total_seconds()
+                    try:
+                        local_start, alert_text = meeting_alert(event, self.s.timezone)
+                    except (KeyError, TypeError, ValueError):
+                        continue
+                    seconds = (local_start - datetime.now(UTC)).total_seconds()
                     if 0 <= seconds <= 1800:
                         candidates.append(
                             (
                                 "event:" + event["id"] + ":" + start,
-                                "Meeting soon: " + str(event.get("summary", "")),
+                                alert_text,
                                 time.time() + seconds,
                             )
                         )

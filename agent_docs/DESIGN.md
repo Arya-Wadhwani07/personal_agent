@@ -32,7 +32,7 @@ My Daylight visual theme uses soft raised panels and recessed inputs with readab
 
 ## Telegram presentation
 
-Scheduled content uses short bold headings, blank lines and Unicode bullets through native MarkdownV2 formatting. Cron response wrapping is disabled, removing job IDs and management footers. Deterministic alerts use escaped HTML.
+Scheduled content uses short bold headings, blank lines and Unicode bullets through native MarkdownV2 formatting. Cron response wrapping is disabled, removing job IDs and management footers. Deterministic alerts use escaped HTML. My meeting alerts show the title, date, start/end times, timezone and UTC offset so timing stays clear across midnight and daylight-saving changes. My morning Inbox section includes sender, subject and a short summary grounded in the supplied email preview, with actions/deadlines only when present. Missing previews are labeled rather than inferred.
 
 Calendar availability is calculated within the stated fictional 09:00–17:00 workday. Overlaps and all-day events are handled; incomplete data is shown as unavailable. Email selection favors unread/starred messages and excludes ordinary promotion/social categories. A clean test profile, not filtering alone, enforces the assignment's synthetic-data restriction.
 

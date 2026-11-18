@@ -6,7 +6,7 @@ I record results with their environment and artifact. This page is evidence abou
 
 | Check | Recorded result | Scope |
 | --- | --- | --- |
-| Regression | **213 tests passed in 23.71 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
+| Regression | **218 tests passed in 22.91 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
 | Static review | Ruff and Bandit passed on the reviewed source; repeat on each release. | Source checks, not proof of no vulnerabilities. |
 | Browser | Chromium chat, content review, unsafe-text handling, error recovery, mobile layout and sign-out tests passed. | Model replies mocked; interface behavior exercised. |
 | Telegram rendering | Synthetic preview accepted with six bold entities in MarkdownV2. | Actual Telegram delivery and parser; no claim about every generated message. |
@@ -17,6 +17,8 @@ I record results with their environment and artifact. This page is evidence abou
 | Local serving | Gemma 4 E2B; 65,536 context; full tool turn completed. | Model allocation after retest: 7,428,940,802 bytes; not whole-system peak RAM. |
 | Load / stress | 100/100 mocked requests at concurrency 4; p95 22.084 ms. Concurrency 32: four successes, 252 bounded HTTP 429s, then 10/10 recovery successes. | Fake 20-ms upstream; not model or cloud throughput. |
 | Native scheduled scripts | Both reviewed scripts executed through Hermes’s scheduler against a synthetic local service; out-of-directory paths remained blocked. | Regression added after live acceptance exposed the original path error. |
+| Native memory authorization | Real Hermes tool turns persist a literal synthetic fact in both API-key and OAuth modes; tool-result/cross-session context is rejected. | Added after live acceptance exposed an omitted native context argument. |
+| Concurrent interfaces | Two distinct native gateway requests complete in the isolated smoke test; admission remains bounded at two. | Synthetic upstream; deployed behavior has its own acceptance check. |
 | Source integrity | Five PDF hashes unchanged; 19 extracted files match ZIP members; 94 stable requirement IDs. | Original documents retained locally. |
 
 ## Integration and delivery evidence
@@ -44,3 +46,7 @@ Every publish runs the image/profile gate again and retains raw findings. Exact-
 - **Release control:** exact image digest, reviewed region, pinned secrets, required GitHub production review and main-branch restriction.
 - **Budget:** verified regional rates give $2.140992 compute over 144 hours at 1 vCPU / 2 GiB. With $0.40 search and $1.00 other-services reserves, the projection is $3.540992. Actual usage and availability extensions are reviewed against the $4 target; this is not a hard billing cap.
 - **Evidence:** actual live acceptance, timestamps, logs, video and grader access fields are collected outside the frozen source and supplied through the prescribed submission channels.
+
+### Latest presentation correction
+
+My isolated regression suite verifies meeting-alert dates, local start/end times, timezone offsets, missing end-time handling, daylight-saving transitions and escaped Telegram delivery. Morning briefing instructions require sender, subject and a preview-grounded email summary; absent previews stay explicit. This source correction joins the native memory-context and bounded-concurrency correction in the next immutable image. Hosted publication and live acceptance must use that new image before observation starts.

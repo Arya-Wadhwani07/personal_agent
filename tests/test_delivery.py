@@ -143,3 +143,23 @@ async def test_telegram_alert_escapes_untrusted_html_and_preserves_heading(setti
         return httpx.Response(200, json={"ok": True, "result": {"message_id": 22}})
     async with httpx.AsyncClient(transport=httpx.MockTransport(response)) as client:
         assert await notifier.deliver(client, "<b>Injected</b> & synthetic") == ("sent", "22")
+
+
+async def test_meeting_times_survive_telegram_delivery(settings):
+    import json
+
+    from personal_agent.calendar_view import meeting_alert
+
+    event = {"summary": "Synthetic <review>", "start": {"dateTime": "2026-11-18T04:15:00Z"},
+             "end": {"dateTime": "2026-11-18T05:00:00Z"}}
+    _, text = meeting_alert(event, settings.timezone)
+    notifier = Notifier(SimpleNamespace(s=replace(settings, telegram_token="synthetic-token")))
+    def respond(request):
+        payload = json.loads(request.content)
+        assert "08:15 PM PST (UTC-0800)" in payload["text"]
+        assert "09:00 PM PST (UTC-0800)" in payload["text"]
+        assert "America/Los_Angeles" in payload["text"]
+        assert "Synthetic &lt;review&gt;" in payload["text"]
+        return httpx.Response(200, json={"ok": True, "result": {"message_id": 23}})
+    async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+        assert await notifier.deliver(client, text) == ("sent", "23")
