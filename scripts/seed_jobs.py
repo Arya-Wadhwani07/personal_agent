@@ -49,9 +49,9 @@ def definitions(owner):
         return jobs
     for name, schedule, prompt in (
         ("a3-morning", "0 8 * * *",
-         "Give my morning briefing using a3_calendar, a3_email and a3_weather. "
+         "Give my morning briefing using a3_calendar, a3_email, a3_weather and a3_ai_reading. "
          "Title: **☀️ Monday · Morning briefing**. Sections: **Today**, **Free time**, "
-         "**Weather**, **Inbox**. Include actual calendar events with local start/end times, "
+         "**Weather**, **Inbox**, **Today’s AI read**. Include actual calendar events with local start/end times, "
          "the tool's free_gaps within its stated availability_window, a short weather forecast "
          "with high/low temperatures, and at most five top unread/flagged email one-line summaries. "
          "For each email show sender, subject, and a short plain-language summary of its "
@@ -59,6 +59,12 @@ def definitions(owner):
          "Do not replace the summary with just a subject/title. If the preview is empty, "
          "say 'Preview unavailable'; do not infer the message body from its subject. "
          "Calendar start/end times must include the date and local timezone. "
+         "For weather, respect the returned provider and named forecast periods. An NWS forecast "
+         "is not a current observation: show the appropriate daytime high/nighttime low with "
+         "the period names; never invent a missing value. "
+         "For Today’s AI read, use a3_ai_reading and share its exact LinkedIn post link, "
+         "one short preview-grounded summary, and why it is useful. Label it 'Search preview'. "
+         "If no suitable post is returned, say no suitable public post was found; never invent one. "
          "Prioritize urgent or starred messages; omit routine promotions and duplicates. "
          "When there are no events or relevant emails, say so in one short line. "
          "If free-gap computation is unavailable, say unavailable; never just say 'Available'."),

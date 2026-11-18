@@ -161,7 +161,7 @@ Real bootstrap, rotation and fresh-profile recovery passed. Full deployed restar
 ## Weather and local-model outages
 
 - I request fresh Open-Meteo data on every invocation. Current observations must be within three hours, and the daily date must match the profile's local day. Invalid/null values are rejected.
-- A read-only weather request can retry once after a connection failure, timeout or server error, within an 18-second total bound. Rate limits and invalid/configuration requests are not repeatedly retried. An unavailable source does not justify invented weather.
+- A read-only weather request can retry once after a connection failure, timeout or server error, within an 18-second total bound. Rate limits and invalid/configuration requests are not repeatedly retried. If Open-Meteo fails, a 12-second NWS fallback uses the same configured coordinates and validates forecast freshness, URLs and periods. NWS values are named-period forecasts, not observations. If both fail, the briefing reports the outage without inventing weather.
 - Ordinary local requests fall back to **OpenAI OAuth**, then NVIDIA on a transient OpenAI failure. Private requests remain held locally under my selected privacy policy.
 - The weather checks cover local midnight, the next day and DST. Native gateway checks verify actual OpenAI fallback with a disconnected test Ollama endpoint; fault-injection tests cover the NVIDIA branch and recovery.
 
@@ -175,3 +175,11 @@ Real bootstrap, rotation and fresh-profile recovery passed. Full deployed restar
 - I use explicit fictional facts such as `Remember study_interval=25 minutes`. A successful write needs an actual tool result; a model’s acknowledgement alone is not evidence. Native gateway tests verify persistence and reject authorization from tool results or another session.
 - The gateway keeps a two-turn admission limit for browser/Telegram overlap. If both slots are occupied, a new request must wait and retry; the limit is not removed.
 - Session history is retained explicitly. The `2.0 GB free of 2.0 GB` advisory came from Hermes’s 2 GiB threshold and rounded display; deleting an empty history would not help.
+
+## My daily AI reading
+
+The morning **Today’s AI read** section uses the existing Tavily key and quota. It includes one indexed LinkedIn post link, preview-grounded summary and relevance note, labeled **Search preview**. I need no LinkedIn credentials. Results are cached for the local day and recent selections are avoided; no suitable indexed post means an explicit empty state.
+
+## My scheduled-job rehearsal
+
+I invoke the actual native job through the administrator-only Hermes run-now interface when rehearsing briefing/recap delivery. Cloud Run SSH uses Cloud OS Login in my project; SSH tooling and keys stay in my ignored project cache. The native administration API remains loopback-only, separate from the public browser interface. I never expose its credentials in commands, documentation or video.

@@ -95,6 +95,7 @@ TOOLS = {
             "value": {"type": "string"},
         },
     ),
+    "a3_ai_reading": ("Select one public indexed LinkedIn AI post preview for my daily reading; no login, scraping or publication.", {}),
     "a3_activity": ("Read recorded completed actions and pending review items for my recap.", {}),
     "a3_alerts": (
         "Check for new urgent email and upcoming meetings; return only fresh alerts.",
@@ -125,6 +126,8 @@ class Broker:
             return await self.services.emails()
         if name == "a3_weather":
             return await self.services.weather()
+        if name == "a3_ai_reading":
+            return await self.services.ai_reading()
         if name == "a3_search":
             return await self.services.search(args["query"])
         if name == "a3_draft_email":

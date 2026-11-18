@@ -26,6 +26,7 @@ class Store:
         self.db.execute("PRAGMA journal_mode=DELETE")
         self.db.execute("PRAGMA busy_timeout=5000")
         self.db.executescript("""
+        CREATE TABLE IF NOT EXISTS daily_reading (day TEXT PRIMARY KEY, payload TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS paid_usage (provider TEXT PRIMARY KEY, attempts INTEGER NOT NULL);
         CREATE TABLE IF NOT EXISTS private_sessions (id TEXT PRIMARY KEY);
         CREATE TABLE IF NOT EXISTS memory (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated REAL NOT NULL);

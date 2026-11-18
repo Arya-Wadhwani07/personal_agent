@@ -6,12 +6,12 @@ I record results with their environment and artifact. This page is evidence abou
 
 | Check | Recorded result | Scope |
 | --- | --- | --- |
-| Regression | **218 tests passed in 22.91 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
+| Regression | **241 tests passed in 26.91 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
 | Static review | Ruff and Bandit passed on the reviewed source; repeat on each release. | Source checks, not proof of no vulnerabilities. |
 | Browser | Chromium chat, content review, unsafe-text handling, error recovery, mobile layout and sign-out tests passed. | Model replies mocked; interface behavior exercised. |
 | Telegram rendering | Synthetic preview accepted with six bold entities in MarkdownV2. | Actual Telegram delivery and parser; no claim about every generated message. |
 | Injection boundaries | Three distinct injected-action cases blocked without external calls or persistent writes. | Actual policy layer; model interpretation simulated. |
-| Weather freshness and recovery | Live Open-Meteo check returned today's data; offline tests cover next day, local midnight/DST, null/stale values, transient retry, rate limits and recovery. | No long-duration provider-availability guarantee. |
+| Weather freshness and recovery | Local Open-Meteo checks passed; live Cloud Run acceptance exposed a TLS timeout. Direct NWS calls succeeded from that Instance. The corrected adapter has offline fallback, freshness, period/unit and URL validation tests. | No long-duration provider-availability guarantee. |
 | Local-outage failover | Real native/public gateway reached `gpt-6.1-sol` through OAuth with an unreachable test Ollama endpoint; public reply in 2.87 s. Private request held without cloud inference; after recovery, a real Gemma reply completed in 21.32 s. | Local sandbox with real OAuth inference; NVIDIA branch tested by fault injection, alongside the earlier live provider preflight. |
 | Model comparison | Three task types through live local Hermes, OAuth and Ollama; one initial local schema failure corrected and successfully retested. | [Measured report](PERFORMANCE_REPORT.md). |
 | Local serving | Gemma 4 E2B; 65,536 context; full tool turn completed. | Model allocation after retest: 7,428,940,802 bytes; not whole-system peak RAM. |
@@ -50,3 +50,9 @@ Every publish runs the image/profile gate again and retains raw findings. Exact-
 ### Latest presentation correction
 
 My isolated regression suite verifies meeting-alert dates, local start/end times, timezone offsets, missing end-time handling, daylight-saving transitions and escaped Telegram delivery. Morning briefing instructions require sender, subject and a preview-grounded email summary; absent previews stay explicit. This correction is included with native memory-context and bounded-concurrency changes in the published `414dfef` image. Live acceptance must exercise that exact image before observation starts.
+
+### Weather and daily-reading candidate
+
+The corrected source adds NWS fallback after the measured cloud-only Open-Meteo failure, plus an indexed LinkedIn daily reading recommendation. The 241-test offline run covers weather failure/recovery, fallback URL restrictions, preview-only evidence, daily caching and duplicate avoidance. This candidate requires its own native publication and exact-image live acceptance; the prior published image does not include these changes.
+
+On the prior `414dfef` deployment, I verified real memory persistence/recall, both model paths, an owner-confirmed Telegram reply, an owner-confirmed timed meeting alert, and actual scheduled morning delivery. The alert record includes November 17, 9:45–10:45 PM PST. The owner confirmed the briefing’s other sections looked good; weather failure is preserved as the reason for this correction. The 48-hour interval has not started.

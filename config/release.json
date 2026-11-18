@@ -1,12 +1,14 @@
 {
-  "ready": true,
+  "ready": false,
   "frozen": false,
   "project": "assignment3-515003",
   "budget_usd": 4,
   "instance": "assignment3-personal-agent",
   "cpu": "1",
   "memory": "2Gi",
-  "blockers": [],
+  "blockers": [
+    "Publish and approve the weather fallback and daily AI reading correction"
+  ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
   "secret_versions": {
@@ -24,6 +26,6 @@
   "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:5faad6eb29e2ff8d17c73a98a298166097cc87dd313ac4f31d398ccb809058dc",
   "source_commit": "414dfefefba570c48210941cfacb4d52847099cd",
   "live_acceptance_pending": true,
-  "authorization": "Arya explicitly approved the combined-correction image, runtime-env version 3, us-west1, 1 vCPU/2 GiB and live acceptance on November 17, 2026; GitHub production review remains required.",
+  "authorization": "The previous image approval remains recorded; the weather and daily reading candidate requires exact-image approval.",
   "region": "us-west1"
 }

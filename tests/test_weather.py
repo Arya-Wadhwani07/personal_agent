@@ -140,8 +140,8 @@ async def test_weather_outage_is_bounded_and_not_cached(settings, clock, status,
         service = Services(settings, client)
         with pytest.raises(PolicyError, match="temporarily unavailable"):
             await service.weather()
-        assert len(calls) == expected
+        assert len(calls) == expected + 1  # One bounded NWS fallback lookup.
         healthy = True
         clock[0] += timedelta(days=1)
         assert (await service.weather())["status"] == "available"
-        assert len(calls) == expected + 1
+        assert len(calls) == expected + 2

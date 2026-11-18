@@ -45,7 +45,7 @@ My later instruction selects supported Hermes OpenAI browser OAuth as primary, r
 | --- | --- | --- |
 | Calendar | My own OAuth client, dedicated synthetic Google Calendar, read-only scope, custom bounded adapter, briefing/reminder use. | Live account/scope review, calendar reads, scheduled use and demonstration. |
 | Email | Temporary Gmail accounts, custom drafts, recipient allowlist, payload-bound human approval, replay/expiry protection and uncertain-send handling. | Synthetic read/draft flow and an explicitly approved test send. |
-| Web search | My own Tavily key, direct custom adapter, bounded results, attribution and LinkedIn exclusion. | Live authenticated search used in a content brief. I do not count a bundled-search wrapper. |
+| Web search | My own Tavily key, direct custom adapter, bounded results and attribution. General research excludes LinkedIn; my separately scoped daily-reading adapter accepts only indexed LinkedIn post links. | Live authenticated search used in a content brief. I do not count a bundled-search wrapper. |
 | LinkedIn Content Brief | Original research-to-draft workflow, references, topic deduplication and stored review history; no publishing capability. | Useful exercised draft/review workflow; the published package and fresh installation have separate advanced-integration evidence. |
 
 ## My implementation boundaries

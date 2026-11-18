@@ -65,3 +65,9 @@ flowchart LR
 ## Design verification
 
 My browser and Telegram checks are recorded in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md). Model quality, tool behavior and actual scheduled delivery are assessed separately from layout. [ARCHITECTURE.md](ARCHITECTURE.md) explains component tradeoffs and all 94 requirement mappings; [FINAL_REVIEW.md](FINAL_REVIEW.md) defines the release procedure.
+
+## My daily reading and weather recovery
+
+My morning briefing adds **Today’s AI read**: one relevant LinkedIn AI/Agentic AI post link, a short search-preview summary and a reason to read it. I label preview-only evidence, keep original draft creation, and avoid recent repeated recommendations. A missing result stays explicit.
+
+Weather uses Open-Meteo first and NWS when the primary cannot respond. Each fallback forecast keeps its named local period and high/low meaning; I never turn forecast temperatures into claimed observations.

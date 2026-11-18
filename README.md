@@ -11,7 +11,7 @@ My profile is **Alex Chen**, a fictional student in Los Angeles. Connected accou
 | Calendar | Own Google OAuth client, read-only scope, dedicated calendar, local-day events and calculated free-time windows. |
 | Email | Gmail API summaries, local drafts, urgency flags, recipient allowlist and exact Telegram human approval. |
 | Web search | Direct Tavily adapter with my own key, bounded attempts and source attribution. |
-| LinkedIn Content Brief | Original research/draft workflow, claim/source review, topic history and browser revision/copy/dismiss controls. No LinkedIn scraping or publishing. |
+| LinkedIn Content Brief | Original research/draft workflow, claim/source review, topic history and browser revision/copy/dismiss controls, plus one daily indexed LinkedIn AI-post recommendation. No LinkedIn login, scraping or publishing. |
 
 My four advanced features are **morning briefing, end-of-day recap, email integration and proactive alerts**. For the separate advanced integration, I published my [original skill at a pinned tap revision](https://github.com/Arya-Wadhwani07/personal_agent/tree/5ba6fa66a26bb09b6293a76dd6b4078e710a99c2/skills/linkedin-content-brief) and exercised a fresh native installation.
 
@@ -21,7 +21,7 @@ All schedules use `America/Los_Angeles` and native Hermes cron.
 
 | Task | Schedule | Result |
 | --- | --- | --- |
-| Morning briefing | 08:00 | Events, gaps within the fictional 09:00–17:00 workday, Open-Meteo weather and prioritized unread/starred email. |
+| Morning briefing | 08:00 | Events, gaps within the fictional 09:00–17:00 workday, Open-Meteo weather with NWS fallback, prioritized unread/starred email summaries, and one LinkedIn AI reading recommendation. |
 | Content brief | 09:00 | A sourced original draft for my review. |
 | Evening recap | 20:00 | Recorded activity, review decisions and tomorrow's schedule. |
 | Alerts | Every five minutes | Fresh urgent-mail and upcoming-meeting notifications. |
@@ -96,3 +96,9 @@ Weather is fetched fresh and checked for the current local date, valid values an
 ## License
 
 I license my original project code under the [MIT License](LICENSE), copyright © 2026 Arya Wadhwani. Third-party dependencies and course materials retain their own licenses and notices.
+
+### My daily AI read and weather sources
+
+- **Today’s AI read:** one public LinkedIn post link, a short summary based on its search preview, and why it is useful. I label the evidence **Search preview**; I do not claim full-post access or guarantee the destination stays accessible without login. No suitable result produces an honest empty state.
+- My direct Tavily adapter searches indexed posts, keeps one cached selection per local day, avoids the previous 30 selections, and shares the existing 50-call budget. It never signs into or fetches LinkedIn pages. Original draft creation remains available.
+- My weather adapter tries Open-Meteo within 18 seconds, then a bounded 12-second [NWS fallback](https://www.weather.gov/documentation/services-web-api). NWS output identifies forecast periods and highs/lows; forecasts are not labeled as current observations. Missing data is never invented.

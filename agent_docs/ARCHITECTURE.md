@@ -20,7 +20,7 @@ I use **Hermes v0.22.7**, Telegram and Monday's browser interface. The runtime i
 | FastAPI / HTTPX | Narrow authenticated edge and bounded provider adapters. | `api.py`, `integrations.py`, `notifications.py`. |
 | SQLite / GCS | Transactional local state with durable generation-fenced recovery. | `state.py`, `durability.py`, `workspace.py`, `auth_checkpoint.py`. |
 | Tailscale userspace proxy | Private cloud-to-laptop access without a TUN device or public Ollama. | `network.py`; fixed approved Ollama target. |
-| Google OAuth / Tavily / Open-Meteo | Dedicated calendar/mail, independent search skill and briefing weather. | Fixed-origin service adapters and narrow scopes. |
+| Google OAuth / Tavily / Open-Meteo / NWS | Dedicated calendar/mail, independent search skill and briefing weather. | Fixed-origin service adapters and narrow scopes. |
 | Docker / GitHub Actions / OIDC | Isolated execution, reproducible images and short-lived scoped deployment authority. | Dockerfile, workflows and release scripts. |
 | Secret Manager | Runtime injection with pinned versions, separate from source and images. | Reviewed release configuration and per-secret IAM. |
 
@@ -167,7 +167,7 @@ stateDiagram-v2
 
 `seed_jobs.py` installs the two reviewed script entrypoints inside `$HERMES_HOME/scripts`, preserving Hermes’s script-directory restriction, and reconciles these native jobs without erasing history or resuming an intentional pause. A missing owner pauses notification jobs; duplicate managed names stop initialization. Cron response wrapping is disabled. Concise bold headings and Unicode bullets replace job IDs and management footers.
 
-Weather is fetched anew for each invocation, checked against the current local date and a three-hour observation freshness bound, and validated for numeric values and units. Only weather GETs retry once on transport/timeouts/5xx within an 18-second total deadline; 429 and configuration errors do not trigger repeated requests. Failed weather remains explicitly unavailable.
+Weather is fetched anew for each invocation, checked against the current local date and a three-hour observation freshness bound, and validated for numeric values and units. Only weather GETs retry once on transport/timeouts/5xx within an 18-second total deadline; 429 and configuration errors do not trigger repeated requests. After primary failure, NWS point discovery and forecast retrieval share a 12-second fallback deadline. The returned forecast URL must match the fixed api.weather.gov gridpoint path; only fresh generated forecasts and valid future periods are accepted. Local period names, dates, highs/lows and source remain explicit; they are not current observations. If both providers fail, weather remains explicitly unavailable.
 
 Calendar gaps merge overlapping busy intervals and honor all-day/transparent events; truncated or malformed data reports unavailable. Email selection includes starred mail and unread mail outside routine promotion/social categories. It does not implement a date cutoff. Delivery distinguishes success, failure and uncertainty; timeouts do not justify blind replay.
 
@@ -363,7 +363,7 @@ Each stable requirement ID maps to the relevant component discussion and its acc
 | USER-11 | [A4](#a4-entry-points-ui-and-interface-contracts) | DESIGN.md includes architecture, a chat wireframe, states, accessibility goals, and Telegram/Discord integration. The required messaging channel and platform-specific browser grader interface are both retained; a custom dashboard and WhatsApp are not assumed requirements. |
 | USER-12 | [A1](#a1-scope-assumptions-and-decision-status), [A10](#a10-runtime-lifecycle-availability-and-the-observation-window) | I distinguish that deadline from Q07's End Date (deadline + 2) and subsequent 48-hour grader retest. I do not invent grace entitlement, a first-test hour, or a requirement to delay submission solely to repeat a pre-submission soak for a minor fix. |
 | USER-13 | [A9](#a9-security-architecture-and-release-gates) | SECURITY_REGISTER.md separates risks from findings and records affected artifacts, severity, evidence, ownership, fixes, and retests. Applicable code/dependency/secret/image/configuration and sandbox behavioral checks gate releases; unresolved Critical/High or behavior-based blockers and incomplete required checks stop release. Permitted lower-severity residual risks need my explicit recorded decision. |
-| USER-14 | [A6](#a6-tool-execution-email-approval-and-the-fourth-skill), [A7](#a7-proactive-scheduling-and-delivery) | LinkedIn Content Brief researches permitted sources, selects relevant nonduplicate topics, preserves provenance, drafts in a configured voice, and delivers to my review channel with persistent history. Assignment data remains synthetic; no direct LinkedIn search, personal-account access, or publishing in the initial scope. Approved API access would be a separate future decision. Outreach improvement is a goal, not a promised result. |
+| USER-14 | [A6](#a6-tool-execution-email-approval-and-the-fourth-skill), [A7](#a7-proactive-scheduling-and-delivery) | LinkedIn Content Brief researches permitted sources, selects relevant nonduplicate topics, preserves provenance, drafts in a configured voice, and delivers to my review channel with persistent history. My morning briefing also recommends one public LinkedIn AI post from a bounded third-party search preview, with a link, short summary and relevance note. Search previews are labeled; recent selections are deduplicated and cached daily. Assignment account data remains synthetic. No LinkedIn login, direct page fetching, personal-account access or publishing is included. Outreach improvement is a goal, not a promised result. |
 | USER-15 | [A11](#a11-isolated-development-and-github-delivery), [A18](#a16-references-and-document-review) | Project-local Git identity/configuration, explicit staging, appropriate checks, descriptive commits, and verified pushes; synchronize Markdown before each commit. No force-push/history rewrite or deployment is implied. Supplied course materials, secrets and generated/private state are excluded from the initial baseline; repository visibility/protections need verification before application publication. |
 
 ## A16. References and document review
@@ -393,7 +393,7 @@ The November 17 source check caught the unsupported us-central1 Instance target 
 | Tailscale | Private agent-to-laptop transport; it does not replace application authorization. |
 | SQLite / GCS | Transactional local state and durable generation-aware recovery. |
 | Secret Manager / IAM | Scoped runtime credentials and cloud permissions. |
-| Google APIs / Tavily / Open-Meteo | Test calendar/mail, independent public research and weather. |
+| Google APIs / Tavily / Open-Meteo / NWS | Test calendar/mail, independent public research and weather. |
 | Pytest / Ruff / Bandit / Chromium / Trivy | Behavioral, static, browser and image checks with distinct scopes. |
 | Markdown / Mermaid | Readable specifications, reports, traceability and editable diagrams. |
 
@@ -407,3 +407,9 @@ My gateway admits at most two simultaneous turns so browser checks and Telegram 
 
 - My trusted alert path formats calendar timestamps in the configured local timezone before delivery. Date, start/end times and UTC offsets remain visible across midnight and daylight-saving transitions; a missing end time is labeled unavailable. Telegram escapes event titles as data.
 - My morning scheduler and interactive briefing instructions require sender, subject and a concise summary of each selected Gmail preview. Previews are bounded to 500 characters; the assistant does not claim to have read the full body or invent missing actions and deadlines. Empty previews receive an explicit unavailable label.
+
+### Daily LinkedIn reading boundary
+
+My `a3_ai_reading` tool uses a fixed Tavily query and `include_domains` filter to select one AI-related post preview. A separate URL validator accepts only HTTPS LinkedIn post/activity paths, strips tracking fields, and rejects profiles, login pages and spoofed hosts. No LinkedIn page is fetched. A bounded `daily_reading` SQLite table preserves 30 daily selections across restarts; an async lock prevents duplicate searches on overlapping requests. Existing Tavily usage reservations cover this search. The draft-writing skill’s source rules remain separate.
+
+References: [Tavily Search API](https://docs.tavily.com/documentation/api-reference/search), [NWS API](https://www.weather.gov/documentation/services-web-api).

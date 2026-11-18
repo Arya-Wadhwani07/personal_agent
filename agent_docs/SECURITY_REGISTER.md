@@ -58,3 +58,9 @@ A finding records its ID, discovery, exact artifact, sanitized evidence, severit
 Credentials stay out of tracked files, images, reports and ordinary backups. Exact-value scans cover configured secrets, while pattern scans and artifact review cover other exposure paths; neither guarantees every possible secret format was detected. Exposure requires authorized revocation/rotation, not merely deletion of a file.
 
 Operational incidents retain actual timestamps. The source freeze does not hide failures; any containment or deployment change requires the relevant authorization and an honest outage record. Scheduled three-hour restarts remain disabled.
+
+## Weather fallback and indexed reading review
+
+- My NWS fallback validates the exact HTTPS API host/gridpoint path before following a returned reference. Freshness, timezone conversion, numeric bounds and forecast-versus-observation labeling have regression coverage.
+- My daily LinkedIn recommendation fetches only Tavily’s fixed API origin. Returned links must be public post/activity paths; profiles, login links, spoofed hosts and embedded credentials are rejected. Search previews remain untrusted data and cannot authorize memory changes or sends.
+- Daily caching, a 30-selection history bound, serialized selection and the existing paid-search quota limit repeated requests. These controls do not guarantee third-party availability or the accuracy of every indexed preview.

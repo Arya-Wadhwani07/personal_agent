@@ -91,3 +91,6 @@ My [performance report](agent_docs/PERFORMANCE_REPORT.md), [security audit](agen
 My release procedure is in [FINAL_REVIEW.md](agent_docs/FINAL_REVIEW.md). Earlier technical checkpoints remain available in [Git history](https://github.com/Arya-Wadhwani07/personal_agent/commits/main/).
 
 - **Alert and briefing review:** My live meeting alert arrived without its time. With Codex assistance, I added deterministic local date/time and timezone formatting, including daylight-saving regression checks. I also clarified that morning email items need a preview-grounded summary, not just a subject line.
+
+- **Cloud-only weather failure:** The deployed briefing attempted its weather tool, but Open-Meteo’s TLS handshake timed out from Cloud Run. A direct NWS check succeeded from the same Instance. With Codex assistance, I added a bounded fallback that preserves forecast dates and sources rather than reusing stale weather.
+- **Daily reading refinement:** I expanded my morning briefing to recommend one AI-related LinkedIn post using an explicitly labeled public search preview. Daily caching and recent-selection history keep the recommendation useful without repeated searches or LinkedIn account access.
