@@ -7,7 +7,7 @@
   "cpu": "1",
   "memory": "2Gi",
   "blockers": [
-    "Publish and approve the bounded native initialization correction"
+    "Exact-image deployment approval for verified startup correction"
   ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
@@ -23,9 +23,9 @@
     "a3-runtime-env": "3",
     "a3-tailscale-auth-key": "1"
   },
-  "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:dec449692d77d0f78c4b8246f20b933224cec07eb6ec1053f8756f08ffaecf50",
-  "source_commit": "f478e61735824eab9257687031caaf7e1a862fea",
+  "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:968f8f63eeb20bdac1b67390b914dac8e93ae3e0ff9ace592bffd25473c1b883",
+  "source_commit": "405e284368fcd5f4d9f9a07bb7a044529a479be4",
   "live_acceptance_pending": true,
-  "authorization": "The previous image approval remains recorded; the startup correction requires exact-image approval.",
+  "authorization": "The verified startup correction is prepared for exact-image deployment approval.",
   "region": "us-west1"
 }
