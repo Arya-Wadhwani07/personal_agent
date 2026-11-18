@@ -140,7 +140,7 @@ My scopes are `gmail.readonly`, `gmail.send` and `calendar.events.readonly`. Dra
 - Refresh intent is recorded before rotation and the rotated grant is stored before returning it. An ambiguous/interrupted refresh blocks inference.
 - If recovery reports an interrupted refresh, I complete a fresh separate cloud login and review a deliberate checkpoint reset. I do not delete markers or reuse stale tokens to bypass it.
 
-Real bootstrap, rotation and fresh-profile recovery passed. Full deployed restart remains an acceptance check. OAuth files are excluded from ordinary workspace archives.
+Real bootstrap, rotation and fresh-profile recovery passed. The final deployed stop/start acceptance also restored OAuth, memory, schedules and the private link; see IMPLEMENTATION_STATUS.md. OAuth files are excluded from ordinary workspace archives.
 
 </details>
 

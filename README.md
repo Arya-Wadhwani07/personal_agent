@@ -36,7 +36,7 @@ Telegram messages use bold headings and Unicode bullets without technical cron w
 - **Local:** Ollama `gemma4:e2b`, 65,536-token context, thinking disabled for short local turns.
 - **Fallback:** NVIDIA `nvidia/nemotron-3-ultra-550b-a55b`, with bounded attempts.
 - **Privacy:** private conversations and private tool context stay on local Gemma. If it is unavailable, I hold those requests. Cloud-eligible work can use the cloud when my laptop is offline.
-- **Deployment target:** one Cloud Run **Instance** in `us-west1`, initially 1 vCPU / 2 GiB. The existing registry and state bucket are in `us-central1`.
+- **Deployment:** one Cloud Run **Instance** in `us-west1`, with 1 vCPU / 2 GiB. The existing registry and state bucket are in `us-central1`.
 - **Storage:** transactional SQLite/native Hermes files with generation-fenced private GCS checkpoints.
 - **Credentials:** ignored local files or pinned Secret Manager versions; separate local/cloud OAuth sign-ins.
 

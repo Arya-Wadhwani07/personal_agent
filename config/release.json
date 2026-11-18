@@ -1,6 +1,6 @@
 {
   "ready": true,
-  "frozen": false,
+  "frozen": true,
   "project": "assignment3-515003",
   "budget_usd": 4,
   "instance": "assignment3-personal-agent",
@@ -23,7 +23,7 @@
   },
   "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:968f8f63eeb20bdac1b67390b914dac8e93ae3e0ff9ace592bffd25473c1b883",
   "source_commit": "405e284368fcd5f4d9f9a07bb7a044529a479be4",
-  "live_acceptance_pending": true,
+  "live_acceptance_pending": false,
   "authorization": "I explicitly approved deployment of the verified startup-correction image sha256:968f8f63eeb20bdac1b67390b914dac8e93ae3e0ff9ace592bffd25473c1b883, live acceptance and one controlled recovery restart before observation. The project, region, resources, secret versions and $4 budget remain unchanged.",
   "region": "us-west1"
 }

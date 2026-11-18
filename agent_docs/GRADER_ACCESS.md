@@ -34,6 +34,8 @@ Path 2 applies only if I change the integration to use a Google App Password. In
 
 I open an Incognito window in a different browser and sign in to every required test account exactly as the grader will. I verify mailbox access and the ability to add a synthetic event to the monitored calendar. I then verify that the agent notices the intended test data and delivers the alert. Account sign-in, provider connectivity and actual proactive delivery are separate checks.
 
+I completed the different-browser private-window rehearsal and confirmed password-only mailbox access and dedicated-calendar editing before the source freeze. I still retain the submitted credentials and keep the accounts accessible through grading.
+
 ## My private submission fields
 
 I open **Brightspace → Assignment 3 → submission Comments** and fill in the supplied `CloudRunSettings.txt` template there. I do not save a completed copy in my submission ZIP.

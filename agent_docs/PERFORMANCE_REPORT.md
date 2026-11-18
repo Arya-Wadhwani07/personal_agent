@@ -48,3 +48,9 @@ My cloud plan uses a **$4 tracking target**, 50 Tavily attempts, 20 NVIDIA attem
 The JSON artifact records the exact synthetic inputs, baseline commit, corrected broker hash, local image and observed outputs. I run the same three task categories through the final authenticated grader interface for deployment acceptance, preserving the actual environment label. I use the release checklist to distinguish this measured comparison from deployed connectivity and the separate 48-hour operational record.
 
 The separate cloud resource projection uses verified Oregon Instance catalog rates: $0.00000027 per vCPU-second and $0.00000193 per GiB-second. At 1 vCPU / 2 GiB, compute is $0.713664 for 48 hours or $2.140992 for 144 hours. My six-day plan reserves another $1.40 for search and other services; this is an estimate, not measured billed spending. [Cloud Run pricing](https://cloud.google.com/run/pricing) · [Storage and cross-region transfer](https://cloud.google.com/storage/pricing)
+
+## Final deployment accuracy and recovery checks
+
+My final-image acceptance retained two incorrect private arithmetic responses alongside successful retests. `17 + 25` initially returned `31`, then an explicit calculation prompt returned `42`; a private multiplication variant returned `72`, while the prescribed `What is 12 times 9?` prompt returned `108` in 0.66 seconds. Local memory-tool completion and recall also succeeded. These results show that local routing and tool integration work but do not establish uniformly reliable arithmetic or wording independence.
+
+After a controlled stop/start, the first cloud reply took 62.12 seconds and memory recall took 24.63 seconds. Cloud Logging records actual OAuth inference, a cloud-eligible local failure followed by OAuth fallback, and later private local success. I retain cold-start and model-quality variability instead of reporting only the fastest or correct turns. [Final verification record](IMPLEMENTATION_STATUS.md)
