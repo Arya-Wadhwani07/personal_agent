@@ -136,7 +136,7 @@ My scopes are `gmail.readonly`, `gmail.send` and `calendar.events.readonly`. Dra
 - The setup relay publishes host loopback 1455 to container 1456. It leaves my existing Codex login untouched; USC’s blocked device-code flow is not a fallback.
 - Cloud startup restores the latest private authentication object. The pinned bootstrap secret is used only when no object exists.
 - Refresh intent is recorded before rotation and the rotated grant is stored before returning it. An ambiguous/interrupted refresh blocks inference.
-- If recovery reports a pending refresh, I complete a fresh separate cloud login and review a deliberate checkpoint reset. I do not delete markers or reuse stale tokens to bypass it.
+- If recovery reports an interrupted refresh, I complete a fresh separate cloud login and review a deliberate checkpoint reset. I do not delete markers or reuse stale tokens to bypass it.
 
 Real bootstrap, rotation and fresh-profile recovery passed. Full deployed restart remains an acceptance check. OAuth files are excluded from ordinary workspace archives.
 
@@ -155,3 +155,10 @@ Real bootstrap, rotation and fresh-profile recovery passed. Full deployed restar
 [Tailscale policy](https://tailscale.com/docs/reference/syntax/policy-file) · [Serve](https://tailscale.com/docs/reference/tailscale-cli/serve) · [Cloud CLI authentication](https://docs.cloud.google.com/sdk/docs/authenticate)
 
 </details>
+
+## Weather and local-model outages
+
+- I request fresh Open-Meteo data on every invocation. Current observations must be within three hours, and the daily date must match the profile's local day. Invalid/null values are rejected.
+- A read-only weather request can retry once after a connection failure, timeout or server error, within an 18-second total bound. Rate limits and invalid/configuration requests are not repeatedly retried. An unavailable source does not justify invented weather.
+- Ordinary local requests fall back to **OpenAI OAuth**, then NVIDIA on a transient OpenAI failure. Private requests remain held locally under my selected privacy policy.
+- The weather checks cover local midnight, the next day and DST. Native gateway checks verify actual OpenAI fallback with a disconnected test Ollama endpoint; fault-injection tests cover the NVIDIA branch and recovery.

@@ -7,7 +7,8 @@
   "cpu": "1",
   "memory": "2Gi",
   "blockers": [
-    "Explicit approval of this exact deployment is required"
+    "Publish and verify the weather-hardened candidate",
+    "Explicit approval of the exact updated deployment is required"
   ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",

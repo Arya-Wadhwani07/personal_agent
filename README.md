@@ -91,6 +91,8 @@ My $4 project target is tracked, not enforced as a billing hard cap. Lifetime li
 
 Original course materials remain unchanged under local `docs/` and are excluded from Git. The [Hermes v0.22.7 framework](https://github.com/NousResearch/hermes-agent/tree/v0.22.7) supplies the native platform; source/adaptation attribution is recorded in my Process Log.
 
+Weather is fetched fresh and checked for the current local date, valid values and observation age. Temporary transport/server failures get one bounded retry. Ordinary Gemma outages use OpenAI OAuth first, with NVIDIA as the transient-failure fallback; private requests stay held locally. My frozen source is independent of the separately collected 48-hour logs and video.
+
 ## License
 
 I license my original project code under the [MIT License](LICENSE), copyright © 2026 Arya Wadhwani. Third-party dependencies and course materials retain their own licenses and notices.

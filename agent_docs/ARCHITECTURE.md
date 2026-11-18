@@ -88,7 +88,7 @@ flowchart TB
 
 ## A5. Hybrid routing, privacy, and model failure
 
-The router evaluates privacy before long-context or reasoning preferences. Private user history, private tool context and persisted session privacy select local Gemma. Non-private long-context/reasoning work uses OpenAI OAuth; simple work uses local inference. Transient failures follow the bounded fallback chain, and private local failure is held.
+The router evaluates privacy before long-context or reasoning preferences. Private user history, private tool context and persisted session privacy select local Gemma. Non-private long-context/reasoning work uses OpenAI OAuth; simple work uses local inference. An ordinary local failure tries OpenAI OAuth first, then NVIDIA after a transient primary failure. Private local failure is held. Each provider has a bounded attempt; a recovered local connection is reconsidered on the next eligible turn.
 
 Hermes owns OAuth login and refresh. My proxy forwards its authenticated request and does not repurpose a ChatGPT credential as a paid API key. Each actual inference attempt records time, route, reason, model and outcome without message text. `A3_SIMULATE_PRIMARY_429` and `A3_SIMULATE_429` support reversible failure tests without exhausting a provider quota.
 
@@ -166,6 +166,8 @@ stateDiagram-v2
 | Checkpoint | Every minute | Durable state checkpoint and operational heartbeat. |
 
 `seed_jobs.py` reconciles these native jobs without erasing history or resuming an intentional pause. A missing owner pauses notification jobs; duplicate managed names stop initialization. Cron response wrapping is disabled. Concise bold headings and Unicode bullets replace job IDs and management footers.
+
+Weather is fetched anew for each invocation, checked against the current local date and a three-hour observation freshness bound, and validated for numeric values and units. Only weather GETs retry once on transport/timeouts/5xx within an 18-second total deadline; 429 and configuration errors do not trigger repeated requests. Failed weather remains explicitly unavailable.
 
 Calendar gaps merge overlapping busy intervals and honor all-day/transparent events; truncated or malformed data reports unavailable. Email selection includes starred mail and unread mail outside routine promotion/social categories. It does not implement a date cutoff. Delivery distinguishes success, failure and uncertainty; timeouts do not justify blind replay.
 

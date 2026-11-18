@@ -26,7 +26,7 @@ This is my repeatable acceptance procedure, not an assertion that a future run h
 2. Run `scripts/observation.py --freeze` in the approved tooling container. It changes the tracked release flag only before observation.
 3. Commit and push the frozen configuration. Verify the remote production workflow reads `frozen=true`; verify a clean tracked working tree.
 4. Run `scripts/observation.py --start LIVE_ACCEPTANCE_JSON`. This creates a genuine start timestamp and writes only ignored operational evidence; it does not edit tracked release configuration.
-5. Keep the deployed artifact and source repository unchanged through the run and grading. Logs, video and evidence are generated separately. Record outages and restarts honestly; do not reconstruct an earlier start time.
+5. Keep the deployed artifact and source repository unchanged through the run and grading. I collect the completion summary from ignored evidence; no post-run Markdown update or redeployment is needed. Logs, video and evidence are generated separately. Record outages and restarts honestly; do not reconstruct an earlier start time.
 
 ## 4. Collect and submit evidence
 

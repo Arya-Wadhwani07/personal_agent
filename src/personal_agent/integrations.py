@@ -4,10 +4,12 @@
 import asyncio
 import base64
 import json
+import math
 import time
 from datetime import UTC, datetime
 from email.message import EmailMessage
 from urllib.parse import quote
+from zoneinfo import ZoneInfo
 
 import httpx
 
@@ -15,6 +17,56 @@ from .calendar_view import availability, local_window
 from .content_review import public_reference
 from .settings import Settings
 from .state import PolicyError
+
+
+class ServiceHTTPError(PolicyError):
+    def __init__(self, status):
+        super().__init__("Connected service failed; check its private configuration")
+        self.status = status
+
+
+def weather_snapshot(data, timezone, now):
+    """Reject yesterday's forecast, stale observations and null/invalid values."""
+    try:
+        local_now = now.astimezone(ZoneInfo(timezone))
+        current, daily = data["current"], data["daily"]
+        observed = datetime.fromisoformat(current["time"])
+        if observed.tzinfo is None:
+            observed = observed.replace(tzinfo=ZoneInfo(timezone))
+        age = (now - observed.astimezone(UTC)).total_seconds()
+        temperatures = [
+            current["temperature_2m"],
+            daily["temperature_2m_min"][0],
+            daily["temperature_2m_max"][0],
+        ]
+        if (
+            data["timezone"] != timezone
+            or daily["time"] != [local_now.date().isoformat()]
+            or not -900 <= age <= 10800
+            or any(
+                type(v) not in (int, float) or not math.isfinite(v) or not -100 <= v <= 70
+                for v in temperatures
+            )
+            or temperatures[1] > temperatures[2]
+            or type(current["weather_code"]) is not int
+            or not 0 <= current["weather_code"] <= 99
+            or data["current_units"]["temperature_2m"] != "°C"
+            or data["daily_units"]["temperature_2m_min"] != "°C"
+            or data["daily_units"]["temperature_2m_max"] != "°C"
+        ):
+            raise ValueError("Invalid or stale weather")
+    except (KeyError, ValueError, TypeError, IndexError) as exc:
+        raise PolicyError("Weather data is stale or invalid; do not reuse earlier weather") from exc
+    return {
+        "status": "available",
+        "source": "https://open-meteo.com/",
+        "timezone": timezone,
+        "as_of": now.isoformat(),
+        "current": {k: current[k] for k in ("time", "temperature_2m", "weather_code")},
+        "current_units": {"temperature_2m": "°C"},
+        "daily": {k: daily[k] for k in ("time", "temperature_2m_min", "temperature_2m_max")},
+        "daily_units": {"temperature_2m_min": "°C", "temperature_2m_max": "°C"},
+    }
 
 
 class Services:
@@ -33,7 +85,7 @@ class Services:
         async with asyncio.timeout(25):
             async with self.client.stream(method, url, **kwargs) as response:
                 if response.status_code >= 300:
-                    raise PolicyError("Connected service failed; check its private configuration")
+                    raise ServiceHTTPError(response.status_code)
                 raw = bytearray()
                 async for chunk in response.aiter_bytes():
                     raw.extend(chunk)
@@ -76,13 +128,18 @@ class Services:
 
     async def emails(self):
         if not self.s.email_enabled:
-            raise PolicyError("Email reads are paused until the class-only synthetic mailbox is verified")
+            raise PolicyError(
+                "Email reads are paused until the class-only synthetic mailbox is verified"
+            )
         headers = await self.google_headers()
         data = await self.request(
             "GET",
             "https://gmail.googleapis.com/gmail/v1/users/me/messages",
             headers=headers,
-            params={"q": "is:starred OR (is:unread -category:promotions -category:social)", "maxResults": 10},
+            params={
+                "q": "is:starred OR (is:unread -category:promotions -category:social)",
+                "maxResults": 10,
+            },
         )
         result = []
         for item in data.get("messages", [])[:10]:
@@ -152,8 +209,12 @@ class Services:
                 "maxResults": 50,
             },
         )
-        view = availability(data.get("items", [])[:50], start.date(), self.s.timezone,
-                            truncated=bool(data.get("nextPageToken")))
+        view = availability(
+            data.get("items", [])[:50],
+            start.date(),
+            self.s.timezone,
+            truncated=bool(data.get("nextPageToken")),
+        )
         return {
             **view,
             "untrusted_data": [
@@ -165,17 +226,39 @@ class Services:
         }
 
     async def weather(self):
-        return await self.request(
-            "GET",
-            "https://api.open-meteo.com/v1/forecast",
-            params={
-                "latitude": self.s.latitude,
-                "longitude": self.s.longitude,
-                "current": "temperature_2m,weather_code",
-                "daily": "temperature_2m_max,temperature_2m_min",
-                "forecast_days": 1,
-                "timezone": self.s.timezone,
-            },
+        # Fresh request each invocation, including after midnight. Retries are limited
+        # to this read-only endpoint; email sends are never retried here.
+        try:
+            async with asyncio.timeout(18):
+                for attempt in range(2):
+                    try:
+                        data = await self.request(
+                            "GET",
+                            "https://api.open-meteo.com/v1/forecast",
+                            timeout=8,
+                            params={
+                                "latitude": self.s.latitude,
+                                "longitude": self.s.longitude,
+                                "current": "temperature_2m,weather_code",
+                                "daily": "temperature_2m_max,temperature_2m_min",
+                                "forecast_days": 1,
+                                "temperature_unit": "celsius",
+                                "timezone": self.s.timezone,
+                            },
+                        )
+                        return weather_snapshot(data, self.s.timezone, datetime.now(UTC))
+                    except ServiceHTTPError as exc:
+                        # Do not hammer rate limits or repeat invalid/configuration requests.
+                        if exc.status < 500:
+                            raise
+                    except httpx.TransportError, TimeoutError:
+                        pass
+                    if attempt == 0:
+                        await asyncio.sleep(0.25)
+        except PolicyError, httpx.HTTPError, TimeoutError:
+            pass
+        raise PolicyError(
+            "Weather is temporarily unavailable; continue the briefing without inventing weather"
         )
 
     async def search(self, query):

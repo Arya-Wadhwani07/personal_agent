@@ -40,6 +40,7 @@ Tailscale, private tailnet access rules and Hermes scheduling were new to me, an
 | Outreach-oriented fourth skill | I selected LinkedIn Content Brief for permitted-source research and original drafts. | It does not scrape LinkedIn or publish posts; the deployment checklist exercises the full research-to-draft workflow. |
 | Local tool call omitted a field | The live comparison exposed an incomplete nested tool schema; with Codex assistance, the schema now names required draft fields. | The original failure is retained alongside the successful real Gemma retest. |
 | Deployment region and source freeze | The final guide review caught an unsupported Instance region and a helper that changed configuration after the clock started. | The target is us-west1; freezing and pushing source now precede the observation start. |
+| Weather and disconnected local inference | I asked for next-day weather and failover checks before freezing the release. | Date-rollover/outage tests cover weather, and a real native-gateway check reached OpenAI OAuth when the test Ollama connection was unavailable. |
 | Unused repository material | I requested a reference-based cleanup before the final release. | Two unconsumed configuration files and one unused version constant were removed; framework callbacks and operational scripts were retained. |
 
 ## 5. Substantial AI-assisted code attribution

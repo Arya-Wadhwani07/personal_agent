@@ -27,7 +27,7 @@ I am responsible for implementing, understanding, and submitting this personal a
 - My target is **100/100**, with evidence for every applicable full-credit rubric criterion.
 - The instructor determines the final grade, so this target is not a guaranteed score.
 
-- **Requirements and rubric:** My plan distinguishes mandatory requirements, conditional options, recommendations, and choices I still need to make. Each applicable requirement needs a clear connection to its implementation, tests, and submission evidence. Ambiguities belong in the review rather than becoming silent assumptions.
+- **Requirements and rubric:** My plan distinguishes mandatory requirements, conditional options, recommendations, and recorded implementation choices. Each applicable requirement needs a clear connection to its implementation, tests, and submission evidence. Ambiguities belong in the review rather than becoming silent assumptions.
 - **System design:** I expect engineering review to cover routing, tools, human approval, memory, scheduling, integrations, deployment, security, and recovery together. Configuration and model claims need to be checked against actual behavior.
 - **Data and code quality:** My review process covers synthetic inputs, generated outputs, persisted state, logs, and evidence for correctness, provenance, consistency, freshness, and sensitive content. Generated or adapted code also needs review for maintainability, failure handling, security, and attribution.
 - **Testing:** I expect relevant edge cases, negative paths, integration boundaries, UI behavior, concurrency, load, stress, recovery, and regression to be considered. Mock results and live evidence must remain distinguishable, with limitations recorded.
@@ -59,7 +59,7 @@ My project Markdown uses uppercase filenames, including `AGENTS.md`, `REQUIREMEN
 | Location | Purpose in my project |
 | --- | --- |
 | `agent_docs/AGENTS.md` | My working agreement, current status, and approved workflow. |
-| `agent_docs/REQUIREMENTS.md` | My assignment requirements, source references, coverage review, and open questions. |
+| `agent_docs/REQUIREMENTS.md` | My assignment requirements, source references, coverage review, and source clarifications. |
 | `agent_docs/DESIGN.md` | My selected architecture, UI, sandbox, testing and CI/CD design. |
 | `agent_docs/ARCHITECTURE.md` | My detailed component/technology rationale, diagrams, interfaces, failure policies, and map of all 94 requirement IDs and a technology overview appendix. |
 | `agent_docs/SECURITY_REGISTER.md` | My prospective security risks, observed findings, remediation/retest evidence, and release gate. |
@@ -75,7 +75,7 @@ Assignment-required submission files and platform-required workspace/skill files
 
 I have approved the documentation baseline and now authorized implementation of the full assignment, its sandbox tests, CI/CD configuration, and routine reviewed commits/pushes to my named repository. Hermes, Telegram, Gmail, and a dedicated Google Calendar are the selected implementation baseline.
 
-- I supplied GCP project assignment3-515003 and a $4 total spending ceiling. Paid calls remain disabled until bounded usage is configured; production deployment still needs release approval.
+- I supplied GCP project assignment3-515003 and a $4 total spending ceiling. Paid calls remain disabled until bounded usage is configured; production deployment requires explicit release approval.
 
 - Before each new coherent change set, I expect a concrete description of the proposed work so I can approve its scope. Actions already covered by that approval do not need repeated permission requests.
 - Each change set ends with a review of the files or diff, applicable checks, and a clear account of changes, results, limitations, and decisions. I review that checkpoint before the next scope begins.
@@ -106,7 +106,7 @@ My application source authoring, dependency installation, execution, and runtime
 - My test plan includes both white-box checks of internal policies/branches and black-box checks through supported interfaces, alongside the existing SDLC categories. Load, stress, and destructive recovery checks target disposable sandbox infrastructure within agreed limits.
 - I approved Docker Desktop startup and its runtime/cache files. Development uses a non-root container with a read-only system, no added capabilities, and project-only mounts. Runtime tests use disposable containers with networking disabled and read-only source. I approved synthetic load/stress checks up to 4 CPUs/4 GiB and 60 seconds per run, without paid calls.
 - My GitHub CI/CD plan validates early and keeps releases reproducible. Production deployment needs approval and stays blocked during grading. My observation release is controlled: a minor non-model fix does not require a new full 48-hour run (Q10), but needs review, retesting and an accurate change/outage timeline. A primary-model change needs new logs and video (Q09).
-- My confirmed deadline is November 17, 2026, at 11:59 PM. America/Los_Angeles is the planning timezone; my remaining grace-day balance is unknown. Q07 describes grader tests after End Date (deadline + 2) and again 48 hours later; it does not grant me extra grace days or specify the exact first-test time.
+- My confirmed deadline is November 17, 2026, at 11:59 PM. America/Los_Angeles is the planning timezone; I keep any unresolved course-account details in ignored private planning notes. My stated target is to finish the genuine 48-hour interval by November 19. Q07 describes grader tests after End Date (deadline + 2) and again 48 hours later; it does not grant me extra grace days or specify the exact first-test time.
 
 ## My design alignment
 
@@ -125,7 +125,7 @@ My [design proposal](DESIGN.md), [system architecture](ARCHITECTURE.md), and [re
 My [clarification register](CLARIFICATIONS.md) records Q01–Q14, including unanswered questions. Specific instructor answers supersede older conflicting recommendations: no planned three-hour restarts during grading; valid local inference is required for local credit; final-model logs/video must match my deployment. Minor non-model fixes retain the Q10 observation exemption.
 
 - I keep the verified single-Instance architecture, synthetic accounts, explicit approval for every email send, and substantive four-skill evidence.
-- Hermes OpenAI browser OAuth is the selected primary with NVIDIA fallback; paid calls remain disabled and deployment still needs its release gate. Scoped local prompts retain safety instructions and the verified context configuration.
+- Hermes OpenAI browser OAuth is the selected primary with NVIDIA fallback; paid calls remain disabled and deployment uses its explicit release gate. Scoped local prompts retain safety instructions and the verified context configuration.
 
 ## My starter-code adaptation rules
 
@@ -196,3 +196,5 @@ Before load or stress testing, I will agree on the target, workload, duration, r
 I keep source documentation descriptive and reproducible. I remove stale setup notes and check actual behavior before stating that work is complete. My runbooks describe verification steps; measured results retain their real dates and scope. Operational logs, the video, private grader fields and the 48-hour record are collected separately from the frozen source repository. Future outcomes are not backdated or recorded as passing before execution.
 
 My stated readiness target is 98–99/100 under the rubric. A readiness assessment is an estimate, not a grade guarantee, and does not replace any actual acceptance check or authorize deployment by itself.
+
+Once my observation starts, I make no source, Markdown, configuration, commit, push or deployment changes during the frozen interval. Operational state, logs, video and submission evidence remain separate, ignored artifacts. Recording the completed interval does not require a Markdown edit or another deployment.

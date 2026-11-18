@@ -6,11 +6,13 @@ I record results with their environment and artifact. This page is evidence abou
 
 | Check | Recorded result | Scope |
 | --- | --- | --- |
-| Regression | **190 tests passed in 19.82 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
+| Regression | **212 tests passed in 21.39 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
 | Static review | Ruff and Bandit passed on the reviewed source; repeat on each release. | Source checks, not proof of no vulnerabilities. |
 | Browser | Chromium chat, content review, unsafe-text handling, error recovery, mobile layout and sign-out tests passed. | Model replies mocked; interface behavior exercised. |
 | Telegram rendering | Synthetic preview accepted with six bold entities in MarkdownV2. | Actual Telegram delivery and parser; no claim about every generated message. |
 | Injection boundaries | Three distinct injected-action cases blocked without external calls or persistent writes. | Actual policy layer; model interpretation simulated. |
+| Weather freshness and recovery | Live Open-Meteo check returned today's data; offline tests cover next day, local midnight/DST, null/stale values, transient retry, rate limits and recovery. | No long-duration provider-availability guarantee. |
+| Local-outage failover | Real native/public gateway reached `gpt-6.1-sol` through OAuth with an unreachable test Ollama endpoint; public reply in 2.87 s. Private request held without cloud inference; after recovery, a real Gemma reply completed in 21.32 s. | Local sandbox with real OAuth inference; NVIDIA branch tested by fault injection, alongside the earlier live provider preflight. |
 | Model comparison | Three task types through live local Hermes, OAuth and Ollama; one initial local schema failure corrected and successfully retested. | [Measured report](PERFORMANCE_REPORT.md). |
 | Local serving | Gemma 4 E2B; 65,536 context; full tool turn completed. | Model allocation after retest: 7,428,940,802 bytes; not whole-system peak RAM. |
 | Load / stress | 100/100 mocked requests at concurrency 4; p95 22.084 ms. Concurrency 32: four successes, 252 bounded HTTP 429s, then 10/10 recovery successes. | Fake 20-ms upstream; not model or cloud throughput. |
@@ -30,7 +32,7 @@ These probes have distinct scopes. The [release checklist](FINAL_REVIEW.md) repe
 
 ## Artifact-specific image evidence
 
-The `ba45c35` candidate passed [isolated validation](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44193721357), the [native image gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44193721370), and [approved publication](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44195006786). Artifact Registry confirms digest `sha256:2d4c6c096ffd2f3aa2d409bcb597880714af3c543dc5ed7e28eeae6b1babf732` for that source. Publication is separate from production deployment and observation.
+The published `ba45c35` checkpoint passed [isolated validation](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44193721357), the [native image gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44193721370), and [approved publication](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44195006786). Artifact Registry confirms digest `sha256:2d4c6c096ffd2f3aa2d409bcb597880714af3c543dc5ed7e28eeae6b1babf732` for that source. Publication is separate from production deployment and observation.
 
 Every publish runs the image/profile gate again and retains raw findings. Exact-version dispositions expire November 24; unknown Critical/High findings, profile drift or expired decisions block release. [Security register](SECURITY_REGISTER.md)
 

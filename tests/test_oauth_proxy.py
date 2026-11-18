@@ -128,3 +128,94 @@ def test_tool_identity_roundtrip():
     )
     assert transcript["messages"][0]["tool_calls"][0]["id"] == "call_test"
     assert transcript["messages"][1]["tool_call_id"] == "call_test"
+
+
+@pytest.mark.parametrize("failure", ["disconnect", "timeout", "deadline"])
+async def test_local_outage_uses_real_oauth_contract_without_paid_key(settings, failure):
+    import asyncio
+
+    seen = []
+    online = False
+
+    async def transport(request):
+        seen.append(request.url.host)
+        if request.url.host == "host.docker.internal":
+            if online:
+                return httpx.Response(
+                    200,
+                    json={
+                        "model": "gemma4:e2b",
+                        "done": True,
+                        "message": {"role": "assistant", "content": "42"},
+                    },
+                )
+            if failure == "deadline":
+                await asyncio.sleep(10)
+            if failure == "timeout":
+                raise httpx.ReadTimeout("synthetic timeout")
+            raise httpx.ConnectError("synthetic disconnect")
+        assert request.url.host == "chatgpt.com"
+        assert request.headers["authorization"] == "Bearer synthetic-native-oauth"
+        return httpx.Response(
+            200,
+            text="data: "
+            + json.dumps({"type": "response.completed", "response": completion()})
+            + "\n\n",
+        )
+
+    s = replace(
+        settings,
+        primary_auth="oauth",
+        primary_model="synthetic-oauth-model",
+        primary_key="",
+        paid_calls=False,
+        timeout=1,
+    )
+    client = httpx.AsyncClient(transport=httpx.MockTransport(transport))
+    parent = Router(s, cloud=client, local=client)
+    body = {"model": s.primary_model, "input": [{"role": "user", "content": "What is 17 plus 25?"}]}
+    adapter = OAuthRouter(parent, body, {"authorization": "Bearer synthetic-native-oauth"})
+    try:
+        assert (await adapter.complete(chat_payload(body)))["model"] == s.primary_model
+        assert seen == ["host.docker.internal", "chatgpt.com"]
+        online = True
+        assert (await adapter.complete(chat_payload(body)))["model"] == "gemma4:e2b"
+        assert seen == ["host.docker.internal", "chatgpt.com", "host.docker.internal"]
+    finally:
+        await parent.close()
+
+
+async def test_local_and_oauth_transient_failure_use_nvidia_without_oauth_leak(settings, store):
+    seen = []
+
+    def transport(request):
+        seen.append(request.url.host)
+        if request.url.host == "host.docker.internal":
+            raise httpx.ConnectError("offline")
+        if request.url.host == "chatgpt.com":
+            return httpx.Response(503)
+        assert request.url.host == "integrate.api.nvidia.com"
+        assert request.headers["authorization"] == "Bearer synthetic-cloud-key"
+        assert "synthetic-native-oauth" not in str(request.headers)
+        return httpx.Response(
+            200,
+            json={
+                "model": "synthetic-nvidia",
+                "choices": [
+                    {"message": {"role": "assistant", "content": "42"}, "finish_reason": "stop"}
+                ],
+            },
+        )
+
+    s = replace(settings, primary_auth="oauth", primary_model="synthetic-oauth-model")
+    client = httpx.AsyncClient(transport=httpx.MockTransport(transport))
+    parent = Router(s, cloud=client, local=client, store=store)
+    body = {"model": s.primary_model, "input": [{"role": "user", "content": "What is 17 plus 25?"}]}
+    try:
+        result = await OAuthRouter(
+            parent, body, {"authorization": "Bearer synthetic-native-oauth"}
+        ).complete(chat_payload(body))
+        assert result["model"] == "synthetic-nvidia"
+        assert seen == ["host.docker.internal", "chatgpt.com", "integrate.api.nvidia.com"]
+    finally:
+        await parent.close()
