@@ -7,7 +7,7 @@
   "cpu": "1",
   "memory": "2Gi",
   "blockers": [
-    "Publish and approve scheduler-corrected image and private-IP configuration"
+    "Explicit approval of the corrected image and runtime configuration is required"
   ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
@@ -23,9 +23,9 @@
     "a3-runtime-env": "3",
     "a3-tailscale-auth-key": "1"
   },
-  "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:5c99eb0e5f2931a25c08c90e9133c780be8e722b5697ff125f4112d8263b0640",
-  "source_commit": "9297bd477d5980062500027fd86a204ac823f274",
+  "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:f909af14aaa3119ea5da1a4de90e238098bbeae1ae7baa5b298eadbc069303ec",
+  "source_commit": "91858b8980aac6233fcc9fa9483f394bf8192edf",
   "live_acceptance_pending": true,
-  "authorization": "Arya explicitly approved this exact image, us-west1, 1 vCPU/2 GiB and live acceptance on November 17, 2026; GitHub production review remains required.",
+  "authorization": "Previous approval covered the prior image; exact corrected image and runtime-env version 3 require release approval.",
   "region": "us-west1"
 }
