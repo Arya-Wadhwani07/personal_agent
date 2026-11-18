@@ -59,3 +59,60 @@ async def test_supervisor_stops_all_children(settings, monkeypatch, shutdown):
     assert [p.role for p in children] == ["policy", "seed", "gateway", "edge"]
     assert all(p.returncode is not None for p in children)
     assert events == ["initialize", "policy", "restored", "initialize", "seed", "gateway", "edge"]
+
+
+@pytest.mark.parametrize("mode", ["slow_success", "timeout", "signal"])
+async def test_initializer_deadline_and_shutdown_clean_up_every_process(settings, monkeypatch, mode):
+    children, handlers = [], []
+    class Process:
+        def __init__(self, role):
+            self.role, self.returncode = role, None
+            self.stopped = asyncio.Event()
+        async def wait(self):
+            if self.role == "seed" and mode == "slow_success":
+                await asyncio.sleep(0.03)
+                self.returncode = 0
+                return 0
+            if self.role == "gateway":
+                self.returncode = 1
+                return 1
+            await self.stopped.wait()
+            return self.returncode
+        def terminate(self):
+            self.returncode = -15
+            self.stopped.set()
+        def kill(self):
+            self.returncode = -9
+            self.stopped.set()
+    async def spawn(*command):
+        role = ("seed" if command[-1].endswith("seed_jobs.py") else
+                "gateway" if command[-1].endswith("gateway_launcher") else command[-1])
+        process = Process(role)
+        children.append(process)
+        if role == "seed" and mode == "signal":
+            asyncio.get_running_loop().call_soon(handlers[0])
+        return process
+    class Health:
+        async def __aenter__(self):
+            return self
+        async def __aexit__(self, *args):
+            pass
+        async def get(self, url, **kwargs):
+            return SimpleNamespace(status_code=200)
+    assert runtime.SCHEDULE_STARTUP_SECONDS == 120
+    monkeypatch.setattr(runtime, "SCHEDULE_STARTUP_SECONDS", 0.1 if mode == "slow_success" else 0.01)
+    monkeypatch.setattr(runtime.Settings, "from_env", lambda: settings)
+    monkeypatch.setattr(runtime, "initialize", lambda s: None)
+    monkeypatch.setattr(runtime.asyncio, "create_subprocess_exec", spawn)
+    monkeypatch.setattr(asyncio.get_running_loop(), "add_signal_handler",
+                        lambda sig, handler: handlers.append(handler))
+    import httpx
+    monkeypatch.setattr(httpx, "AsyncClient", lambda **kwargs: Health())
+    if mode == "timeout":
+        with pytest.raises(RuntimeError, match="initialization deadline"):
+            await runtime.serve()
+    else:
+        assert await runtime.serve() == (0 if mode == "signal" else 1)
+    assert all(p.returncode is not None for p in children)
+    if mode != "slow_success":
+        assert [p.role for p in children] == ["policy", "seed"]

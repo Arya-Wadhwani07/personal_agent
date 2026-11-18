@@ -64,3 +64,5 @@ Operational incidents retain actual timestamps. The source freeze does not hide 
 - My NWS fallback validates the exact HTTPS API host/gridpoint path before following a returned reference. Freshness, timezone conversion, numeric bounds and forecast-versus-observation labeling have regression coverage.
 - My daily LinkedIn recommendation fetches only Tavily’s fixed API origin. Returned links must be public post/activity paths; profiles, login links, spoofed hosts and embedded credentials are rejected. Search previews remain untrusted data and cannot authorize memory changes or sends.
 - Daily caching, a 30-selection history bound, serialized selection and the existing paid-search quota limit repeated requests. These controls do not guarantee third-party availability or the accuracy of every indexed preview.
+
+- **Initializer cleanup:** The native schedule initializer remains supervised until it exits. Deadline or shutdown paths terminate it; successful completion removes it from the running-child watch set. Regression tests exercise all three paths, preventing a timed-out initialization process from being left unmanaged.

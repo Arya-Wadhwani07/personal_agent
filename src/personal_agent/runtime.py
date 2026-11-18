@@ -11,6 +11,8 @@ import sys
 from .audit import emit
 from .settings import Settings
 
+SCHEDULE_STARTUP_SECONDS = 120
+
 SYSTEM = """My assistant is named Monday. I use this assistant only with a fictional class-only profile. My name in this profile is Alex Chen,
 a fictional student interested in Agentic AI. My city is Los Angeles and my timezone is America/Los_Angeles.
 I prefer concise natural first-person drafts with source links. My available tools are the assignment3 toolset only.
@@ -140,8 +142,32 @@ async def serve():
         seed = await asyncio.create_subprocess_exec(
             sys.executable, str(Path(__file__).resolve().parents[2] / "scripts" / "seed_jobs.py")
         )
-        if await asyncio.wait_for(seed.wait(), 20):
-            raise RuntimeError("Native schedule initialization failed")
+        # Keep the initializer in the cleanup set until it has actually exited.
+        # A cold native import can exceed 20 seconds on the one-vCPU Instance.
+        processes.append(seed)
+        emit("startup", component="scheduler", outcome="starting")
+        seed_wait = asyncio.create_task(seed.wait())
+        stop_wait = asyncio.create_task(stop.wait())
+        try:
+            done, _ = await asyncio.wait(
+                [seed_wait, stop_wait], timeout=SCHEDULE_STARTUP_SECONDS,
+                return_when=asyncio.FIRST_COMPLETED,
+            )
+            if stop.is_set():
+                crashed = False
+                return 0
+            if seed_wait not in done:
+                emit("startup", component="scheduler", outcome="timeout")
+                raise RuntimeError("Native schedule initialization deadline exceeded")
+            if seed_wait.result():
+                raise RuntimeError("Native schedule initialization failed")
+        finally:
+            for task in (seed_wait, stop_wait):
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(seed_wait, stop_wait, return_exceptions=True)
+        processes.remove(seed)
+        emit("startup", component="scheduler", outcome="ready")
         for command in commands[1:]:
             processes.append(await asyncio.create_subprocess_exec(*command))
         waits = [asyncio.create_task(p.wait()) for p in processes]

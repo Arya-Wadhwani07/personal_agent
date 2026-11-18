@@ -183,3 +183,7 @@ The morning **Today’s AI read** section uses the existing Tavily key and quota
 ## My scheduled-job rehearsal
 
 I invoke the actual native job through the administrator-only Hermes run-now interface when rehearsing briefing/recap delivery. Cloud Run SSH uses Cloud OS Login in my project; SSH tooling and keys stay in my ignored project cache. The native administration API remains loopback-only, separate from the public browser interface. I never expose its credentials in commands, documentation or video.
+
+### Startup readiness
+
+I wait for HTTP 200 from `/health` after deployment or a controlled pre-observation restart. Native schedule initialization has a 120-second deadline; the supervisor cleans up the initializer on timeout or shutdown. The Cloud Run startup probe and live acceptance remain separate from a successful image upload. I never start the observation clock from a deployment button click alone.

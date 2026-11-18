@@ -6,12 +6,12 @@ I record results with their environment and artifact. This page is evidence abou
 
 | Check | Recorded result | Scope |
 | --- | --- | --- |
-| Regression | **241 tests passed in 26.91 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
+| Regression | **244 tests passed in 25.83 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
 | Static review | Ruff and Bandit passed on the reviewed source; repeat on each release. | Source checks, not proof of no vulnerabilities. |
 | Browser | Chromium chat, content review, unsafe-text handling, error recovery, mobile layout and sign-out tests passed. | Model replies mocked; interface behavior exercised. |
 | Telegram rendering | Synthetic preview accepted with six bold entities in MarkdownV2. | Actual Telegram delivery and parser; no claim about every generated message. |
 | Injection boundaries | Three distinct injected-action cases blocked without external calls or persistent writes. | Actual policy layer; model interpretation simulated. |
-| Weather freshness and recovery | Local Open-Meteo checks passed; live Cloud Run acceptance exposed a TLS timeout. Direct NWS calls succeeded from that Instance. The corrected adapter has offline fallback, freshness, period/unit and URL validation tests. | No long-duration provider-availability guarantee. |
+| Weather freshness and recovery | Local Open-Meteo checks passed; live Cloud Run acceptance exposed a TLS timeout. The deployed NWS fallback subsequently returned fresh named-period forecasts from that Instance. Offline tests also cover fallback freshness, period/unit and URL validation. | No long-duration provider-availability guarantee. |
 | Local-outage failover | Real native/public gateway reached `gpt-6.1-sol` through OAuth with an unreachable test Ollama endpoint; public reply in 2.87 s. Private request held without cloud inference; after recovery, a real Gemma reply completed in 21.32 s. | Local sandbox with real OAuth inference; NVIDIA branch tested by fault injection, alongside the earlier live provider preflight. |
 | Model comparison | Three task types through live local Hermes, OAuth and Ollama; one initial local schema failure corrected and successfully retested. | [Measured report](PERFORMANCE_REPORT.md). |
 | Local serving | Gemma 4 E2B; 65,536 context; full tool turn completed. | Model allocation after retest: 7,428,940,802 bytes; not whole-system peak RAM. |
@@ -56,3 +56,9 @@ My isolated regression suite verifies meeting-alert dates, local start/end times
 The corrected source adds NWS fallback after the measured cloud-only Open-Meteo failure, plus an indexed LinkedIn daily reading recommendation. The 241-test offline run covers weather failure/recovery, fallback URL restrictions, preview-only evidence, daily caching and duplicate avoidance. Its native publication passed; exact-image live acceptance remains a separate release step. The currently deployed prior image does not include these changes.
 
 On the prior `414dfef` deployment, I verified real memory persistence/recall, both model paths, an owner-confirmed Telegram reply, an owner-confirmed timed meeting alert, and actual scheduled morning delivery. The alert record includes November 17, 9:45–10:45 PM PST. The owner confirmed the briefing’s other sections looked good; weather failure is preserved as the reason for this correction. The 48-hour interval has not started.
+
+### Native initialization correction
+
+Live startup of the weather/reading image exceeded the supervisor’s 20-second native schedule-initialization limit and retried before becoming healthy. I retained that trace and corrected the limit to a bounded 120 seconds. The initializer now belongs to the cleanup set until successful completion; timeout and shutdown terminate it. The 244-test regression suite includes slow initialization, deadline failure and shutdown cleanup. This startup correction needs its own published artifact and cold-restart acceptance before observation.
+
+On the deployed `f478e61` image, the weather tool returned HTTP 200 with NWS forecast periods after the primary timeout (16.41 seconds total). The daily-reading tool returned HTTP 200 with a real indexed LinkedIn AI-post preview (3.52 seconds). Both deployed adapter source hashes matched the reviewed source. These are live feature results; they do not waive the separately observed startup timeout or replace final restart acceptance.

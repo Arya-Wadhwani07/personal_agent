@@ -94,3 +94,5 @@ My release procedure is in [FINAL_REVIEW.md](agent_docs/FINAL_REVIEW.md). Earlie
 
 - **Cloud-only weather failure:** The deployed briefing attempted its weather tool, but Open-Meteo’s TLS handshake timed out from Cloud Run. A direct NWS check succeeded from the same Instance. With Codex assistance, I added a bounded fallback that preserves forecast dates and sources rather than reusing stale weather.
 - **Daily reading refinement:** I expanded my morning briefing to recommend one AI-related LinkedIn post using an explicitly labeled public search preview. Daily caching and recent-selection history keep the recommendation useful without repeated searches or LinkedIn account access.
+
+- **Startup timing and cleanup:** Live deployment exposed a 20-second timeout during native schedule initialization. With Codex assistance, I increased the bounded allowance to 120 seconds and corrected child-process cleanup, then tested slow initialization, timeout and shutdown behavior. The clock stays stopped until the final artifact passes recovery checks.

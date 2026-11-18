@@ -413,3 +413,7 @@ My gateway admits at most two simultaneous turns so browser checks and Telegram 
 My `a3_ai_reading` tool uses a fixed Tavily query and `include_domains` filter to select one AI-related post preview. A separate URL validator accepts only HTTPS LinkedIn post/activity paths, strips tracking fields, and rejects profiles, login pages and spoofed hosts. No LinkedIn page is fetched. A bounded `daily_reading` SQLite table preserves 30 daily selections across restarts; an async lock prevents duplicate searches on overlapping requests. Existing Tavily usage reservations cover this search. The draft-writing skill’s source rules remain separate.
 
 References: [Tavily Search API](https://docs.tavily.com/documentation/api-reference/search), [NWS API](https://www.weather.gov/documentation/services-web-api).
+
+### Bounded native scheduler initialization
+
+My supervisor allows up to 120 seconds for native schedule reconciliation on the one-vCPU Instance. The previous 20-second limit caused a measured startup timeout. The initializer stays in the supervised process set until it exits successfully; timeout or shutdown terminates it with the other children. Shutdown interrupts initialization promptly. Startup emits sanitized scheduler starting/ready/timeout events, and the public health endpoint stays unavailable until the gateway and policy layer are ready.
