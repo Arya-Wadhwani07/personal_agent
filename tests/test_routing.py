@@ -1,6 +1,7 @@
 # I developed this file with Codex assistance; see PROCESS_LOG.md.
 import json
 from dataclasses import replace
+from uuid import UUID
 
 import httpx
 import pytest
@@ -42,8 +43,14 @@ def test_task_selection(text, route, kind):
     assert (actual.route, actual.task_type) == (route, kind)
 
 
-async def test_private_never_cloud_even_when_local_fails(settings, caplog):
+async def test_private_never_cloud_even_when_local_fails(settings, caplog, monkeypatch):
     calls = []
+    sensitive_marker = "SYNTHETIC-SECRET-QZ!not-metadata"
+    # Reproduce the harmless request-ID collision that made the old substring check flaky.
+    monkeypatch.setattr(
+        "personal_agent.routing.uuid.uuid4",
+        lambda: UUID("7c462846-5ba6-4f38-9529-83dff6b07999"),
+    )
 
     def cloud(request):
         calls.append("cloud")
@@ -56,10 +63,11 @@ async def test_private_never_cloud_even_when_local_fails(settings, caplog):
     caplog.set_level("INFO", logger="a3.audit")
     with pytest.raises(RouteError, match="held"):
         await router.complete(
-            {"messages": [{"role": "user", "content": "confidential locker code 999"}]}
+            {"messages": [{"role": "user", "content": f"confidential locker code {sensitive_marker}"}]}
         )
     assert calls == []
-    assert "locker" not in caplog.text and "999" not in caplog.text
+    assert "locker" not in caplog.text and sensitive_marker not in caplog.text
+    assert "7c4628465ba64f38952983dff6b07999" in caplog.text
     assert '"outcome":"held"' in caplog.text
 
 
