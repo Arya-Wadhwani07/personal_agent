@@ -20,6 +20,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   release:
+    env:
+      CLOUDSDK_CORE_DISABLE_PROMPTS: "1"
     if: inputs.operation == 'deploy'
     environment: production
     runs-on: ubuntu-latest
@@ -40,6 +42,11 @@ jobs:
           workload_identity_provider: projects/1043695272988/locations/global/workloadIdentityPools/a3-github/providers/github
           service_account: a3-deploy@assignment3-515003.iam.gserviceaccount.com
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db
+        with:
+          version: "591.0.0"
+          install_components: beta
+      - name: Verify Instance command availability
+        run: gcloud beta run instances deploy --help > /dev/null
       - name: Fetch pinned private environment configuration
         run: |
           mkdir -p .cache/cloud

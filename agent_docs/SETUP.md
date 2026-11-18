@@ -70,6 +70,8 @@ docker run --rm --network none --read-only --cap-drop ALL \
 
 ## Publish and deploy
 
+My deployment job installs Cloud SDK 591.0.0 with the `beta` component explicitly, disables interactive prompts and checks Instance command availability before deployment. This avoids an unattended runner stopping to request component installation. [Action configuration](https://github.com/google-github-actions/setup-gcloud#inputs)
+
 1. I open **Actions → Approved Cloud Run Instance release → Run workflow**.
 2. For a new image, I select `main`, choose **publish** and leave `image_digest` empty. I approve the production job when GitHub requests it.
 3. I review the test/security results and the published immutable digest.
