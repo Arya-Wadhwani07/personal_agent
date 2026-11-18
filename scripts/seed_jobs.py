@@ -2,6 +2,7 @@
 """Reconcile my managed native Hermes jobs without erasing history or resuming paused jobs."""
 
 import os
+import tempfile
 from pathlib import Path
 
 from cron.jobs import create_job, list_jobs, parse_schedule, update_job
@@ -20,11 +21,28 @@ PRESENTATION = (
 MANAGED_NAMES = {"a3-checkpoint", "a3-morning", "a3-recap", "a3-content", "a3-alerts"}
 
 
+def install_scripts():
+    """Install only reviewed entrypoints inside the native scheduler's allowed root."""
+    home = Path(os.environ["HERMES_HOME"])
+    directory = home / "scripts"
+    if directory.is_symlink():
+        raise RuntimeError("Native script directory must not be a symlink")
+    directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+    for name in ("checkpoint.py", "alerts.py"):
+        target = directory / name
+        if target.is_symlink():
+            raise RuntimeError("Native script entrypoint must not be a symlink")
+        source = Path(__file__).resolve().parent / name
+        with tempfile.NamedTemporaryFile(dir=directory, delete=False) as temporary:
+            temporary.write(source.read_bytes())
+            staging = Path(temporary.name)
+        staging.replace(target)
+
+
 def definitions(owner):
-    here = Path(__file__).resolve().parent
     jobs = [{
         "name": "a3-checkpoint", "schedule": "* * * * *", "prompt": None,
-        "script": str(here / "checkpoint.py"), "no_agent": True, "deliver": "local",
+        "script": "checkpoint.py", "no_agent": True, "deliver": "local",
         "enabled_toolsets": [], "timezone": "America/Los_Angeles", "catch_up": False,
     }]
     if not owner.isascii() or not owner.isdigit():
@@ -56,13 +74,14 @@ def definitions(owner):
         })
     jobs.append({
         "name": "a3-alerts", "schedule": "*/5 * * * *", "prompt": None,
-        "script": str(here / "alerts.py"), "no_agent": True, "deliver": "local",
+        "script": "alerts.py", "no_agent": True, "deliver": "local",
         "enabled_toolsets": [], "timezone": "America/Los_Angeles", "catch_up": False,
     })
     return jobs
 
 
 def reconcile(owner):
+    install_scripts()
     existing = {}
     for job in list_jobs(include_disabled=True):
         if job["name"] not in MANAGED_NAMES:

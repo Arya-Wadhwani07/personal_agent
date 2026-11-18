@@ -34,7 +34,7 @@ I never paste passwords, tokens, callback URLs or credential JSON into chat, Git
 - **Email gate:** `A3_EMAIL_ENABLED` defaults to `false`. I enable it only after preparing dedicated class-only mailboxes with made-up data. A disabled gate prevents reads and sends without consuming an approval.
 - **Current local profile:** after reporting promotional-mail cleanup on November 17, I enabled the gate and started fresh conversation/activity state. Earlier state is privately quarantined under ignored `private/`; it must not enter grader evidence or be restored into the clean profile.
 - **NVIDIA:** the existing authorized key is now present in my ignored local `.env`; no new key is needed. Local paid calls remain disabled. A configured key alone does not enable paid inference.
-- **Cloud release:** `a3-runtime-env` version 2 contains the reviewed email gate. The release configuration pins this version; image publication and live acceptance are separate gates.
+- **Cloud release:** `a3-runtime-env` version 3 contains the reviewed email gate and private-IP Ollama endpoint. The release configuration pins this version; image publication and live acceptance are separate gates.
 
 ## Run and test locally
 
@@ -164,3 +164,8 @@ Real bootstrap, rotation and fresh-profile recovery passed. Full deployed restar
 - A read-only weather request can retry once after a connection failure, timeout or server error, within an 18-second total bound. Rate limits and invalid/configuration requests are not repeatedly retried. An unavailable source does not justify invented weather.
 - Ordinary local requests fall back to **OpenAI OAuth**, then NVIDIA on a transient OpenAI failure. Private requests remain held locally under my selected privacy policy.
 - The weather checks cover local midnight, the next day and DST. Native gateway checks verify actual OpenAI fallback with a disconnected test Ollama endpoint; fault-injection tests cover the NVIDIA branch and recovery.
+
+## Native scheduler and private inference configuration
+
+- My checkpoint and alert entrypoints are installed from the reviewed image into `$HERMES_HOME/scripts` before jobs are reconciled. Native path restrictions remain enabled; an execution test verifies both scripts and rejects an escape.
+- The cloud Ollama URL uses the verified Mac Tailscale IPv4 address through the userspace SOCKS proxy. Access remains limited by the existing tailnet rule; deployed local inference is checked separately from cloud fallback.

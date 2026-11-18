@@ -165,7 +165,7 @@ stateDiagram-v2
 | Alerts | Every five minutes | Fresh urgent email and upcoming-meeting checks with deduplication. |
 | Checkpoint | Every minute | Durable state checkpoint and operational heartbeat. |
 
-`seed_jobs.py` reconciles these native jobs without erasing history or resuming an intentional pause. A missing owner pauses notification jobs; duplicate managed names stop initialization. Cron response wrapping is disabled. Concise bold headings and Unicode bullets replace job IDs and management footers.
+`seed_jobs.py` installs the two reviewed script entrypoints inside `$HERMES_HOME/scripts`, preserving Hermes’s script-directory restriction, and reconciles these native jobs without erasing history or resuming an intentional pause. A missing owner pauses notification jobs; duplicate managed names stop initialization. Cron response wrapping is disabled. Concise bold headings and Unicode bullets replace job IDs and management footers.
 
 Weather is fetched anew for each invocation, checked against the current local date and a three-hour observation freshness bound, and validated for numeric values and units. Only weather GETs retry once on transport/timeouts/5xx within an 18-second total deadline; 429 and configuration errors do not trigger repeated requests. Failed weather remains explicitly unavailable.
 

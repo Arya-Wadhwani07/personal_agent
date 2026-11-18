@@ -1,12 +1,14 @@
 {
-  "ready": true,
+  "ready": false,
   "frozen": false,
   "project": "assignment3-515003",
   "budget_usd": 4,
   "instance": "assignment3-personal-agent",
   "cpu": "1",
   "memory": "2Gi",
-  "blockers": [],
+  "blockers": [
+    "Publish and approve scheduler-corrected image and private-IP configuration"
+  ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
   "secret_versions": {
@@ -18,7 +20,7 @@
     "a3-google-refresh-token": "1",
     "a3-tavily-key": "1",
     "a3-hermes-oauth": "1",
-    "a3-runtime-env": "2",
+    "a3-runtime-env": "3",
     "a3-tailscale-auth-key": "1"
   },
   "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:5c99eb0e5f2931a25c08c90e9133c780be8e722b5697ff125f4112d8263b0640",

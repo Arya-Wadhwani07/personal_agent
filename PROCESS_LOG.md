@@ -42,6 +42,7 @@ Tailscale, private tailnet access rules and Hermes scheduling were new to me, an
 | Deployment region and source freeze | The final guide review caught an unsupported Instance region and a helper that changed configuration after the clock started. | The target is us-west1; freezing and pushing source now precede the observation start. |
 | Weather and disconnected local inference | I asked for next-day weather and failover checks before freezing the release. | Date-rollover/outage tests cover weather, and a real native-gateway check reached OpenAI OAuth when the test Ollama connection was unavailable. |
 | Deployment runner setup | The first deployment attempt stopped because the runner tried to install gcloud beta interactively. | With Codex assistance, I made the workflow install the component explicitly and check the Instance command before deployment. |
+| Native scheduler path restriction | Live acceptance showed that Hermes refused scripts stored outside its profile script directory. | With Codex assistance, I installed the reviewed scripts in the permitted directory and added an actual native-execution test without relaxing the guard. |
 | Unused repository material | I requested a reference-based cleanup before the final release. | Two unconsumed configuration files and one unused version constant were removed; framework callbacks and operational scripts were retained. |
 
 ## 5. Substantial AI-assisted code attribution

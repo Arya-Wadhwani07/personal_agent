@@ -6,7 +6,7 @@ I record results with their environment and artifact. This page is evidence abou
 
 | Check | Recorded result | Scope |
 | --- | --- | --- |
-| Regression | **212 tests passed in 21.39 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
+| Regression | **213 tests passed in 23.71 seconds** on November 17. | Offline Docker, disposable state, 4 CPUs/4 GiB. |
 | Static review | Ruff and Bandit passed on the reviewed source; repeat on each release. | Source checks, not proof of no vulnerabilities. |
 | Browser | Chromium chat, content review, unsafe-text handling, error recovery, mobile layout and sign-out tests passed. | Model replies mocked; interface behavior exercised. |
 | Telegram rendering | Synthetic preview accepted with six bold entities in MarkdownV2. | Actual Telegram delivery and parser; no claim about every generated message. |
@@ -16,6 +16,7 @@ I record results with their environment and artifact. This page is evidence abou
 | Model comparison | Three task types through live local Hermes, OAuth and Ollama; one initial local schema failure corrected and successfully retested. | [Measured report](PERFORMANCE_REPORT.md). |
 | Local serving | Gemma 4 E2B; 65,536 context; full tool turn completed. | Model allocation after retest: 7,428,940,802 bytes; not whole-system peak RAM. |
 | Load / stress | 100/100 mocked requests at concurrency 4; p95 22.084 ms. Concurrency 32: four successes, 252 bounded HTTP 429s, then 10/10 recovery successes. | Fake 20-ms upstream; not model or cloud throughput. |
+| Native scheduled scripts | Both reviewed scripts executed through Hermes’s scheduler against a synthetic local service; out-of-directory paths remained blocked. | Regression added after live acceptance exposed the original path error. |
 | Source integrity | Five PDF hashes unchanged; 19 extracted files match ZIP members; 94 stable requirement IDs. | Original documents retained locally. |
 
 ## Integration and delivery evidence
