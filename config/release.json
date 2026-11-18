@@ -1,14 +1,12 @@
 {
-  "ready": false,
+  "ready": true,
   "frozen": false,
   "project": "assignment3-515003",
   "budget_usd": 4,
   "instance": "assignment3-personal-agent",
   "cpu": "1",
   "memory": "2Gi",
-  "blockers": [
-    "Exact-image production approval required for weather fallback and daily reading"
-  ],
+  "blockers": [],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
   "secret_versions": {
@@ -26,6 +24,6 @@
   "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:dec449692d77d0f78c4b8246f20b933224cec07eb6ec1053f8756f08ffaecf50",
   "source_commit": "f478e61735824eab9257687031caaf7e1a862fea",
   "live_acceptance_pending": true,
-  "authorization": "The previous image approval remains recorded; the weather and daily reading candidate requires exact-image approval.",
+  "authorization": "Arya explicitly approved the weather/daily-reading image, runtime-env version 3, us-west1, 1 vCPU/2 GiB and live acceptance on November 17, 2026; GitHub production review remains required.",
   "region": "us-west1"
 }
