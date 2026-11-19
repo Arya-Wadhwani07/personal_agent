@@ -1,6 +1,6 @@
 {
   "ready": true,
-  "frozen": false,
+  "frozen": true,
   "project": "assignment3-515003",
   "budget_usd": 4,
   "instance": "assignment3-personal-agent",
@@ -23,7 +23,7 @@
   },
   "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:256822becc020a9217b442f5d834c3509fdc859846f70d00032a192d5335d36c",
   "source_commit": "217934bb98a686854a8d1c5fb2f1357772cfcb95",
-  "live_acceptance_pending": true,
+  "live_acceptance_pending": false,
   "authorization": "I explicitly approved the tested connection-recovery repair, the observation-freeze exception, documentation updates, commit/push, publication and controlled redeployment through the existing CI/security and production-review gates. Models, resources, secrets and the $4 budget stay unchanged. I retain the original observation interval and record the interruption.",
   "region": "us-west1",
   "observation_exception": {
