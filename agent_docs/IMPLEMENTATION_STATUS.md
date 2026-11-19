@@ -93,6 +93,10 @@ During observation, a private request failed after 5.005 seconds at 07:35:03 UTC
 
 - **Source repair:** up to two retries for failed connection establishment, bounded by the existing deadline; no uncertain inference replay or private-cloud fallback.
 - **Regression:** 256 isolated tests passed in 40.24 seconds. The new recovery test fails against the unchanged baseline, reproducing the missing recovery behavior. Ruff and targeted Bandit checks passed.
-- **Authorization:** I approved the freeze exception, documentation updates, commit/push, protected publication and controlled redeployment. The release gate remains closed to deployment until the new published image is verified and pinned.
+- **Authorization:** I approved the freeze exception, documentation updates, commit/push, protected publication and controlled redeployment. The replacement image passed protected publication and is verified/pinned for the already-authorized deployment.
 - **Evidence integrity:** my original interval starts at 2026-11-18T06:26:54.455177Z. Its 24-hour-49-minute snapshot contains a 318.413-second heartbeat gap and a failed evening recap. I retain these results and record the repair separately; this is not uninterrupted availability.
 - **Scope:** these are source-level results, not a claim that the repair is already deployed or that the network's root cause is fixed. Models, resource allocation and the $4 budget are unchanged.
+
+### Verified recovery image
+
+The repair is published from source `217934bb98a686854a8d1c5fb2f1357772cfcb95`. [Hosted validation](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44490792934), the [runtime vulnerability gate](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44490792947) and [protected native publication](https://github.com/Arya-Wadhwani07/personal_agent/actions/runs/44491434462) passed. Registry content hashes, Linux/amd64 architecture and the matching source label are verified for `sha256:256822becc020a9217b442f5d834c3509fdc859846f70d00032a192d5335d36c`. My existing maintenance approval covers this tested repair; live replacement and acceptance results are recorded separately when they occur.
