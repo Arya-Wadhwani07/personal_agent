@@ -88,9 +88,9 @@ flowchart TB
 
 ## A5. Hybrid routing, privacy, and model failure
 
-The router evaluates privacy before long-context or reasoning preferences. Private user history, private tool context and persisted session privacy select local Gemma. Non-private long-context/reasoning work uses OpenAI OAuth; simple work uses local inference. An ordinary local failure tries OpenAI OAuth first, then NVIDIA after a transient primary failure. Private local failure is held. Each provider has a bounded attempt; a recovered local connection is reconsidered on the next eligible turn.
+The router evaluates privacy before long-context or reasoning preferences. Private user history, private tool context and persisted session privacy select local Gemma. Non-private long-context/reasoning work uses OpenAI OAuth; simple work uses local inference. An ordinary local failure tries OpenAI OAuth first, then NVIDIA after a transient primary failure. Private local failure is held. Local connection establishment gets at most three attempts, with 0.5-second and 1-second backoff, within the existing total request deadline. Only proxy, connection and connection-timeout errors qualify. Read/write errors, invalid responses and inference timeouts are not replayed. Persistent private failure remains held; cloud-eligible failure continues through the existing provider chain.
 
-Hermes owns OAuth login and refresh. My proxy forwards its authenticated request and does not repurpose a ChatGPT credential as a paid API key. Each actual inference attempt records time, route, reason, model and outcome without message text. `A3_SIMULATE_PRIMARY_429` and `A3_SIMULATE_429` support reversible failure tests without exhausting a provider quota.
+Hermes owns OAuth login and refresh. My proxy forwards its authenticated request and does not repurpose a ChatGPT credential as a paid API key. Each provider invocation records time, route, reason, model and outcome without message text. Connection retries emit separate `local_connection_retry` metadata with the shared request ID and retry count; failed connection establishment is not recorded as completed inference. `A3_SIMULATE_PRIMARY_429` and `A3_SIMULATE_429` support reversible failure tests without exhausting a provider quota.
 
 Ollama receives `num_ctx=65536`, `think=false`, temperature 0.2 and bounded output. My [performance report](PERFORMANCE_REPORT.md) includes full gateway/tool turns and actual route evidence.
 
@@ -225,7 +225,7 @@ My application work and tests execute in approved Docker containers with project
 
 GitHub CI validates source. A separately approved publish job builds native amd64, runs tests, checks runtime/vulnerabilities and publishes an immutable image. The deploy job uses required production review, main-branch restrictions and exact ID-qualified OIDC claims. Publication alone does not deploy an Instance.
 
-The release configuration pins image, region, secret versions and spending authorization. After freeze, I collect evidence without modifying the deployed artifact or source repository.
+The release configuration pins image, region, secret versions and spending authorization. After freeze, I collect evidence without modifying the deployed artifact or source repository, except for an explicitly authorized repair. My November 19 connection-recovery exception retains the original interval, records release and interruption details, and restores the freeze after acceptance.
 
 ```mermaid
 flowchart LR

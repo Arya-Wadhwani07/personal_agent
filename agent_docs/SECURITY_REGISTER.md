@@ -66,3 +66,7 @@ Operational incidents retain actual timestamps. The source freeze does not hide 
 - Daily caching, a 30-selection history bound, serialized selection and the existing paid-search quota limit repeated requests. These controls do not guarantee third-party availability or the accuracy of every indexed preview.
 
 - **Initializer cleanup:** The native schedule initializer remains supervised until it exits. Deadline or shutdown paths terminate it; successful completion removes it from the running-child watch set. Regression tests exercise all three paths, preventing a timed-out initialization process from being left unmanaged.
+
+## Connection-retry review — November 19
+
+The local transport repair retries only connection-establishment errors, at most twice, within the existing deadline. Private context never crosses to cloud. Read/write failures, rejected responses and uncertain inference results are not replayed. Retry records contain only allowlisted metadata. Regression tests cover credential isolation, sticky privacy across compaction/restart, cancellation and the total deadline. The candidate passed 256 isolated tests, Ruff and a targeted Bandit check; each published image still requires its own runtime vulnerability gate. A persistent network failure remains an availability limitation.

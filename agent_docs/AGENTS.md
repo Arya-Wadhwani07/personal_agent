@@ -198,3 +198,7 @@ I keep source documentation descriptive and reproducible. I remove stale setup n
 My stated readiness target is 98–99/100 under the rubric. A readiness assessment is an estimate, not a grade guarantee, and does not replace any actual acceptance check or authorize deployment by itself.
 
 Once my observation starts, I make no source, Markdown, configuration, commit, push or deployment changes during the frozen interval. Operational state, logs, video and submission evidence remain separate, ignored artifacts. Recording the completed interval does not require a Markdown edit or another deployment.
+
+### Authorized connection-recovery exception — November 19
+
+I explicitly approved the tested local connection-recovery repair, affected documentation, commit/push, protected publication and controlled redeployment. This is a narrow exception to the observation freeze, not permission for unrelated changes. My models, private-local policy, resource allocation and $4 budget stay unchanged. I retain the original start timestamp and all failures, record the replacement image and actual interruption, and restore the freeze after live acceptance. The existing CI/security and GitHub production-review gates still apply.

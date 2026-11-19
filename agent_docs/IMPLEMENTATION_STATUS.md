@@ -86,3 +86,13 @@ My approved image is `sha256:968f8f63eeb20bdac1b67390b914dac8e93ae3e0ff9ace592bf
 **Model-quality limitation:** Two private arithmetic variants produced incorrect answers (`31` for `17 + 25`, and `72` for `12 times 9`). An explicit addition retest returned `42`; the exact video multiplication prompt returned `108`, and real local memory-tool turns succeeded. I preserve both failures and retests. Successful routing proves where inference ran, not that every model answer is correct. My first cloud request after recovery took 62.12 seconds, while the exact local video prompt took 0.66 seconds; these are observed turns, not latency guarantees.
 
 **Observation and submission:** Source is frozen before the genuine start timestamp is created. Ignored operational evidence and Cloud Storage retain the start manifest, interval logs and eventual completion report. The 48-hour interval and Zoom video are separate evidence deliverables; this source record does not claim their future completion or guarantee a grade.
+
+## Authorized connection-recovery repair — November 19
+
+During observation, a private request failed after 5.005 seconds at 07:35:03 UTC on November 19, followed by successful `gemma4:e2b` inference at 07:35:32 UTC. Earlier checks also alternated between SOCKS connection failure and successful local inference. Telegram remained intermittently affected despite successful API/calendar-tool probes; the underlying network cause is unconfirmed.
+
+- **Source repair:** up to two retries for failed connection establishment, bounded by the existing deadline; no uncertain inference replay or private-cloud fallback.
+- **Regression:** 256 isolated tests passed in 40.24 seconds. The new recovery test fails against the unchanged baseline, reproducing the missing recovery behavior. Ruff and targeted Bandit checks passed.
+- **Authorization:** I approved the freeze exception, documentation updates, commit/push, protected publication and controlled redeployment. The release gate remains closed to deployment until the new published image is verified and pinned.
+- **Evidence integrity:** my original interval starts at 2026-11-18T06:26:54.455177Z. Its 24-hour-49-minute snapshot contains a 318.413-second heartbeat gap and a failed evening recap. I retain these results and record the repair separately; this is not uninterrupted availability.
+- **Scope:** these are source-level results, not a claim that the repair is already deployed or that the network's root cause is fixed. Models, resource allocation and the $4 budget are unchanged.

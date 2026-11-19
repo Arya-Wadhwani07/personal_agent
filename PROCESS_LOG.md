@@ -96,3 +96,9 @@ My release procedure is in [FINAL_REVIEW.md](agent_docs/FINAL_REVIEW.md). Earlie
 - **Daily reading refinement:** I expanded my morning briefing to recommend one AI-related LinkedIn post using an explicitly labeled public search preview. Daily caching and recent-selection history keep the recommendation useful without repeated searches or LinkedIn account access.
 
 - **Startup timing and cleanup:** Live deployment exposed a 20-second timeout during native schedule initialization. With Codex assistance, I increased the bounded allowance to 120 seconds and corrected child-process cleanup, then tested slow initialization, timeout and shutdown behavior. The final artifact completed recovery checks before source freeze; the evidence records the separate stop/start recovery and successful state/model checks.
+
+## 8. Recovering an intermittent private connection
+
+During the observation period, Monday sometimes held private requests even though nearby cloud-to-local checks succeeded. With Codex assistance, I traced repeated five-second connection failures and separated those from local-model response quality. I approved a narrow maintenance exception for bounded connection retries, while keeping private requests local and preserving the original outage evidence.
+
+The repair adds regression coverage for transient recovery, persistent failure, privacy, credential isolation, cancellation and request deadlines. The new recovery test reproduces the original failure; the candidate passed 256 isolated tests. I distinguish these source checks from live acceptance of the replacement image, and I retain the original observation start instead of presenting a restarted or interrupted run as continuous.

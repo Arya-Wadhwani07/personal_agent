@@ -1,12 +1,14 @@
 {
-  "ready": true,
-  "frozen": true,
+  "ready": false,
+  "frozen": false,
   "project": "assignment3-515003",
   "budget_usd": 4,
   "instance": "assignment3-personal-agent",
   "cpu": "1",
   "memory": "2Gi",
-  "blockers": [],
+  "blockers": [
+    "Verify and pin the connection-recovery image after protected publication"
+  ],
   "primary_auth": "oauth",
   "oauth_secret_version": "1",
   "secret_versions": {
@@ -23,7 +25,14 @@
   },
   "reviewed_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:968f8f63eeb20bdac1b67390b914dac8e93ae3e0ff9ace592bffd25473c1b883",
   "source_commit": "405e284368fcd5f4d9f9a07bb7a044529a479be4",
-  "live_acceptance_pending": false,
-  "authorization": "I explicitly approved deployment of the verified startup-correction image sha256:968f8f63eeb20bdac1b67390b914dac8e93ae3e0ff9ace592bffd25473c1b883, live acceptance and one controlled recovery restart before observation. The project, region, resources, secret versions and $4 budget remain unchanged.",
-  "region": "us-west1"
+  "live_acceptance_pending": true,
+  "authorization": "I explicitly approved the tested connection-recovery repair, the observation-freeze exception, documentation updates, commit/push, publication and controlled redeployment through the existing CI/security and production-review gates. Models, resources, secrets and the $4 budget stay unchanged. I retain the original observation interval and record the interruption.",
+  "region": "us-west1",
+  "observation_exception": {
+    "approved_on": "2026-11-19",
+    "scope": "Bounded local connection-establishment retries; same models and privacy policy.",
+    "original_started_at": "2026-11-18T06:26:54.455177+00:00",
+    "previous_image": "us-central1-docker.pkg.dev/assignment3-515003/a3/agent@sha256:968f8f63eeb20bdac1b67390b914dac8e93ae3e0ff9ace592bffd25473c1b883",
+    "restore_freeze_after_acceptance": true
+  }
 }

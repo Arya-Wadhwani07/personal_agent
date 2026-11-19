@@ -96,7 +96,7 @@ async def test_oauth_private_session_survives_compaction_and_restart(settings):
             assert response.status_code == 200
             assert "Private request held" in response.text
         store.close()
-    assert len(seen) == 2
+    assert len(seen) == 6
     assert all(url == s.local_url for url in seen)
     await router.close()
 
@@ -216,6 +216,6 @@ async def test_local_and_oauth_transient_failure_use_nvidia_without_oauth_leak(s
             parent, body, {"authorization": "Bearer synthetic-native-oauth"}
         ).complete(chat_payload(body))
         assert result["model"] == "synthetic-nvidia"
-        assert seen == ["host.docker.internal", "chatgpt.com", "integrate.api.nvidia.com"]
+        assert seen == ["host.docker.internal"] * 3 + ["chatgpt.com", "integrate.api.nvidia.com"]
     finally:
         await parent.close()

@@ -200,9 +200,26 @@ class Router:
                 think=False,
                 options={"num_ctx": 65536, "num_predict": 2048, "temperature": 0.2},
             )
-            data = await bounded_json(
-                self.local, self.s.local_url, limit=self.s.max_response, json=body
-            )
+            # Retry only connection establishment; never replay an uncertain inference.
+            # The caller's total deadline still bounds all attempts and backoff.
+            for connection_attempt in range(3):
+                try:
+                    data = await bounded_json(
+                        self.local, self.s.local_url, limit=self.s.max_response, json=body
+                    )
+                    break
+                except (httpx.ProxyError, httpx.ConnectError, httpx.ConnectTimeout):
+                    if connection_attempt == 2:
+                        raise
+                    emit(
+                        "local_connection_retry",
+                        request_id=request_id,
+                        provider="ollama",
+                        reason="connection_establishment_failed",
+                        count=connection_attempt + 1,
+                        outcome="retry",
+                    )
+                    await asyncio.sleep(0.5 * (connection_attempt + 1))
             if data.get("done") is not True or data.get("done_reason") == "length":
                 raise RouteError("incomplete_model_response", 502)
             actual_model = data.get("model")
@@ -267,7 +284,7 @@ class Router:
                 return await self._call(route, payload, request_id, decision, reason)
 
         try:
-            # Shared total deadline, at most one call per provider, no oscillation.
+            # Shared total deadline; local connection retries do not change providers.
             async with asyncio.timeout(self.s.timeout):
                 if decision.route == "local":
                     attempted_local = True

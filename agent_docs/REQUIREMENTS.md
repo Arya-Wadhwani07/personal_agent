@@ -349,3 +349,7 @@ My source inventory covers five original PDFs (**103 pages**) and all **19 extra
 The description controls the rubric; the Local Gemma guide controls the detailed access/video sequence. Setup/deployment references supply examples rather than extra rubric requirements. Specific instructor clarifications control conflicts, including no planned grading restarts and final-model evidence. Conditional alternatives remain explicitly conditional.
 
 My release checklist applies the requirements to the exact image, runtime, accounts and evidence. Reports distinguish scoped local checks from actual cloud observations.
+
+## Connection-recovery verification
+
+My November 19 repair supports CORE-05, CORE-08, CORE-09 and CORE-10 without changing their requirements: transient local connection failures receive bounded retries, private context never falls back to cloud, and retry metadata excludes message text. Tests cover persistent failure, cancellation, total deadlines and non-replay after uncertain submission. OPS-06–OPS-10 still require honest availability evidence; my explicit freeze exception does not erase outages or waive the instructor's grading rules. [Current verification record](IMPLEMENTATION_STATUS.md)
